@@ -120,23 +120,25 @@ const Login = () => {
       if (response.data && response.data.token) {
         const { token, user } = response.data;
 
-        // Save login status and credentials if "Remember Me" is checked
+        // Save token and role in both localStorage and sessionStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", user.role);
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("role", user.role);
+
+        // Handle "Remember Me" option
         if (rememberMe) {
-          localStorage.setItem("token", token);
-          localStorage.setItem("role", user.role); // Save role in localStorage
           localStorage.setItem("rememberedEmail", email);
           localStorage.setItem("rememberedPassword", password);
           localStorage.setItem("rememberMe", "true");
         } else {
-          sessionStorage.setItem("token", token);
-          sessionStorage.setItem("role", user.role); // Save role in sessionStorage
           localStorage.removeItem("rememberedEmail");
           localStorage.removeItem("rememberedPassword");
           localStorage.removeItem("rememberMe");
         }
 
         // Navigate based on role
-        if (response.data.user.role === "gatekeeper") {
+        if (user.role === "gatekeeper") {
           navigate("/gatekeeper/qrScanner");
         } else {
           navigate("/");
@@ -150,6 +152,7 @@ const Login = () => {
       setLoading(false);
     }
   };
+
 
 
   // Toggle password visibility

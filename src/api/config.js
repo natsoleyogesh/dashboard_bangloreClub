@@ -1,8 +1,10 @@
 import { format } from "date-fns";
 
 
-export const PUBLIC_API_URI = "http://localhost:3005/api"
-// export const PUBLIC_API_URI = "http://13.53.129.30/api"
+// export const PUBLIC_API_URI = "http://localhost:3005/api"
+export const PUBLIC_API_URI = "https://13.53.129.30/api"
+// export const PUBLIC_API_URI = "https://d3a0-116-75-243-45.ngrok-free.app/api"
+
 
 export const formatDate = (date) => {
     if (!date) return "N/A";
