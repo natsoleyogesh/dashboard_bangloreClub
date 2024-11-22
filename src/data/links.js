@@ -87,6 +87,34 @@ export const links = [
     ],
   },
   {
+    name: "Club HOD's",
+    icon: <LocalOffer />,
+    subLinks: [
+      {
+        name: "All HOD's",
+        url: "/hods",
+      },
+      {
+        name: "Add HOD",
+        url: "/hod/add",
+      },
+    ],
+  },
+  // {
+  //   name: "Downloads",
+  //   icon: <LocalOffer />,
+  //   subLinks: [
+  //     {
+  //       name: "All Downloads",
+  //       url: "/downloads",
+  //     },
+  //     {
+  //       name: "Add Download",
+  //       url: "/download/add",
+  //     },
+  //   ],
+  // },
+  {
     name: "Rooms",
     icon: <MdBed />,
     subLinks: [

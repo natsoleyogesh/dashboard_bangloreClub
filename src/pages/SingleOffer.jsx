@@ -264,6 +264,18 @@ const SingleOffer = () => {
                         <MenuItem value="Inactive">Inactive</MenuItem>
                         <MenuItem value="Complete">Complete</MenuItem>
                     </TextField>
+                    <TextField
+                        label="Type"
+                        select
+                        fullWidth
+                        margin="dense"
+                        name="type"
+                        value={editOffer.type || ""}
+                        onChange={handleInputChange}
+                    >
+                        <MenuItem value="New">New</MenuItem>
+                        <MenuItem value="Current">Current</MenuItem>
+                    </TextField>
                     {/* Show Exclusive Checkbox */}
                     <FormControlLabel
                         control={

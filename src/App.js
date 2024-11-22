@@ -131,6 +131,12 @@ import Offers from "./pages/Offers";
 import SingleOffer from "./pages/SingleOffer";
 import AddOffer from "./pages/AddOffer";
 import GetKeeparScanner from "./pages/GetKeeparScanner";
+import ClubHods from "./pages/ClubHods";
+import SingleHod from "./pages/SingleHod";
+import AddHod from "./pages/AddHod";
+import Downloads from "./pages/Downloads";
+import AddDownload from "./pages/AddDownload";
+import SingleDownload from "./pages/SingleDownload";
 
 
 const sideBarWidth = 250;
@@ -363,6 +369,58 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddOffer />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* HOD Route */}
+          <Route
+            path="/hods"
+            element={
+              <ProtectedRoute>
+                <ClubHods />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hod/:id"
+            element={
+              <ProtectedRoute>
+                < SingleHod />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hod/add"
+            element={
+              <ProtectedRoute>
+                <AddHod />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Downloads Route */}
+          <Route
+            path="/downloads"
+            element={
+              <ProtectedRoute>
+                <Downloads />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/download/:id"
+            element={
+              <ProtectedRoute>
+                < SingleDownload />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/download/add"
+            element={
+              <ProtectedRoute>
+                <AddDownload />
               </ProtectedRoute>
             }
           />
