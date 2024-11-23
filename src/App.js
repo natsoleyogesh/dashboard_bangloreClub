@@ -140,6 +140,9 @@ import SingleDownload from "./pages/SingleDownload";
 import ClubNotices from "./pages/ClubNotices";
 import SingleNotice from "./pages/SingleNotice";
 import AddNotice from "./pages/AddNotice";
+import AddGCM from "./pages/AddGCM";
+import SingleGCM from "./pages/SingleGCM";
+import GCMs from "./pages/GCMs";
 
 
 const sideBarWidth = 250;
@@ -450,6 +453,32 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddNotice />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* GCM Route */}
+          <Route
+            path="/gcms"
+            element={
+              <ProtectedRoute>
+                <GCMs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gcm/:id"
+            element={
+              <ProtectedRoute>
+                < SingleGCM />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gcm/add"
+            element={
+              <ProtectedRoute>
+                <AddGCM />
               </ProtectedRoute>
             }
           />

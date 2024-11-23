@@ -1,4 +1,4 @@
-import { Download, LocalOffer, NotificationsActive, School } from "@mui/icons-material";
+import { Download, Group, LocalOffer, NotificationsActive, School } from "@mui/icons-material";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { FaHandshake, FaShare } from "react-icons/fa";
 import {
@@ -104,17 +104,31 @@ export const links = [
       },
     ],
   },
+  {
+    name: "Notices",
+    icon: <NotificationsActive />, // Changed to a notifications-related icon
+    subLinks: [
+      {
+        name: "All Club Notice",
+        url: "/notices",
+      },
+      {
+        name: "Add Club Notice",
+        url: "/notice/add",
+      },
+    ],
+  },
   // {
-  //   name: "Notices",
-  //   icon: <NotificationsActive />, // Changed to a notifications-related icon
+  //   name: "General Committee",
+  //   icon: <Group />, // Changed to a notifications-related icon
   //   subLinks: [
   //     {
-  //       name: "All Club Notice",
-  //       url: "/notices",
+  //       name: "All General Committee Member",
+  //       url: "/gcms",
   //     },
   //     {
-  //       name: "Add Club Notice",
-  //       url: "/notice/add",
+  //       name: "Add Committee Member",
+  //       url: "/gcm/add",
   //     },
   //   ],
   // },
