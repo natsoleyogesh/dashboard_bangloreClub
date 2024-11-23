@@ -3,12 +3,9 @@ import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "../components/Table";
-import { deleteEvent, fetchAllEvents } from "../api/event";
 import { PUBLIC_API_URI } from "../api/config";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 import { showToast } from "../api/toast";
-import { deleteOffer, fetchAllOffers } from "../api/offer";
-import { deleteHod, fetchAllHods } from "../api/clubhods";
 import { deleteDownload, fetchAllDownloads } from "../api/download";
 
 const Downloads = () => {

@@ -1,4 +1,4 @@
-import { LocalOffer } from "@mui/icons-material";
+import { Download, LocalOffer, NotificationsActive, School } from "@mui/icons-material";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { FaHandshake, FaShare } from "react-icons/fa";
 import {
@@ -34,16 +34,6 @@ export const links = [
       },
     ],
   },
-  // {
-  //   name: "Members",
-  //   icon: <FiUsers />,
-  //   url: "/customers",
-  // },
-  // {
-  //   name: "Add Member",
-  //   icon: <FiUser />,
-  //   url: "/member/add",
-  // },
   {
     name: "Events",
     icon: <MdEmojiEvents />,
@@ -88,7 +78,7 @@ export const links = [
   },
   {
     name: "Club HOD's",
-    icon: <LocalOffer />,
+    icon: <School />, // Changed to a school-related icon
     subLinks: [
       {
         name: "All HOD's",
@@ -100,17 +90,31 @@ export const links = [
       },
     ],
   },
+  {
+    name: "Downloads",
+    icon: <Download />, // Changed to a download-related icon
+    subLinks: [
+      {
+        name: "All Downloads",
+        url: "/downloads",
+      },
+      {
+        name: "Add Download",
+        url: "/download/add",
+      },
+    ],
+  },
   // {
-  //   name: "Downloads",
-  //   icon: <LocalOffer />,
+  //   name: "Notices",
+  //   icon: <NotificationsActive />, // Changed to a notifications-related icon
   //   subLinks: [
   //     {
-  //       name: "All Downloads",
-  //       url: "/downloads",
+  //       name: "All Club Notice",
+  //       url: "/notices",
   //     },
   //     {
-  //       name: "Add Download",
-  //       url: "/download/add",
+  //       name: "Add Club Notice",
+  //       url: "/notice/add",
   //     },
   //   ],
   // },
@@ -128,64 +132,6 @@ export const links = [
       },
     ],
   },
-  // {
-  //   name: "Events",
-  //   icon: <MdEmojiEvents />,
-  //   url: "/events",
-  // },
-  // {
-  //   name: "Add Events",
-  //   icon: <MdEmojiEvents />,
-  //   url: "/events/add",
-  // },
-  // {
-  //   name: "Sales",
-  //   icon: <BsCurrencyDollar />,
-  //   subLinks: [
-  //     {
-  //       name: "Sales Analytics",
-  //       url: "/sales/analysis",
-  //     },
-  //     {
-  //       name: "Product Sales",
-  //       url: "/sales",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "Orders",
-  //   icon: <FiShoppingCart />,
-  //   subLinks: [
-  //     {
-  //       name: "All Orders",
-  //       url: "/orders",
-  //     },
-  //     {
-  //       name: "Order Template",
-  //       url: "/orders/template",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "Suppliers",
-  //   icon: <FaShare />,
-  //   url: "/suppliers",
-  // },
-  // {
-  //   name: "Transactions",
-  //   icon: <FaHandshake />,
-  //   url: "/transactions",
-  // },
-  // {
-  //   name: "Brands",
-  //   icon: <FiLayers />,
-  //   url: "/brands",
-  // },
-  // {
-  //   name: "Reviews",
-  //   icon: <FiMessageCircle />,
-  //   url: "/reviews",
-  // },
   {
     name: "Settings",
     icon: <FiSettings />,

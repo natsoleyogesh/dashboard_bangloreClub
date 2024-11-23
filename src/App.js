@@ -137,6 +137,9 @@ import AddHod from "./pages/AddHod";
 import Downloads from "./pages/Downloads";
 import AddDownload from "./pages/AddDownload";
 import SingleDownload from "./pages/SingleDownload";
+import ClubNotices from "./pages/ClubNotices";
+import SingleNotice from "./pages/SingleNotice";
+import AddNotice from "./pages/AddNotice";
 
 
 const sideBarWidth = 250;
@@ -421,6 +424,32 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddDownload />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Notice Route */}
+          <Route
+            path="/notices"
+            element={
+              <ProtectedRoute>
+                <ClubNotices />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notice/:id"
+            element={
+              <ProtectedRoute>
+                < SingleNotice />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notice/add"
+            element={
+              <ProtectedRoute>
+                <AddNotice />
               </ProtectedRoute>
             }
           />
