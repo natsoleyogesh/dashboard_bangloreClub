@@ -1,3 +1,4 @@
+
 // import {
 //     Box,
 //     Button,
@@ -16,10 +17,13 @@
 // } from "@mui/material";
 // import React, { useEffect, useState } from "react";
 // import { useParams } from "react-router-dom";
-// import { fetchGCMDetails, updateGCMDetails } from "../api/gcm"; // Import the appropriate API
+// import { fetchGCMDetails, updateGCMDetails } from "../api/gcm";
 // import { PUBLIC_API_URI } from "../api/config";
 // import { showToast } from "../api/toast";
 // import { FiEdit } from "react-icons/fi";
+
+// const categoryOptions = ["Chairperson", "Co-Chairperson", "Member"];
+// const subCategoryOptions = ["Go Green", "Rooms", "Catering", "Sports"];
 
 // const SingleGCM = () => {
 //     const { id } = useParams();
@@ -27,9 +31,6 @@
 //     const [isEditDialogOpen, setEditDialogOpen] = useState(false);
 //     const [editGcm, setEditGcm] = useState({});
 //     const [selectedFile, setSelectedFile] = useState(null);
-
-//     const categoryOptions = ["Chairperson", "Co-Chairperson", "Member"];
-//     const subCategoryOptions = ["Go Green", "Rooms", "Catering", "Sports"];
 
 //     // Fetch GCM details by ID
 //     useEffect(() => {
@@ -53,13 +54,50 @@
 //         setEditGcm((prev) => ({ ...prev, [name]: value }));
 //     };
 
+//     // Handle category and subcategory changes
+//     const handleCategoryChange = (index, value) => {
+//         const updatedCategories = [...editGcm.categories];
+//         updatedCategories[index].name = value;
+//         setEditGcm((prev) => ({ ...prev, categories: updatedCategories }));
+//     };
+
+//     const handleSubCategoryChange = (catIndex, subIndex, value) => {
+//         const updatedCategories = [...editGcm.categories];
+//         updatedCategories[catIndex].subCategories[subIndex].name = value;
+//         setEditGcm((prev) => ({ ...prev, categories: updatedCategories }));
+//     };
+
+//     // Add and remove categories and subcategories
+//     const addCategory = () => {
+//         setEditGcm((prev) => ({
+//             ...prev,
+//             categories: [...prev.categories, { name: "", subCategories: [{ name: "" }] }],
+//         }));
+//     };
+
+//     const removeCategory = (index) => {
+//         const updatedCategories = [...editGcm.categories];
+//         updatedCategories.splice(index, 1);
+//         setEditGcm((prev) => ({ ...prev, categories: updatedCategories }));
+//     };
+
+//     const addSubCategory = (catIndex) => {
+//         const updatedCategories = [...editGcm.categories];
+//         updatedCategories[catIndex].subCategories.push({ name: "" });
+//         setEditGcm((prev) => ({ ...prev, categories: updatedCategories }));
+//     };
+
+//     const removeSubCategory = (catIndex, subIndex) => {
+//         const updatedCategories = [...editGcm.categories];
+//         updatedCategories[catIndex].subCategories.splice(subIndex, 1);
+//         setEditGcm((prev) => ({ ...prev, categories: updatedCategories }));
+//     };
+
 //     // Handle file selection
 //     const handleFileChange = (e) => {
 //         const file = e.target.files[0];
-//         if (file && ["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+//         if (file) {
 //             setSelectedFile(file);
-//         } else {
-//             showToast("Only JPEG, PNG, or WEBP files are allowed.", "error");
 //         }
 //     };
 
@@ -75,7 +113,9 @@
 //         try {
 //             const formData = new FormData();
 //             Object.entries(editGcm).forEach(([key, value]) => {
-//                 if (value !== null && value !== undefined) {
+//                 if (key === "categories") {
+//                     formData.append(key, JSON.stringify(value));
+//                 } else if (value !== null && value !== undefined) {
 //                     formData.append(key, value);
 //                 }
 //             });
@@ -130,19 +170,10 @@
 //                             <strong>Designation:</strong> {gcm.designation || "N/A"}
 //                         </Typography>
 //                         <Typography variant="body1">
-//                             <strong>Member ID:</strong> {gcm.memberId || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1">
 //                             <strong>Contact Number:</strong> {gcm.contactNumber || "N/A"}
 //                         </Typography>
 //                         <Typography variant="body1">
 //                             <strong>Status:</strong> {gcm.status || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1">
-//                             <strong>Category:</strong> {gcm.category || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1">
-//                             <strong>Subcategories:</strong> {gcm.subCategories?.join(", ") || "N/A"}
 //                         </Typography>
 //                         <Button
 //                             variant="contained"
@@ -183,14 +214,6 @@
 //                         onChange={handleInputChange}
 //                     />
 //                     <TextField
-//                         label="Member ID"
-//                         fullWidth
-//                         margin="dense"
-//                         name="memberId"
-//                         value={editGcm.memberId || ""}
-//                         onChange={handleInputChange}
-//                     />
-//                     <TextField
 //                         label="Contact Number"
 //                         fullWidth
 //                         margin="dense"
@@ -209,40 +232,113 @@
 //                             <MenuItem value="Inactive">Inactive</MenuItem>
 //                         </Select>
 //                     </FormControl>
-//                     <FormControl fullWidth margin="dense">
-//                         <InputLabel>Category</InputLabel>
-//                         <Select
-//                             name="category"
-//                             value={editGcm.category || ""}
-//                             onChange={handleInputChange}
-//                         >
-//                             {categoryOptions.map((option) => (
-//                                 <MenuItem key={option} value={option}>
-//                                     {option}
-//                                 </MenuItem>
+
+//                     {/* Categories & Subcategories */}
+//                     {/* {editGcm.categories?.map((cat, catIndex) => (
+//                         <Box key={catIndex} sx={{ mt: 2 }}>
+//                             <FormControl fullWidth margin="dense">
+//                                 <InputLabel>Category</InputLabel>
+//                                 <Select
+//                                     value={cat.name || ""}
+//                                     onChange={(e) => handleCategoryChange(catIndex, e.target.value)}
+//                                 >
+//                                     {categoryOptions.map((option) => (
+//                                         <MenuItem key={option} value={option}>
+//                                             {option}
+//                                         </MenuItem>
+//                                     ))}
+//                                 </Select>
+//                             </FormControl>
+
+//                             {cat.subCategories.map((subCat, subIndex) => (
+//                                 <FormControl fullWidth margin="dense" key={subIndex}>
+//                                     <InputLabel>Subcategory</InputLabel>
+//                                     <Select
+//                                         value={subCat.name || ""}
+//                                         onChange={(e) =>
+//                                             handleSubCategoryChange(catIndex, subIndex, e.target.value)
+//                                         }
+//                                     >
+//                                         {subCategoryOptions.map((option) => (
+//                                             <MenuItem key={option} value={option}>
+//                                                 {option}
+//                                             </MenuItem>
+//                                         ))}
+//                                     </Select>
+//                                 </FormControl>
 //                             ))}
-//                         </Select>
-//                     </FormControl>
-//                     <FormControl fullWidth margin="dense">
-//                         <InputLabel>Subcategories</InputLabel>
-//                         <Select
-//                             multiple
-//                             name="subCategories"
-//                             value={editGcm.subCategories || []}
-//                             onChange={(e) =>
-//                                 setEditGcm((prev) => ({
-//                                     ...prev,
-//                                     subCategories: e.target.value,
-//                                 }))
-//                             }
-//                         >
-//                             {subCategoryOptions.map((option) => (
-//                                 <MenuItem key={option} value={option}>
-//                                     {option}
-//                                 </MenuItem>
+
+//                             <Button onClick={() => addSubCategory(catIndex)}>Add Subcategory</Button>
+//                         </Box>
+//                     ))} */}
+//                     {/* Categories & Subcategories */}
+//                     {editGcm.categories?.map((cat, catIndex) => (
+//                         <Box key={catIndex} sx={{ mt: 2, border: '1px solid #ccc', padding: 2, borderRadius: 2 }}>
+//                             {/* Category Selection */}
+//                             <FormControl fullWidth margin="dense">
+//                                 <InputLabel>Category</InputLabel>
+//                                 <Select
+//                                     value={cat.name || ""}
+//                                     onChange={(e) => handleCategoryChange(catIndex, e.target.value)}
+//                                 >
+//                                     {categoryOptions.map((option) => (
+//                                         <MenuItem key={option} value={option}>
+//                                             {option}
+//                                         </MenuItem>
+//                                     ))}
+//                                 </Select>
+//                             </FormControl>
+
+//                             {/* Subcategories */}
+//                             {cat.subCategories.map((subCat, subIndex) => (
+//                                 <Box key={subIndex} sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+//                                     <FormControl fullWidth margin="dense">
+//                                         <InputLabel>Subcategory</InputLabel>
+//                                         <Select
+//                                             value={subCat.name || ""}
+//                                             onChange={(e) =>
+//                                                 handleSubCategoryChange(catIndex, subIndex, e.target.value)
+//                                             }
+//                                         >
+//                                             {subCategoryOptions.map((option) => (
+//                                                 <MenuItem key={option} value={option}>
+//                                                     {option}
+//                                                 </MenuItem>
+//                                             ))}
+//                                         </Select>
+//                                     </FormControl>
+//                                     {/* Remove Subcategory Button */}
+//                                     <Button
+//                                         onClick={() => removeSubCategory(catIndex, subIndex)}
+//                                         color="error"
+//                                         sx={{ ml: 2 }}
+//                                     >
+//                                         Remove Subcategory
+//                                     </Button>
+//                                 </Box>
 //                             ))}
-//                         </Select>
-//                     </FormControl>
+
+//                             {/* Add Subcategory Button */}
+//                             <Button onClick={() => addSubCategory(catIndex)} sx={{ mt: 1 }}>
+//                                 Add Subcategory
+//                             </Button>
+
+//                             {/* Remove Category Button */}
+//                             {editGcm.categories.length > 1 && (
+//                                 <Button
+//                                     onClick={() => removeCategory(catIndex)}
+//                                     color="error"
+//                                     sx={{ mt: 1 }}
+//                                 >
+//                                     Remove Category
+//                                 </Button>
+//                             )}
+//                         </Box>
+//                     ))}
+
+//                     <Button onClick={addCategory}>Add Category</Button>
+
+//                     {/* Profile Image Upload */}
 //                     <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }}>
 //                         Upload New Profile Image
 //                         <input type="file" accept="image/*" hidden onChange={handleFileChange} />
@@ -418,7 +514,6 @@ const SingleGCM = () => {
                 }}
             >
                 <Grid container spacing={4}>
-                    {/* Profile Image Preview */}
                     <Grid item xs={12} md={5}>
                         <img
                             src={`${PUBLIC_API_URI}${gcm.profileImage}`}
@@ -426,8 +521,6 @@ const SingleGCM = () => {
                             style={{ width: "100%", height: "300px", objectFit: "cover" }}
                         />
                     </Grid>
-
-                    {/* GCM Details */}
                     <Grid item xs={12} md={7}>
                         <Typography variant="h5">{gcm.name || "N/A"}</Typography>
                         <Typography variant="body1">
@@ -439,6 +532,30 @@ const SingleGCM = () => {
                         <Typography variant="body1">
                             <strong>Status:</strong> {gcm.status || "N/A"}
                         </Typography>
+                        <Typography variant="body1" sx={{ mt: 2 }}>
+                            <strong>Categories:</strong>
+                        </Typography>
+                        {gcm.categories?.map((cat) => (
+                            <Box key={cat._id} sx={{ mt: 1, ml: 2 }}>
+                                <Typography variant="body2">
+                                    <strong>{cat.name}</strong>
+                                    {cat.name === "Invalid Category" && <span style={{ color: "red" }}> (Invalid)</span>}
+                                </Typography>
+                                <Typography variant="body2">
+                                    ___
+                                </Typography>
+                                <ul>
+                                    {cat.subCategories?.map((subCat) => (
+                                        <li key={subCat._id}>
+                                            {subCat.name}
+                                            {subCat.name === "Invalid Subcategory" && (
+                                                <span style={{ color: "red" }}> (Invalid)</span>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Box>
+                        ))}
                         <Button
                             variant="contained"
                             color="primary"
@@ -496,49 +613,8 @@ const SingleGCM = () => {
                             <MenuItem value="Inactive">Inactive</MenuItem>
                         </Select>
                     </FormControl>
-
-                    {/* Categories & Subcategories */}
-                    {/* {editGcm.categories?.map((cat, catIndex) => (
-                        <Box key={catIndex} sx={{ mt: 2 }}>
-                            <FormControl fullWidth margin="dense">
-                                <InputLabel>Category</InputLabel>
-                                <Select
-                                    value={cat.name || ""}
-                                    onChange={(e) => handleCategoryChange(catIndex, e.target.value)}
-                                >
-                                    {categoryOptions.map((option) => (
-                                        <MenuItem key={option} value={option}>
-                                            {option}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            {cat.subCategories.map((subCat, subIndex) => (
-                                <FormControl fullWidth margin="dense" key={subIndex}>
-                                    <InputLabel>Subcategory</InputLabel>
-                                    <Select
-                                        value={subCat.name || ""}
-                                        onChange={(e) =>
-                                            handleSubCategoryChange(catIndex, subIndex, e.target.value)
-                                        }
-                                    >
-                                        {subCategoryOptions.map((option) => (
-                                            <MenuItem key={option} value={option}>
-                                                {option}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            ))}
-
-                            <Button onClick={() => addSubCategory(catIndex)}>Add Subcategory</Button>
-                        </Box>
-                    ))} */}
-                    {/* Categories & Subcategories */}
                     {editGcm.categories?.map((cat, catIndex) => (
                         <Box key={catIndex} sx={{ mt: 2, border: '1px solid #ccc', padding: 2, borderRadius: 2 }}>
-                            {/* Category Selection */}
                             <FormControl fullWidth margin="dense">
                                 <InputLabel>Category</InputLabel>
                                 <Select
@@ -552,8 +628,6 @@ const SingleGCM = () => {
                                     ))}
                                 </Select>
                             </FormControl>
-
-                            {/* Subcategories */}
                             {cat.subCategories.map((subCat, subIndex) => (
                                 <Box key={subIndex} sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                                     <FormControl fullWidth margin="dense">
@@ -571,7 +645,6 @@ const SingleGCM = () => {
                                             ))}
                                         </Select>
                                     </FormControl>
-                                    {/* Remove Subcategory Button */}
                                     <Button
                                         onClick={() => removeSubCategory(catIndex, subIndex)}
                                         color="error"
@@ -581,13 +654,9 @@ const SingleGCM = () => {
                                     </Button>
                                 </Box>
                             ))}
-
-                            {/* Add Subcategory Button */}
                             <Button onClick={() => addSubCategory(catIndex)} sx={{ mt: 1 }}>
                                 Add Subcategory
                             </Button>
-
-                            {/* Remove Category Button */}
                             {editGcm.categories.length > 1 && (
                                 <Button
                                     onClick={() => removeCategory(catIndex)}
@@ -599,10 +668,7 @@ const SingleGCM = () => {
                             )}
                         </Box>
                     ))}
-
                     <Button onClick={addCategory}>Add Category</Button>
-
-                    {/* Profile Image Upload */}
                     <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }}>
                         Upload New Profile Image
                         <input type="file" accept="image/*" hidden onChange={handleFileChange} />

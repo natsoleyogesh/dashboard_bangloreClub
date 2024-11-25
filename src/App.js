@@ -143,6 +143,13 @@ import AddNotice from "./pages/AddNotice";
 import AddGCM from "./pages/AddGCM";
 import SingleGCM from "./pages/SingleGCM";
 import GCMs from "./pages/GCMs";
+import Rules from "./pages/Rules";
+import ByeLaws from "./pages/ByeLaws";
+import SingleRuleByeLaw from "./pages/SingleRuleByeLaw";
+import AddRuleByeLaw from "./pages/AddRuleByeLaw";
+import FAQs from "./pages/FAQs";
+import SingleFAQ from "./pages/SingleFAQ";
+import AddFAQ from "./pages/AddFAQ";
 
 
 const sideBarWidth = 250;
@@ -483,6 +490,66 @@ function App() {
             }
           />
 
+          {/* RULE BYE LAWS Route */}
+          <Route
+            path="/rules"
+            element={
+              <ProtectedRoute>
+                <Rules />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/byeLaws"
+            element={
+              <ProtectedRoute>
+                <ByeLaws />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ruleByeLaw/:id"
+            element={
+              <ProtectedRoute>
+                < SingleRuleByeLaw />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ruleByeLaw/add"
+            element={
+              <ProtectedRoute>
+                <AddRuleByeLaw />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* RULE BYE LAWS Route */}
+          <Route
+            path="/faqs"
+            element={
+              <ProtectedRoute>
+                <FAQs />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/faq/:id"
+            element={
+              <ProtectedRoute>
+                < SingleFAQ />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/faq/add"
+            element={
+              <ProtectedRoute>
+                <AddFAQ />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/settings"

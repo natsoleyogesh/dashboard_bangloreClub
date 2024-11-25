@@ -1,4 +1,4 @@
-import { Download, Group, LocalOffer, NotificationsActive, School } from "@mui/icons-material";
+import { AddCircle, Download, Gavel, Group, ListAlt, LocalOffer, NotificationsActive, QuestionAnswer, School } from "@mui/icons-material";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { FaHandshake, FaShare } from "react-icons/fa";
 import {
@@ -118,17 +118,49 @@ export const links = [
       },
     ],
   },
+  {
+    name: "General Committee",
+    icon: <Group />, // Changed to a notifications-related icon
+    subLinks: [
+      {
+        name: "All General Committee Member",
+        url: "/gcms",
+      },
+      {
+        name: "Add Committee Member",
+        url: "/gcm/add",
+      },
+    ],
+  },
   // {
-  //   name: "General Committee",
-  //   icon: <Group />, // Changed to a notifications-related icon
+  //   name: "Club Rules & ByeLaws",
+  //   icon: <Gavel />, // Icon for rules and byelaws
   //   subLinks: [
   //     {
-  //       name: "All General Committee Member",
-  //       url: "/gcms",
+  //       name: "All Club Rules",
+  //       url: "/rules",
   //     },
   //     {
-  //       name: "Add Committee Member",
-  //       url: "/gcm/add",
+  //       name: "All Club ByeLaws",
+  //       url: "/byeLaws",
+  //     },
+  //     {
+  //       name: "Add Club Rule & ByeLaw",
+  //       url: "/ruleByeLaw/add",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "FAQs",
+  //   icon: <QuestionAnswer />, // Icon for FAQs
+  //   subLinks: [
+  //     {
+  //       name: "All FAQs",
+  //       url: "/faqs",
+  //     },
+  //     {
+  //       name: "Add Club FAQs",
+  //       url: "/faq/add",
   //     },
   //   ],
   // },
