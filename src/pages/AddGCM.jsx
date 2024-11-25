@@ -548,7 +548,7 @@ const AddGCM = () => {
                 <Grid container spacing={2}>
                     {/* Title */}
                     <Grid item xs={12} md={6}>
-                        <InputLabel sx={{ fontWeight: "bold" }}>Title</InputLabel>
+                        <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Title</InputLabel>
                         <Select
                             name="title"
                             value={gcmData.title}
@@ -569,7 +569,7 @@ const AddGCM = () => {
 
                     {/* Name */}
                     <Grid item xs={12} md={6}>
-                        <InputLabel>Name</InputLabel>
+                        <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Name</InputLabel>
                         <TextField
                             fullWidth
                             name="name"
@@ -589,7 +589,7 @@ const AddGCM = () => {
 
                     {/* Member ID */}
                     <Grid item xs={12} md={6}>
-                        <InputLabel>Member ID</InputLabel>
+                        <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Member ID</InputLabel>
                         <TextField
                             fullWidth
                             name="memberId"
@@ -607,9 +607,26 @@ const AddGCM = () => {
                         />
                     </Grid>
 
+                    <Grid item xs={12} md={6}>
+                        <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Designation</InputLabel>
+                        <TextField
+                            fullWidth
+                            name="memberId"
+                            value={gcmData.designation}
+                            onChange={handleInputChange}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Work />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Grid>
+
                     {/* Contact Number */}
                     <Grid item xs={12} md={6}>
-                        <InputLabel>Contact Number</InputLabel>
+                        <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Contact Number</InputLabel>
                         <TextField
                             fullWidth
                             name="contactNumber"
@@ -626,6 +643,24 @@ const AddGCM = () => {
                             }}
                         />
                     </Grid>
+                    {/* Status */}
+                    <Grid item xs={12} md={6}>
+                        <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Status</InputLabel>
+                        <FormControl fullWidth>
+                            <Select
+                                name="status"
+                                value={gcmData.status}
+                                onChange={handleInputChange}
+                                displayEmpty
+                            >
+                                {statusOptions.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
                     {/* Categories */}
                     <Grid item xs={12}>
@@ -638,11 +673,14 @@ const AddGCM = () => {
                                     {/* Category Dropdown */}
                                     <Grid item xs={12} md={5}>
                                         <FormControl fullWidth>
-                                            <InputLabel>Category</InputLabel>
                                             <Select
                                                 value={cat.name}
                                                 onChange={(e) => handleCategoryChange(catIndex, e.target.value)}
+                                                displayEmpty
                                             >
+                                                <MenuItem value="" disabled>
+                                                    Please select category
+                                                </MenuItem>
                                                 {categoryOptions.map((option) => (
                                                     <MenuItem key={option} value={option}>
                                                         {option}
@@ -669,13 +707,17 @@ const AddGCM = () => {
                                         {cat.subCategories.map((subCat, subIndex) => (
                                             <Box key={subIndex} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                                                 <FormControl fullWidth>
-                                                    <InputLabel>Subcategory</InputLabel>
+                                                    {/* <InputLabel>Subcategory</InputLabel> */}
                                                     <Select
                                                         value={subCat.name}
                                                         onChange={(e) =>
                                                             handleSubCategoryChange(catIndex, subIndex, e.target.value)
                                                         }
+                                                        displayEmpty
                                                     >
+                                                        <MenuItem value="" disabled>
+                                                            Please select sub category
+                                                        </MenuItem>
                                                         {subCategoryOptions.map((option) => (
                                                             <MenuItem key={option} value={option}>
                                                                 {option}
@@ -702,24 +744,7 @@ const AddGCM = () => {
                         ))}
                     </Grid>
 
-                    {/* Status */}
-                    <Grid item xs={12} md={2}>
-                        <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Status</InputLabel>
-                        <FormControl fullWidth>
-                            <Select
-                                name="status"
-                                value={gcmData.status}
-                                onChange={handleInputChange}
-                                displayEmpty
-                            >
-                                {statusOptions.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
+
 
                     {/* Profile Image */}
                     <Grid item xs={12}>

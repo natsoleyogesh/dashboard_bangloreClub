@@ -7,10 +7,12 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    FormControl,
     FormControlLabel,
     Grid,
     MenuItem,
     Paper,
+    Select,
     TextField,
     Typography,
 } from "@mui/material";
@@ -20,6 +22,9 @@ import { fetchOfferDetails, updateEventDetails, updateOfferDetails } from "../ap
 import { formatDate, PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+
+
+const departmentOptions = ["Recharge", "Purchase", "Subscription", "Entertainment", "Other"];
 
 const SingleOffer = () => {
     const { id } = useParams();
@@ -297,6 +302,33 @@ const SingleOffer = () => {
                         }
                         label="Discount Offer"
                     />
+
+                    {/* Department */}
+                    <Box sx={{ mb: 2 }}>
+                        {/* <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Department</InputLabel> */}
+                        <FormControl fullWidth >
+                            <Select
+                                name="department"
+                                value={editOffer.department || ""}
+                                onChange={handleInputChange}
+                                displayEmpty
+                            >
+                                <MenuItem value="" disabled>
+                                    Please choose the department
+                                </MenuItem>
+                                {departmentOptions.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            {/* {errors.department && (
+                                <Typography color="error" variant="body2">
+                                    {errors.department}
+                                </Typography>
+                            )} */}
+                        </FormControl>
+                    </Box>
 
                     <Avatar
                         src={selectedImage ? URL.createObjectURL(selectedImage) : `${PUBLIC_API_URI}${editOffer.bannerImage}`}
