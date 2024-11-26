@@ -132,52 +132,67 @@ export const links = [
       },
     ],
   },
-  // {
-  //   name: "Club Rules & ByeLaws",
-  //   icon: <Gavel />, // Icon for rules and byelaws
-  //   subLinks: [
-  //     {
-  //       name: "All Club Rules",
-  //       url: "/rules",
-  //     },
-  //     {
-  //       name: "All Club ByeLaws",
-  //       url: "/byeLaws",
-  //     },
-  //     {
-  //       name: "Add Club Rule & ByeLaw",
-  //       url: "/ruleByeLaw/add",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "FAQs",
-  //   icon: <QuestionAnswer />, // Icon for FAQs
-  //   subLinks: [
-  //     {
-  //       name: "All FAQs",
-  //       url: "/faqs",
-  //     },
-  //     {
-  //       name: "Add Club FAQs",
-  //       url: "/faq/add",
-  //     },
-  //   ],
-  // },
   {
-    name: "Rooms",
-    icon: <MdBed />,
+    name: "Club Rules & ByeLaws",
+    icon: <Gavel />, // Icon for rules and byelaws
     subLinks: [
       {
-        name: "All Rooms",
-        url: "/rooms",
+        name: "All Club Rules",
+        url: "/rules",
       },
       {
-        name: "Add Room",
-        url: "/room/add",
+        name: "All Club ByeLaws",
+        url: "/byeLaws",
+      },
+      {
+        name: "Add Club Rule & ByeLaw",
+        url: "/ruleByeLaw/add",
       },
     ],
   },
+  {
+    name: "FAQs",
+    icon: <QuestionAnswer />, // Icon for FAQs
+    subLinks: [
+      {
+        name: "All FAQs",
+        url: "/faqs",
+      },
+      {
+        name: "Add Club FAQs",
+        url: "/faq/add",
+      },
+    ],
+  },
+  {
+    name: "Consideration Of Membership's",
+    icon: <Download />, // Changed to a download-related icon
+    subLinks: [
+      {
+        name: "All COM's",
+        url: "/coms",
+      },
+      {
+        name: "Add COM",
+        url: "/com/add",
+      },
+    ],
+  },
+  // {
+  //   name: "Rooms",
+  //   icon: <MdBed />,
+  //   subLinks: [
+  //     {
+  //       name: "All Rooms",
+  //       url: "/rooms",
+  //     },
+  //     {
+  //       name: "Add Room",
+  //       url: "/room/add",
+  //     },
+  //   ],
+  // },
+
   {
     name: "Settings",
     icon: <FiSettings />,

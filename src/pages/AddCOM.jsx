@@ -13,11 +13,11 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { BiFileAdd } from "react-icons/bi";
+import { BiImageAdd } from "react-icons/bi";
 import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
-import { addRuleByeLaw } from "../api/ruleByelaws";
-import { Description, Category, Gavel } from "@mui/icons-material";
+import { Description, DateRange, CloudUpload } from "@mui/icons-material";
+import { addCOM } from "../api/com";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -37,26 +37,39 @@ const UploadBox = styled(Box)(({ theme }) => ({
 }));
 
 const statusOptions = ["Active", "Inactive"];
-const typeOptions = ["Rule", "Byelaw"]; // Dropdown options for Rule or Bylaw
-const categoryOptions = ["Club Rule", "Club ByeLaw"]; // Sample categories
 
-const AddRuleByeLaw = () => {
-    const [ruleByeLawData, setRuleByeLawData] = useState({
+const AddCOM = () => {
+    const [comData, setComData] = useState({
         title: "",
         description: "",
-        category: "",
-        type: "",
+        expiredDate: "",
         status: "Active",
     });
+    const [pdfFile, setPdfFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const fileInput = useRef(null);
     const navigate = useNavigate();
 
     // Handle input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setRuleByeLawData((prev) => ({ ...prev, [name]: value }));
+        setComData((prev) => ({ ...prev, [name]: value }));
         validateField(name, value);
+    };
+
+    // Handle file upload change
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type === "application/pdf") {
+            setPdfFile(file);
+            setErrors((prevErrors) => ({ ...prevErrors, pdfFile: null })); // Clear file-related errors
+        } else {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                pdfFile: "Only PDF files are allowed.",
+            }));
+        }
     };
 
     // Validation logic for individual fields
@@ -70,18 +83,18 @@ const AddRuleByeLaw = () => {
             delete newErrors.title;
         }
 
-        // Type validation
-        if (name === "type" && !value) {
-            newErrors.type = "Type is required.";
-        } else {
-            delete newErrors.type;
-        }
+        // Expired date validation
+        if (name === "expiredDate") {
+            const selectedDate = new Date(value);
+            const currentDate = new Date();
 
-        // Category validation
-        if (name === "category" && !value) {
-            newErrors.category = "Category is required.";
-        } else {
-            delete newErrors.category;
+            if (!value) {
+                newErrors.expiredDate = "Expiration date is required.";
+            } else if (selectedDate < currentDate) {
+                newErrors.expiredDate = "Expiration date cannot be in the past.";
+            } else {
+                delete newErrors.expiredDate;
+            }
         }
 
         setErrors(newErrors);
@@ -91,9 +104,13 @@ const AddRuleByeLaw = () => {
     const validateForm = () => {
         const validationErrors = {};
 
-        if (!ruleByeLawData.title) validationErrors.title = "Title is required.";
-        if (!ruleByeLawData.type) validationErrors.type = "Type is required.";
-        if (!ruleByeLawData.category) validationErrors.category = "Category is required.";
+        if (!comData.title) validationErrors.title = "Title is required.";
+        if (!comData.expiredDate) {
+            validationErrors.expiredDate = "Expiration date is required.";
+        } else if (new Date(comData.expiredDate) < new Date()) {
+            validationErrors.expiredDate = "Expiration date cannot be in the past.";
+        }
+        if (!pdfFile) validationErrors.pdfFile = "A PDF file is required.";
 
         setErrors(validationErrors);
         return Object.keys(validationErrors).length === 0;
@@ -105,19 +122,22 @@ const AddRuleByeLaw = () => {
 
         setLoading(true);
 
+        const formData = new FormData();
+        Object.entries(comData).forEach(([key, value]) => {
+            formData.append(key, value);
+        });
+
+        if (pdfFile) {
+            formData.append("fileUrl", pdfFile);
+        }
+
         try {
-            const response = await addRuleByeLaw(ruleByeLawData);
+            const response = await addCOM(formData);
             if (response.status === 201) {
-                showToast("Rule/Bylaw added successfully!", "success");
-                // navigate("/ruleByeLaw");
-                // Navigate based on the 'type' of the rule
-                if (ruleByeLawData.type === "Rule") {
-                    navigate("/rules"); // Navigate to the 'rules' page
-                } else if (ruleByeLawData.type === "Byelaw") {
-                    navigate("/byeLaws"); // Navigate to the 'byelaws' page
-                }
+                showToast("Download added successfully!", "success");
+                navigate("/downloads");
             } else {
-                showToast(response.message || "Failed to add Rule/Bylaw. Please try again.", "error");
+                showToast(response.message || "Failed to add download. Please try again.", "error");
             }
         } catch (error) {
             showToast(error.response?.data?.message || "An error occurred. Please try again.", "error");
@@ -129,7 +149,7 @@ const AddRuleByeLaw = () => {
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
-                Add New Rule/Bylaw
+                Add New Consideration Of Membership
             </Typography>
             <Paper
                 elevation={3}
@@ -147,7 +167,7 @@ const AddRuleByeLaw = () => {
                         placeholder="Enter title"
                         fullWidth
                         name="title"
-                        value={ruleByeLawData.title}
+                        value={comData.title}
                         onChange={handleInputChange}
                         error={!!errors.title}
                         helperText={errors.title}
@@ -170,73 +190,39 @@ const AddRuleByeLaw = () => {
                         multiline
                         rows={3}
                         name="description"
-                        value={ruleByeLawData.description}
+                        value={comData.description}
                         onChange={handleInputChange}
                     />
                 </Box>
 
-                {/* Category */}
+                {/* Expiration Date */}
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Category</InputLabel>
-                    <FormControl fullWidth>
-                        <Select
-                            name="category"
-                            value={ruleByeLawData.category}
-                            onChange={handleInputChange}
-                            error={!!errors.category}
-                            displayEmpty
-                        >
-                            <MenuItem value="" disabled>
-                                Please select category
-                            </MenuItem>
-                            {categoryOptions.map((option) => (
-                                <MenuItem key={option} value={option}>
-                                    {option}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    {errors.category && (
-                        <Typography color="error" variant="body2">
-                            {errors.category}
-                        </Typography>
-                    )}
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Expiration Date</InputLabel>
+                    <TextField
+                        type="date"
+                        fullWidth
+                        name="expiredDate"
+                        value={comData.expiredDate}
+                        onChange={handleInputChange}
+                        error={!!errors.expiredDate}
+                        helperText={errors.expiredDate}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <DateRange />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Box>
 
-                {/* Type */}
-                <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Type</InputLabel>
-                    <FormControl fullWidth>
-                        <Select
-                            name="type"
-                            value={ruleByeLawData.type}
-                            onChange={handleInputChange}
-                            error={!!errors.type}
-                            displayEmpty
-                        >
-                            <MenuItem value="" disabled>
-                                Please select type
-                            </MenuItem>
-                            {typeOptions.map((option) => (
-                                <MenuItem key={option} value={option}>
-                                    {option}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    {errors.type && (
-                        <Typography color="error" variant="body2">
-                            {errors.type}
-                        </Typography>
-                    )}
-                </Box>
                 {/* Status */}
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Status</InputLabel>
                     <FormControl fullWidth>
                         <Select
                             name="status"
-                            value={ruleByeLawData.status}
+                            value={comData.status}
                             onChange={handleInputChange}
                         >
                             {statusOptions.map((option) => (
@@ -246,6 +232,35 @@ const AddRuleByeLaw = () => {
                             ))}
                         </Select>
                     </FormControl>
+                </Box>
+
+                {/* Upload PDF File */}
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Upload PDF</InputLabel>
+                    <UploadBox onClick={() => fileInput.current.click()}>
+                        {pdfFile ? (
+                            <Typography variant="body2">{pdfFile.name}</Typography>
+                        ) : (
+                            <Box sx={{ textAlign: "center" }}>
+                                <BiImageAdd style={{ fontSize: "40px", color: "#027edd" }} />
+                                <Typography variant="body2" color="textSecondary">
+                                    Click to upload PDF
+                                </Typography>
+                            </Box>
+                        )}
+                        <input
+                            type="file"
+                            accept="application/pdf"
+                            hidden
+                            ref={fileInput}
+                            onChange={handleFileChange}
+                        />
+                    </UploadBox>
+                    {errors.pdfFile && (
+                        <Typography color="error" variant="body2">
+                            {errors.pdfFile}
+                        </Typography>
+                    )}
                 </Box>
 
                 {/* Submit Button */}
@@ -263,7 +278,7 @@ const AddRuleByeLaw = () => {
                         disabled={loading}
                         onClick={handleSubmit}
                     >
-                        {loading ? <CircularProgress size={20} color="inherit" /> : "Add Rule/Bylaw"}
+                        {loading ? <CircularProgress size={20} color="inherit" /> : "Add Download"}
                     </Button>
                 </Box>
             </Paper>
@@ -271,4 +286,4 @@ const AddRuleByeLaw = () => {
     );
 };
 
-export default AddRuleByeLaw;
+export default AddCOM;

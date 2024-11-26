@@ -1,88 +1,3 @@
-// import * as React from "react";
-// import { Routes, Route } from "react-router-dom";
-// import Box from "@mui/material/Box";
-// import Sidebar from "./components/common/Sidebar";
-// import Dashboard from "./pages/Dashboard";
-// import Navbar from "./components/common/Navbar";
-// import {
-//   AddProduct,
-//   Brands,
-//   Customers,
-//   Inbox,
-//   Orders,
-//   OrderTemplate,
-//   ProductCategories,
-//   Products,
-//   ProductSales,
-//   Reviews,
-//   SalesAnalytics,
-//   Settings,
-//   SingleCustomer,
-//   SingleOrder,
-//   SingleProduct,
-//   Suppliers,
-//   Transactions,
-// } from "./pages";
-// import Footer from "./components/common/Footer";
-
-// const sideBarWidth = 250;
-
-// function App() {
-//   const [mobileOpen, setMobileOpen] = React.useState(false);
-
-//   const handleDrawerToggle = () => {
-//     setMobileOpen(!mobileOpen);
-//   };
-
-//   return (
-//     <Box sx={{ display: "flex" }}>
-//       <Navbar
-//         sideBarWidth={sideBarWidth}
-//         handleDrawerToggle={handleDrawerToggle}
-//       />
-//       <Sidebar
-//         sideBarWidth={sideBarWidth}
-//         mobileOpen={mobileOpen}
-//         handleDrawerToggle={handleDrawerToggle}
-//       />
-//       <Box
-//         component="main"
-//         sx={{
-//           flexGrow: 1,
-//           px: { xs: 1, md: 2 },
-//           width: { xs: "100%", md: `calc(100% - ${sideBarWidth}px)` },
-//         }}
-//       >
-//         {/* Routes */}
-//         <Routes>
-//           <Route path="/" element={<Dashboard />} />
-//           <Route path="/products" element={<Products />} />
-//           <Route path="/products/add" element={<AddProduct />} />
-//           <Route path="/products/:id" element={<SingleProduct />} />
-//           <Route path="/products/categories" element={<ProductCategories />} />
-//           <Route path="/customers" element={<Customers />} />
-//           <Route path="/customers/:id" element={<SingleCustomer />} />
-//           <Route path="/sales/analysis" element={<SalesAnalytics />} />
-//           <Route path="/sales" element={<ProductSales />} />
-//           <Route path="/orders" element={<Orders />} />
-//           <Route path="/orders/template" element={<OrderTemplate />} />
-//           <Route path="/orders/:id" element={<SingleOrder />} />
-//           <Route path="/suppliers" element={<Suppliers />} />
-//           <Route path="/transactions" element={<Transactions />} />
-//           <Route path="/brands" element={<Brands />} />
-//           <Route path="/reviews" element={<Reviews />} />
-//           <Route path="/settings" element={<Settings />} />
-//           <Route path="/reviews" element={<Reviews />} />
-//           <Route path="/inbox" element={<Inbox />} />
-//         </Routes>
-//         <Footer />
-//       </Box>
-//     </Box>
-//   );
-// }
-
-// export default App;
-
 import * as React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -94,22 +9,11 @@ import Login from "./pages/Login";
 import Footer from "./components/common/Footer";
 import {
   AddProduct,
-  Brands,
   Customers,
-  Inbox,
-  Orders,
-  OrderTemplate,
-  ProductCategories,
   Products,
-  ProductSales,
-  Reviews,
-  SalesAnalytics,
   Settings,
   SingleCustomer,
-  SingleOrder,
   SingleProduct,
-  Suppliers,
-  Transactions,
 } from "./pages";
 import AddMember from "./pages/AddMember";
 import AddFamilyMember from "./pages/AddFamilyMember";
@@ -150,7 +54,9 @@ import AddRuleByeLaw from "./pages/AddRuleByeLaw";
 import FAQs from "./pages/FAQs";
 import SingleFAQ from "./pages/SingleFAQ";
 import AddFAQ from "./pages/AddFAQ";
-
+import COMs from "./pages/COMs";
+import SingleCOM from "./pages/SingleCOM";
+import AddCOM from "./pages/AddCOM";
 
 const sideBarWidth = 250;
 
@@ -524,7 +430,7 @@ function App() {
             }
           />
 
-          {/* RULE BYE LAWS Route */}
+          {/* FAQ Route */}
           <Route
             path="/faqs"
             element={
@@ -547,6 +453,32 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddFAQ />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Consideration Of Membership Route */}
+          <Route
+            path="/coms"
+            element={
+              <ProtectedRoute>
+                <COMs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/com/:id"
+            element={
+              <ProtectedRoute>
+                < SingleCOM />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/com/add"
+            element={
+              <ProtectedRoute>
+                <AddCOM />
               </ProtectedRoute>
             }
           />
