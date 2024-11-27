@@ -1,4 +1,4 @@
-import { AddCircle, Download, Gavel, Group, ListAlt, LocalOffer, NotificationsActive, QuestionAnswer, School } from "@mui/icons-material";
+import { AddCircle, Download, Gavel, Group, ListAlt, LocalOffer, NotificationsActive, QuestionAnswer, RestaurantMenu, School } from "@mui/icons-material";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { FaHandshake, FaShare } from "react-icons/fa";
 import {
@@ -166,7 +166,7 @@ export const links = [
   },
   {
     name: "Consideration Of Membership's",
-    icon: <Download />, // Changed to a download-related icon
+    icon: <Group />, // Changed to a download-related icon
     subLinks: [
       {
         name: "All COM's",
@@ -178,6 +178,20 @@ export const links = [
       },
     ],
   },
+  // {
+  //   name: "Food & Beverages",
+  //   icon: <RestaurantMenu />, // Changed to a download-related icon
+  //   subLinks: [
+  //     {
+  //       name: "All Food & Beverages",
+  //       url: "/foodAndBeverages",
+  //     },
+  //     {
+  //       name: "Add Food & Beverages",
+  //       url: "/foodAndBeverage/add",
+  //     },
+  //   ],
+  // },
   // {
   //   name: "Rooms",
   //   icon: <MdBed />,

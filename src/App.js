@@ -57,6 +57,9 @@ import AddFAQ from "./pages/AddFAQ";
 import COMs from "./pages/COMs";
 import SingleCOM from "./pages/SingleCOM";
 import AddCOM from "./pages/AddCOM";
+import FoodAndBeverages from "./pages/FoodAndBeverages";
+import SingleFoodAndBeverage from "./pages/SingleFoodAndBeverage";
+import AddFoodAndBeverage from "./pages/AddFoodAndBeverage";
 
 const sideBarWidth = 250;
 
@@ -482,6 +485,33 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/*FoodAndBeverages Route */}
+          <Route
+            path="/foodAndBeverages"
+            element={
+              <ProtectedRoute>
+                <FoodAndBeverages />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/foodAndBeverage/:id"
+            element={
+              <ProtectedRoute>
+                < SingleFoodAndBeverage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/foodAndBeverage/add"
+            element={
+              <ProtectedRoute>
+                <AddFoodAndBeverage />
+              </ProtectedRoute>
+            }
+          />
+
 
           <Route
             path="/settings"
