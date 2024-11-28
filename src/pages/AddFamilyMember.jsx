@@ -377,10 +377,11 @@ const AddFamilyMember = () => {
 
     const handlePinChange = (e) => {
         const value = e.target.value;
-        setAge(value);
+        setPin(value);
         setValidationErrors((prev) => ({
             ...prev,
-            age: validatePin(value) ? "" : "Pin Is Required",
+            pin: validatePin(value)   ? ""
+            : "pin must be 6 to 10 digits.",
         }));
     };
 
@@ -434,7 +435,8 @@ const AddFamilyMember = () => {
                 showToast(response.message || "Failed to add family member.", "error");
             }
         } catch (error) {
-            showToast("An error occurred. Please try again.", "error");
+            console.log(error, error.response.data, error.response.data.message, "fghfghgfhfh")
+            showToast(error.response.data.message || "An error occurred. Please try again.", "error");
         } finally {
             setLoading(false);
         }

@@ -14,6 +14,7 @@ import {
     TextField,
     Typography,
     IconButton,
+    FormHelperText,
 } from "@mui/material";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
@@ -66,6 +67,7 @@ const AddFoodAndBeverage = () => {
     });
     const [bannerImage, setBannerImage] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
     // Handle input changes for main fields
@@ -82,12 +84,25 @@ const AddFoodAndBeverage = () => {
     };
 
     // Handle timing updates for a subcategory
+    // const handleTimingChange = (index, timingIndex, field, value) => {
+    //     const updatedSubCategories = [...formData.subCategories];
+    //     const updatedTimings = [...updatedSubCategories[index].timings];
+    //     updatedTimings[timingIndex][field] = formatTo12Hour(value);
+    //     updatedSubCategories[index].timings = updatedTimings;
+    //     setFormData((prev) => ({ ...prev, subCategories: updatedSubCategories }));
+    // };
+    // Handle timing updates for a subcategory
     const handleTimingChange = (index, timingIndex, field, value) => {
         const updatedSubCategories = [...formData.subCategories];
         const updatedTimings = [...updatedSubCategories[index].timings];
-        updatedTimings[timingIndex][field] = formatTo12Hour(value);
+        updatedTimings[timingIndex][field] = formatTo12Hour(value); // Assuming this is formatting correctly
         updatedSubCategories[index].timings = updatedTimings;
+
+        // Update formData state
         setFormData((prev) => ({ ...prev, subCategories: updatedSubCategories }));
+
+        // Revalidate the form after timing change
+        validateForm();
     };
 
     // Handle timing updates for a subcategory
@@ -98,6 +113,58 @@ const AddFoodAndBeverage = () => {
         updatedSubCategories[index].timings = updatedTimings;
         setFormData((prev) => ({ ...prev, subCategories: updatedSubCategories }));
     };
+
+    // Validate the form data
+    const validateForm = () => {
+        let formErrors = {};
+        if (!formData.name) formErrors.name = "Name is required.";
+        if (!formData.description) formErrors.description = "Description is required.";
+
+        // Validate subcategories
+        formData.subCategories.forEach((subCategory, index) => {
+            if (!subCategory.name) formErrors[`subCategoryName_${index}`] = `Subcategory ${index + 1} name is required.`;
+            if (!subCategory.description) formErrors[`subCategoryDescription_${index}`] = `Subcategory ${index + 1} description is required.`;
+
+            if (!subCategory.location) formErrors[`location_${index}`] = `Subcategory ${index + 1} location is required.`;
+            if (!subCategory.extansion_no) formErrors[`extansion_no_${index}`] = `Subcategory ${index + 1} extansion_no is required.`;
+
+            // Validate timings for subcategory
+            subCategory.timings.forEach((timing, timingIndex) => {
+                if (!timing.startDay) {
+                    formErrors[`startDay_${index}_${timingIndex}`] = `Start day are required for timing ${timingIndex + 1}.`;
+                }
+                if (!timing.endDay) {
+                    formErrors[`endDay_${index}_${timingIndex}`] = `End day are required for timing ${timingIndex + 1}.`;
+                }
+                if (!timing.startTime) {
+                    formErrors[`startTime_${index}_${timingIndex}`] = `Start time is required for timing ${timingIndex + 1}.`;
+                }
+                if (!timing.endTime) {
+                    formErrors[`endTime_${index}_${timingIndex}`] = `End time is required for timing ${timingIndex + 1}.`;
+                }
+            });
+
+            // Validate images
+            if (subCategory.images.length === 0) {
+                formErrors[`subCategoryImages_${index}`] = `Subcategory ${index + 1} images are required.`;
+            }
+
+            // Validate menu file
+            if (!subCategory.menu) {
+                formErrors[`subCategoryMenu_${index}`] = `Subcategory ${index + 1} menu file is required.`;
+            }
+        });
+
+        // Validate banner image
+        if (!bannerImage) formErrors.bannerImage = "Banner image is required.";
+
+        setErrors(formErrors);  // Update error state
+        console.log(formErrors); // Check if errors are being set correctly
+
+        return Object.keys(formErrors).length === 0;  // Return false if there are errors
+    };
+
+
 
     // Add a new subcategory
     const addSubCategory = () => {
@@ -155,6 +222,8 @@ const AddFoodAndBeverage = () => {
 
     // Submit the form
     const handleSubmit = async () => {
+        if (!validateForm()) return; // If validation fails, stop submission
+
         setLoading(true);
         const data = new FormData();
 
@@ -209,6 +278,8 @@ const AddFoodAndBeverage = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
+                    error={Boolean(errors.name)}
+                    helperText={errors.name}
                 />
                 <TextField
                     label="Description"
@@ -217,8 +288,10 @@ const AddFoodAndBeverage = () => {
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
+                    error={Boolean(errors.description)}
+                    helperText={errors.description}
                 />
-                <FormControl fullWidth margin="dense">
+                <FormControl fullWidth margin="dense" error={Boolean(errors.status)}>
                     <InputLabel>Status</InputLabel>
                     <Select name="status" value={formData.status} onChange={handleInputChange}>
                         {statusOptions.map((option) => (
@@ -227,11 +300,21 @@ const AddFoodAndBeverage = () => {
                             </MenuItem>
                         ))}
                     </Select>
+                    {errors.status && <FormHelperText>{errors.status}</FormHelperText>}
                 </FormControl>
-                <Button variant="contained" component="label" sx={{ mt: 1 }}>
-                    Upload Banner Image
-                    <input type="file" accept="image/*" hidden onChange={handleBannerImageChange} />
-                </Button>
+                {/* Banner Image */}
+                <UploadBox onClick={() => document.getElementById("bannerImageInput").click()}>
+                    <input
+                        type="file"
+                        id="bannerImageInput"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={handleBannerImageChange}
+                    />
+                    <BiImageAdd size={30} />
+                    <Typography variant="body2">Click to upload banner image</Typography>
+                    {errors.bannerImage && <FormHelperText error>{errors.bannerImage}</FormHelperText>}
+                </UploadBox>
 
                 {/* Subcategories */}
                 {formData.subCategories.map((subCategory, index) => (
@@ -243,6 +326,8 @@ const AddFoodAndBeverage = () => {
                             margin="dense"
                             value={subCategory.name}
                             onChange={(e) => handleSubCategoryChange(index, "name", e.target.value)}
+                            error={Boolean(errors[`subCategoryName_${index}`])}
+                            helperText={errors[`subCategoryName_${index}`]}
                         />
                         <TextField
                             label="Description"
@@ -250,6 +335,8 @@ const AddFoodAndBeverage = () => {
                             margin="dense"
                             value={subCategory.description}
                             onChange={(e) => handleSubCategoryChange(index, "description", e.target.value)}
+                            error={Boolean(errors[`subCategoryDescription_${index}`])}
+                            helperText={errors[`subCategoryDescription_${index}`]}
                         />
                         <TextField
                             label="Location"
@@ -257,6 +344,9 @@ const AddFoodAndBeverage = () => {
                             margin="dense"
                             value={subCategory.location}
                             onChange={(e) => handleSubCategoryChange(index, "location", e.target.value)}
+                            error={Boolean(errors[`location_${index}`])}
+                            helperText={errors[`location_${index}`]}
+
                         />
                         <TextField
                             label="Extansion No"
@@ -264,6 +354,8 @@ const AddFoodAndBeverage = () => {
                             margin="dense"
                             value={subCategory.extansion_no}
                             onChange={(e) => handleSubCategoryChange(index, "extansion_no", e.target.value)}
+                            error={Boolean(errors[`extansion_no_${index}`])}
+                            helperText={errors[`extansion_no_${index}`]}
                         />
                         <Typography variant="subtitle1" sx={{ mt: 2 }}>
                             Timings:
@@ -291,7 +383,8 @@ const AddFoodAndBeverage = () => {
                                 />
                                 {/* Row 1: Day Selectors */}
                                 <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-                                    <FormControl fullWidth>
+
+                                    <FormControl fullWidth error={Boolean(errors[`startDay_${index}_${timingIndex}`])}>
                                         <InputLabel>Start Day</InputLabel>
                                         <Select
                                             value={timing.startDay}
@@ -305,8 +398,11 @@ const AddFoodAndBeverage = () => {
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors[`startDay_${index}_${timingIndex}`] && (
+                                            <FormHelperText>{errors[`startDay_${index}_${timingIndex}`]}</FormHelperText>
+                                        )}
                                     </FormControl>
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={Boolean(errors[`endDay_${index}_${timingIndex}`])}>
                                         <InputLabel>End Day</InputLabel>
                                         <Select
                                             value={timing.endDay}
@@ -320,28 +416,20 @@ const AddFoodAndBeverage = () => {
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        {errors[`endDay_${index}_${timingIndex}`] && (
+                                            <FormHelperText>{errors[`endDay_${index}_${timingIndex}`]}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </Box>
 
-                                {/* Row 2: Time Selectors */}
-                                <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                                <Box sx={{ display: "flex", gap: 2 }}>
                                     <Box sx={{ flex: 1 }}>
-                                        <Typography
-                                            variant="subtitle2"
-                                            sx={{
-                                                fontSize: "14px",
-                                                color: "#333",
-                                                fontWeight: "bold",
-                                                mb: 1,
-                                            }}
-                                        >
+                                        <Typography variant="subtitle2" sx={{ fontSize: "14px", fontWeight: "bold", mb: 1 }}>
                                             Start Time
                                         </Typography>
                                         <TimePicker
                                             value={timing.startTime}
-                                            onChange={(value) =>
-                                                handleTimingChange(index, timingIndex, "startTime", value)
-                                            }
+                                            onChange={(value) => handleTimingChange(index, timingIndex, "startTime", value)}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
@@ -355,24 +443,17 @@ const AddFoodAndBeverage = () => {
                                                 />
                                             )}
                                         />
+                                        {errors[`startTime_${index}_${timingIndex}`] && (
+                                            <FormHelperText sx={{ color: 'red' }}>{errors[`startTime_${index}_${timingIndex}`]}</FormHelperText>
+                                        )}
                                     </Box>
                                     <Box sx={{ flex: 1 }}>
-                                        <Typography
-                                            variant="subtitle2"
-                                            sx={{
-                                                fontSize: "14px",
-                                                color: "#333",
-                                                fontWeight: "bold",
-                                                mb: 1,
-                                            }}
-                                        >
+                                        <Typography variant="subtitle2" sx={{ fontSize: "14px", fontWeight: "bold", mb: 1 }}>
                                             End Time
                                         </Typography>
                                         <TimePicker
                                             value={timing.endTime}
-                                            onChange={(value) =>
-                                                handleTimingChange(index, timingIndex, "endTime", value)
-                                            }
+                                            onChange={(value) => handleTimingChange(index, timingIndex, "endTime", value)}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
@@ -386,8 +467,12 @@ const AddFoodAndBeverage = () => {
                                                 />
                                             )}
                                         />
+                                        {errors[`endTime_${index}_${timingIndex}`] && (
+                                            <FormHelperText sx={{ color: 'red' }}>{errors[`endTime_${index}_${timingIndex}`]}</FormHelperText>
+                                        )}
                                     </Box>
                                 </Box>
+
 
                                 {/* Remove Timing Button */}
                                 <Box sx={{ textAlign: "right" }}>
@@ -405,25 +490,33 @@ const AddFoodAndBeverage = () => {
                             <Add /> Add Timing
                         </Button>
                         <Divider sx={{ my: 2 }} />
-                        <Button variant="contained" component="label" fullWidth sx={{ mt: 1 }}>
-                            Upload Images
+                        <UploadBox onClick={(e) => document.getElementById(`subCategoryImagesInput_${index}`).click()}>
                             <input
                                 type="file"
-                                accept="image/*"
-                                hidden
+                                id={`subCategoryImagesInput_${index}`}
                                 multiple
+                                style={{ display: "none" }}
                                 onChange={(e) => handleFileChange(e, index, "images")}
                             />
-                        </Button>
-                        <Button variant="contained" component="label" fullWidth sx={{ mt: 1 }}>
-                            Upload Menu
+                            <BiImageAdd size={30} />
+                            <Typography variant="body2">Click to upload images</Typography>
+                            {errors[`subCategoryImages_${index}`] && (
+                                <FormHelperText error>{errors[`subCategoryImages_${index}`]}</FormHelperText>
+                            )}
+                        </UploadBox>
+                        {/* Subcategory Menu */}
+                        <UploadBox onClick={(e) => document.getElementById(`subCategoryMenuInput_${index}`).click()}>
                             <input
                                 type="file"
-                                accept="application/pdf"
-                                hidden
+                                id={`subCategoryMenuInput_${index}`}
+                                style={{ display: "none" }}
                                 onChange={(e) => handleFileChange(e, index, "menu")}
                             />
-                        </Button>
+                            <Typography variant="body2">Click to upload menu</Typography>
+                            {errors[`subCategoryMenu_${index}`] && (
+                                <FormHelperText error>{errors[`subCategoryMenu_${index}`]}</FormHelperText>
+                            )}
+                        </UploadBox>
                         <Button
                             variant="outlined"
                             color="error"

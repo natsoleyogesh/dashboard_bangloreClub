@@ -73,6 +73,7 @@ const SingleFoodAndBeverage = () => {
 
     // Handle File Changes
     const handleFileChange = (e, index, field) => {
+        console.log(e.target.files, index, field, "field")
         const file = e.target.files[0];
         if (field === "bannerImage") {
             setSelectedBanner(file);
@@ -236,6 +237,15 @@ const SingleFoodAndBeverage = () => {
                                         </>
                                     ))}
                                 </Typography>
+                                <Box>
+                                    {subCategory.images.length > 0 && (
+                                        <>
+                                            {subCategory.images.map((image, index) => (
+                                                <img key={index} src={`${PUBLIC_API_URI}${image}`} alt={`Subcategory Image ${index + 1}`} height={150} width={150} />
+                                            ))}
+                                        </>
+                                    )}
+                                </Box>
                                 {subCategory.menu && (
                                     <Button
                                         variant="outlined"
@@ -306,12 +316,12 @@ const SingleFoodAndBeverage = () => {
                                 sx={{ mt: 2, textTransform: "none" }}
                                 fullWidth
                             >
-                                Upload Banner Image
+                                Upload New Banner Image
                                 <input
                                     type="file"
                                     hidden
                                     accept="image/*"
-                                    onChange={(e) => handleFileChange(e, "bannerImage")}
+                                    onChange={(e) => handleFileChange(e, undefined, "bannerImage")}
                                 />
                             </Button>
                         </Box>
@@ -550,7 +560,7 @@ const SingleFoodAndBeverage = () => {
                                         fullWidth
                                         sx={{ mt: 2 }}
                                     >
-                                        Upload Subcategory Image
+                                        Upload New Subcategory Image
                                         <input
                                             type="file"
                                             hidden
@@ -564,7 +574,7 @@ const SingleFoodAndBeverage = () => {
                                         fullWidth
                                         sx={{ mt: 2 }}
                                     >
-                                        Upload Menu File
+                                        Upload Newv Menu File
                                         <input
                                             type="file"
                                             hidden

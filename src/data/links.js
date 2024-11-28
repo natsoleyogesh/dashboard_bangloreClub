@@ -21,26 +21,13 @@ export const links = [
     url: "/",
   },
   {
-    name: "Members",
-    icon: <FiUsers />,
-    subLinks: [
-      {
-        name: "All Members",
-        url: "/customers",
-      },
-      {
-        name: "Add Member",
-        url: "/member/add",
-      },
-    ],
-  },
-  {
-    name: "Events",
+    name: "Club Events",
     icon: <MdEmojiEvents />,
     subLinks: [
       {
         name: "All Events",
         url: "/events",
+        icon: <MdEmojiEvents />,
       },
       {
         name: "Add Event",
@@ -62,6 +49,49 @@ export const links = [
       },
     ],
   },
+  // {
+  //   name: "Rooms",
+  //   icon: <MdBed />,
+  //   subLinks: [
+  //     {
+  //       name: "All Rooms",
+  //       url: "/rooms",
+  //     },
+  //     {
+  //       name: "Add Room",
+  //       url: "/room/add",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "Banquets",
+  //   icon: <MdEmojiEvents />,
+  //   subLinks: [
+  //     {
+  //       name: "All Banquets",
+  //       url: "/banquets",
+  //     },
+  //     {
+  //       name: "Add Banquets",
+  //       url: "/banquet/add",
+  //     },
+  //   ],
+  // },
+  {
+    name: "Club Members",
+    icon: <FiUsers />,
+    subLinks: [
+      {
+        name: "All Members",
+        url: "/customers",
+      },
+      {
+        name: "Add Member",
+        url: "/member/add",
+      },
+    ],
+  },
+
   {
     name: "Offers",
     icon: <LocalOffer />,
@@ -76,6 +106,96 @@ export const links = [
       },
     ],
   },
+  {
+    name: "Food & Beverages",
+    icon: <RestaurantMenu />, // Changed to a download-related icon
+    subLinks: [
+      {
+        name: "All Food & Beverages",
+        url: "/foodAndBeverages",
+      },
+      {
+        name: "Add Food & Beverages",
+        url: "/foodAndBeverage/add",
+      },
+    ],
+  },
+  {
+    name: "Club Notices",
+    icon: <NotificationsActive />, // Changed to a notifications-related icon
+    subLinks: [
+      {
+        name: "All Club Notice",
+        url: "/notices",
+      },
+      {
+        name: "Add Club Notice",
+        url: "/notice/add",
+      },
+    ],
+  },
+  // {
+  //   name: "Billing",
+  //   icon: <NotificationsActive />, // Changed to a notifications-related icon
+  //   subLinks: [
+  //     {
+  //       name: "All Bills",
+  //       url: "/bills",
+  //     },
+  //     {
+  //       name: "Add Bill",
+  //       url: "/bill/add",
+  //     },
+  //   ],
+  // },
+  {
+    name: "Consideration Of Membership's",
+    icon: <Group />, // Changed to a download-related icon
+    subLinks: [
+      {
+        name: "All COM's",
+        url: "/coms",
+      },
+      {
+        name: "Add COM",
+        url: "/com/add",
+      },
+    ],
+  },
+
+  {
+    name: "Club Rules & ByeLaws",
+    icon: <Gavel />, // Icon for rules and byelaws
+    subLinks: [
+      {
+        name: "All Club Rules",
+        url: "/rules",
+      },
+      {
+        name: "All Club ByeLaws",
+        url: "/byeLaws",
+      },
+      {
+        name: "Add Club Rule & ByeLaw",
+        url: "/ruleByeLaw/add",
+      },
+    ],
+  },
+  {
+    name: "General Committee",
+    icon: <Group />, // Changed to a notifications-related icon
+    subLinks: [
+      {
+        name: "All General Committee Member",
+        url: "/gcms",
+      },
+      {
+        name: "Add Committee Member",
+        url: "/gcm/add",
+      },
+    ],
+  },
+
   {
     name: "Club HOD's",
     icon: <School />, // Changed to a school-related icon
@@ -104,52 +224,7 @@ export const links = [
       },
     ],
   },
-  {
-    name: "Notices",
-    icon: <NotificationsActive />, // Changed to a notifications-related icon
-    subLinks: [
-      {
-        name: "All Club Notice",
-        url: "/notices",
-      },
-      {
-        name: "Add Club Notice",
-        url: "/notice/add",
-      },
-    ],
-  },
-  {
-    name: "General Committee",
-    icon: <Group />, // Changed to a notifications-related icon
-    subLinks: [
-      {
-        name: "All General Committee Member",
-        url: "/gcms",
-      },
-      {
-        name: "Add Committee Member",
-        url: "/gcm/add",
-      },
-    ],
-  },
-  {
-    name: "Club Rules & ByeLaws",
-    icon: <Gavel />, // Icon for rules and byelaws
-    subLinks: [
-      {
-        name: "All Club Rules",
-        url: "/rules",
-      },
-      {
-        name: "All Club ByeLaws",
-        url: "/byeLaws",
-      },
-      {
-        name: "Add Club Rule & ByeLaw",
-        url: "/ruleByeLaw/add",
-      },
-    ],
-  },
+
   {
     name: "FAQs",
     icon: <QuestionAnswer />, // Icon for FAQs
@@ -164,48 +239,6 @@ export const links = [
       },
     ],
   },
-  {
-    name: "Consideration Of Membership's",
-    icon: <Group />, // Changed to a download-related icon
-    subLinks: [
-      {
-        name: "All COM's",
-        url: "/coms",
-      },
-      {
-        name: "Add COM",
-        url: "/com/add",
-      },
-    ],
-  },
-  // {
-  //   name: "Food & Beverages",
-  //   icon: <RestaurantMenu />, // Changed to a download-related icon
-  //   subLinks: [
-  //     {
-  //       name: "All Food & Beverages",
-  //       url: "/foodAndBeverages",
-  //     },
-  //     {
-  //       name: "Add Food & Beverages",
-  //       url: "/foodAndBeverage/add",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "Rooms",
-  //   icon: <MdBed />,
-  //   subLinks: [
-  //     {
-  //       name: "All Rooms",
-  //       url: "/rooms",
-  //     },
-  //     {
-  //       name: "Add Room",
-  //       url: "/room/add",
-  //     },
-  //   ],
-  // },
 
   {
     name: "Settings",
