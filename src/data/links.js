@@ -14,6 +14,8 @@ import {
 } from "react-icons/fi";
 import { MdEmojiEvents, MdBed, MdCategory } from "react-icons/md";
 
+// import NoteIcon from "../note.svg"
+
 export const links = [
   {
     name: "Dashboard",
@@ -159,6 +161,21 @@ export const links = [
       {
         name: "Add COM",
         url: "/com/add",
+      },
+    ],
+  },
+
+  {
+    name: "MemberShip Waiting List",
+    icon: <Group />, // Changed to a download-related icon
+    subLinks: [
+      {
+        name: "All Application List",
+        url: "/applications",
+      },
+      {
+        name: "Add Member Application",
+        url: "/application/add",
       },
     ],
   },

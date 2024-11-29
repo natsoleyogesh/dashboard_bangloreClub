@@ -60,6 +60,9 @@ import AddCOM from "./pages/AddCOM";
 import FoodAndBeverages from "./pages/FoodAndBeverages";
 import SingleFoodAndBeverage from "./pages/SingleFoodAndBeverage";
 import AddFoodAndBeverage from "./pages/AddFoodAndBeverage";
+import AddMemberApplication from "./pages/AddMemberApplication";
+import MemberApplications from "./pages/MemberApplications";
+import SingleApplication from "./pages/SingleApplication";
 
 const sideBarWidth = 250;
 
@@ -511,6 +514,34 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+
+          {/*Member Waiting List Application Route */}
+          <Route
+            path="/applications"
+            element={
+              <ProtectedRoute>
+                <MemberApplications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/application/:id"
+            element={
+              <ProtectedRoute>
+                < SingleApplication />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/application/add"
+            element={
+              <ProtectedRoute>
+                <AddMemberApplication />
+              </ProtectedRoute>
+            }
+          />
+
 
 
           <Route

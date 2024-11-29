@@ -10,7 +10,7 @@ const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
       <Toolbar>
         <img src="/logo.png" alt="Logo" width="40" />
         <Typography variant="h6" sx={{ fontWeight: "bold", ml: 2 }}>
-          Banglore Club
+          Bangalore Club
         </Typography>
       </Toolbar>
       <Divider />
