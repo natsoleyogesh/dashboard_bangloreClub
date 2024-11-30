@@ -63,6 +63,8 @@ import AddFoodAndBeverage from "./pages/AddFoodAndBeverage";
 import AddMemberApplication from "./pages/AddMemberApplication";
 import MemberApplications from "./pages/MemberApplications";
 import SingleApplication from "./pages/SingleApplication";
+import Bookings from "./pages/eventBooking/Bookings";
+import SingleBooking from "./pages/eventBooking/SingleBooking";
 
 const sideBarWidth = 250;
 
@@ -541,6 +543,32 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/*Member Event Booking Route */}
+          <Route
+            path="/bookings"
+            element={
+              <ProtectedRoute>
+                <Bookings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/booking/:id"
+            element={
+              <ProtectedRoute>
+                < SingleBooking />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
+            path="/application/add"
+            element={
+              <ProtectedRoute>
+                <AddMemberApplication />
+              </ProtectedRoute>
+            }
+          /> */}
 
 
 

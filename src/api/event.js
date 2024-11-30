@@ -94,3 +94,54 @@ export const deleteEvent = async (eventId) => {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
     }
 };
+
+
+
+// Function to fetch all users
+export const fetchAllBookings = async () => {
+    try {
+        const response = await axiosInstance.get("/event/all-bookings");
+        return response; // Assuming the API returns user data in `response.data`
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+    }
+};
+
+// Function to fetch member details by ID
+export const fetchBookingDetails = async (id) => {
+    try {
+        // Make the GET request to fetch member details
+        const response = await axiosInstance.get(`/event/event-booking-details/${id}`);
+        // Return the member data from the response
+        return response;
+    } catch (error) {
+        console.error(`Error fetching member details for ID ${id}:`, error);
+        throw error; // Rethrow the error for handling in the calling function
+    }
+};
+
+
+// Delete Member API
+export const deleteBooking = async (bookingId) => {
+    try {
+        const response = await axios.delete(`${PUBLIC_API_URI}/event/booking-delete/${bookingId}`);
+        return response;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to delete member.');
+    }
+};
+
+
+export const updateBookingDetails = async (bookingId, formData) => {
+    try {
+        const response = await axios.put(
+            `${PUBLIC_API_URI}/event/booking-status/${bookingId}`,
+            formData,
+        );
+        return response;
+    } catch (error) {
+        console.error("API Error:", error);
+        throw error;
+    }
+};

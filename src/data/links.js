@@ -35,6 +35,10 @@ export const links = [
         name: "Add Event",
         url: "/events/add",
       },
+      {
+        name: "Event Bookings",
+        url: "bookings",
+      },
     ],
   },
   {
