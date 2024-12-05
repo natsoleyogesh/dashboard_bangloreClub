@@ -18,6 +18,7 @@ import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
 import { addRuleByeLaw } from "../api/ruleByelaws";
 import { Description, Category, Gavel } from "@mui/icons-material";
+import ReactQuill from "react-quill";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -57,6 +58,10 @@ const AddRuleByeLaw = () => {
         const { name, value } = e.target;
         setRuleByeLawData((prev) => ({ ...prev, [name]: value }));
         validateField(name, value);
+    };
+
+    const handleDescriptionChange = (value) => {
+        setRuleByeLawData({ ...ruleByeLawData, description: value });
     };
 
     // Validation logic for individual fields
@@ -164,7 +169,7 @@ const AddRuleByeLaw = () => {
                 {/* Description */}
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Description</InputLabel>
-                    <TextField
+                    {/* <TextField
                         placeholder="Enter description"
                         fullWidth
                         multiline
@@ -172,6 +177,17 @@ const AddRuleByeLaw = () => {
                         name="description"
                         value={ruleByeLawData.description}
                         onChange={handleInputChange}
+                    /> */}
+                    <ReactQuill
+                        value={ruleByeLawData.description}
+                        onChange={handleDescriptionChange}
+                        placeholder="Enter description"
+                        style={{
+                            height: "150px",
+                            // border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginBottom: "100px"
+                        }}
                     />
                 </Box>
 

@@ -18,6 +18,7 @@ import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import { fetchNoticeDetails, updateNoticeetails } from "../api/clubNotice";
+import ReactQuill from "react-quill";
 
 const SingleNotice = () => {
     const { id } = useParams();
@@ -144,7 +145,7 @@ const SingleNotice = () => {
             >
                 <Grid container spacing={4}>
                     {/* Notice File Preview */}
-                    <Grid item xs={12} md={5}>
+                    {/* <Grid item xs={12} md={5}>
                         {notice.fileUrl && (
                             <Button
                                 variant="contained"
@@ -156,13 +157,17 @@ const SingleNotice = () => {
                                 {notice.fileUrl.endsWith(".pdf") ? "View PDF" : "View Image"}
                             </Button>
                         )}
-                    </Grid>
+                    </Grid> */}
 
                     {/* Notice Details */}
                     <Grid item xs={12} md={7}>
                         <Typography variant="h5">{notice.title || "N/A"}</Typography>
                         <Typography variant="body1">
-                            <strong>Description:</strong> {notice.description || "N/A"}
+                            <strong>Description:</strong>
+                            <div
+                                dangerouslySetInnerHTML={{ __html: notice.description || "N/A" }}
+                            // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                            />
                         </Typography>
                         <Typography variant="body1">
                             <strong>Status:</strong> {notice.status || "N/A"}
@@ -170,6 +175,19 @@ const SingleNotice = () => {
                         <Typography variant="body1">
                             <strong>Expiration Date:</strong>{" "}
                             {notice.expiredDate ? formatDate(notice.expiredDate) : "N/A"}
+                        </Typography>
+                        <Typography variant="body1">
+                            {notice.fileUrl && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+
+                                    href={`${PUBLIC_API_URI}${notice.fileUrl}`}
+                                    target="_blank"
+                                >
+                                    {notice.fileUrl.endsWith(".pdf") ? "View PDF" : "View Image"}
+                                </Button>
+                            )}
                         </Typography>
                         <Button
                             variant="contained"
@@ -201,7 +219,7 @@ const SingleNotice = () => {
                         value={editNotice.title || ""}
                         onChange={handleInputChange}
                     />
-                    <TextField
+                    {/* <TextField
                         label="Description"
                         fullWidth
                         margin="dense"
@@ -210,6 +228,11 @@ const SingleNotice = () => {
                         rows={3}
                         value={editNotice.description || ""}
                         onChange={handleInputChange}
+                    /> */}
+                    <ReactQuill
+                        value={editNotice.description || ""}
+                        onChange={(value) => setEditNotice({ ...editNotice, description: value })}
+                        style={{ height: "150px", marginBottom: "100px" }}
                     />
                     <TextField
                         label="Expiration Date"

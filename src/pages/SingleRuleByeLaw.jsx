@@ -91,7 +91,11 @@ const SingleRuleByeLaw = () => {
                     <Grid item xs={12} md={7}>
                         <Typography variant="h5">{ruleByeLaw.title || "N/A"}</Typography>
                         <Typography variant="body1">
-                            <strong>Description:</strong> {ruleByeLaw.description || "N/A"}
+                            <strong>Description:</strong>
+                            <div
+                                dangerouslySetInnerHTML={{ __html: ruleByeLaw.description || "N/A" }}
+                            // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                            />
                         </Typography>
                         <Typography variant="body1">
                             <strong>Type:</strong> {ruleByeLaw.type || "N/A"}

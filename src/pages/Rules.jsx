@@ -22,7 +22,17 @@ const Rules = () => {
     // Columns for the table
     const columns = [
         { accessorKey: "title", header: "Rule Title" },
-        { accessorKey: "description", header: "Description" },
+        // { accessorKey: "description", header: "Description" },
+        {
+            accessorKey: "description", // normal accessorKey
+            header: "Description",
+            Cell: ({ row }) => (
+                <div
+                    dangerouslySetInnerHTML={{ __html: row.original.description }}
+                    style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                />
+            ),
+        },
         { accessorKey: "type", header: "Type" },
         { accessorKey: "category", header: "Category" },
         { accessorKey: "status", header: "Status" },

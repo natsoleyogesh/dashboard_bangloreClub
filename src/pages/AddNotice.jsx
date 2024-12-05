@@ -17,6 +17,7 @@ import { DateRange, Description, CloudUpload } from "@mui/icons-material";
 import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
 import { addNotice } from "../api/clubNotice";
+import ReactQuill from "react-quill";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -55,6 +56,10 @@ const AddNotice = () => {
         const { name, value } = e.target;
         setNoticeData((prev) => ({ ...prev, [name]: value }));
         validateField(name, value);
+    };
+
+    const handleDescriptionChange = (value) => {
+        setNoticeData({ ...noticeData, description: value });
     };
 
     // Handle file upload change
@@ -182,7 +187,7 @@ const AddNotice = () => {
                 {/* Description */}
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Description</InputLabel>
-                    <TextField
+                    {/* <TextField
                         placeholder="Enter description"
                         fullWidth
                         multiline
@@ -190,6 +195,17 @@ const AddNotice = () => {
                         name="description"
                         value={noticeData.description}
                         onChange={handleInputChange}
+                    /> */}
+                    <ReactQuill
+                        value={noticeData.description}
+                        onChange={handleDescriptionChange}
+                        placeholder="Enter description"
+                        style={{
+                            height: "150px",
+                            // border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginBottom: "100px"
+                        }}
                     />
                 </Box>
 

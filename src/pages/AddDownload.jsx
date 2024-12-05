@@ -18,6 +18,7 @@ import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
 import { addDownload } from "../api/download";
 import { Description, DateRange, CloudUpload } from "@mui/icons-material";
+import ReactQuill from "react-quill";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -56,6 +57,10 @@ const AddDownload = () => {
         const { name, value } = e.target;
         setDownloadData((prev) => ({ ...prev, [name]: value }));
         validateField(name, value);
+    };
+
+    const handleDescriptionChange = (value) => {
+        setDownloadData({ ...downloadData, description: value });
     };
 
     // Handle file upload change
@@ -184,7 +189,7 @@ const AddDownload = () => {
                 {/* Description */}
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Description</InputLabel>
-                    <TextField
+                    {/* <TextField
                         placeholder="Enter description"
                         fullWidth
                         multiline
@@ -192,6 +197,17 @@ const AddDownload = () => {
                         name="description"
                         value={downloadData.description}
                         onChange={handleInputChange}
+                    /> */}
+                    <ReactQuill
+                        value={downloadData.description}
+                        onChange={handleDescriptionChange}
+                        placeholder="Enter Descriptoin"
+                        style={{
+                            height: "150px",
+                            // border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginBottom: "100px"
+                        }}
                     />
                 </Box>
 

@@ -10,6 +10,7 @@ import {
     FormControl,
     FormControlLabel,
     Grid,
+    InputLabel,
     MenuItem,
     Paper,
     Select,
@@ -22,6 +23,7 @@ import { fetchOfferDetails, updateEventDetails, updateOfferDetails } from "../ap
 import { formatDate, PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+import ReactQuill from "react-quill";
 
 
 const departmentOptions = ["Recharge", "Purchase", "Subscription", "Entertainment", "Other"];
@@ -165,7 +167,11 @@ const SingleOffer = () => {
                             <strong>End Date:</strong> {formatDate(offer.endDate)}
                         </Typography>
                         <Typography variant="body1">
-                            <strong>Description:</strong> {offer.description || "N/A"}
+                            <strong>Description:</strong>
+                            <div
+                                dangerouslySetInnerHTML={{ __html: offer.description || "N/A" }}
+                            // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                            />
                         </Typography>
                         <Typography variant="body1">
                             <strong>Coupon Code:</strong> {offer.couponCode || "N/A"}
@@ -246,7 +252,7 @@ const SingleOffer = () => {
                         value={editOffer.couponCode || ""}
                         onChange={handleInputChange}
                     />
-                    <TextField
+                    {/* <TextField
                         label="Description"
                         fullWidth
                         margin="dense"
@@ -255,7 +261,15 @@ const SingleOffer = () => {
                         rows={4}
                         value={editOffer.description || ""}
                         onChange={handleInputChange}
+                    /> */}
+                    {/* Use ReactQuill for About Event */}
+                    <InputLabel sx={{ fontWeight: "bold", mt: 2 }}>Description</InputLabel>
+                    <ReactQuill
+                        value={editOffer.description || ""}
+                        onChange={(value) => setEditOffer({ ...editOffer, description: value })}
+                        style={{ height: "150px", marginBottom: "100px" }}
                     />
+
                     <TextField
                         label="Status"
                         select

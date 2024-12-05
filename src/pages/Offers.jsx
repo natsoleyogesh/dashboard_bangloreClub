@@ -59,9 +59,19 @@ const Offers = () => {
             accessorKey: "title", //access nested data with dot notation
             header: "Offer Title",
         },
+        // {
+        //     accessorKey: "description", //access nested data with dot notation
+        //     header: "Offer Description",
+        // },
         {
-            accessorKey: "description", //access nested data with dot notation
-            header: "Offer Description",
+            accessorKey: "description", // normal accessorKey
+            header: "Description",
+            Cell: ({ row }) => (
+                <div
+                    dangerouslySetInnerHTML={{ __html: row.original.description }}
+                    style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                />
+            ),
         },
         {
             accessorKey: "startDate",

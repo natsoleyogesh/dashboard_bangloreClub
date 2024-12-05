@@ -19,6 +19,7 @@ import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
 import { addOffer } from "../api/offer";
 import { CalendarToday, Description, Category, Code, CurrencyRupee, Event, Info, Percent } from "@mui/icons-material";
+import ReactQuill from "react-quill";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -68,6 +69,14 @@ const AddOffer = () => {
         const { name, value } = e.target;
         setOfferData((prev) => ({ ...prev, [name]: value }));
         validateField(name, value);
+    };
+
+    const handleTermChange = (value) => {
+        setOfferData({ ...offerData, termsAndConditions: value });
+    };
+
+    const handleDescriptionChange = (value) => {
+        setOfferData({ ...offerData, description: value });
     };
 
     // Handle checkbox changes for showExclusive
@@ -194,7 +203,7 @@ const AddOffer = () => {
                 {/* Description */}
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Description</InputLabel>
-                    <TextField
+                    {/* <TextField
                         placeholder="Describe the offer"
                         fullWidth
                         multiline
@@ -204,6 +213,17 @@ const AddOffer = () => {
                         onChange={handleInputChange}
                         InputProps={{
                             startAdornment: <Description sx={{ color: "gray", mr: 1 }} />,
+                        }}
+                    /> */}
+                    <ReactQuill
+                        value={offerData.description}
+                        onChange={handleDescriptionChange}
+                        placeholder="Describe the offer"
+                        style={{
+                            height: "100px",
+                            // border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginBottom: "100px"
                         }}
                     />
                 </Box>
@@ -366,7 +386,7 @@ const AddOffer = () => {
                 {/* Terms and Conditions */}
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Terms and Conditions</InputLabel>
-                    <TextField
+                    {/* <TextField
                         placeholder="Enter terms and conditions"
                         fullWidth
                         multiline
@@ -376,6 +396,17 @@ const AddOffer = () => {
                         onChange={handleInputChange}
                         InputProps={{
                             startAdornment: <Info sx={{ color: "gray", mr: 1 }} />,
+                        }}
+                    /> */}
+                    <ReactQuill
+                        value={offerData.termsAndConditions}
+                        onChange={handleTermChange}
+                        placeholder="Enter terms and conditions"
+                        style={{
+                            height: "150px",
+                            // border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginBottom: "100px"
                         }}
                     />
                 </Box>

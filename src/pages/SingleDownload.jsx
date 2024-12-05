@@ -17,6 +17,7 @@ import { fetchDownloadDetails, updateDownloadDetails } from "../api/download";
 import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+import ReactQuill from "react-quill";
 
 const SingleDownload = () => {
     const { id } = useParams();
@@ -137,7 +138,11 @@ const SingleDownload = () => {
                     <Grid item xs={12} md={7}>
                         <Typography variant="h5">{download.title || "N/A"}</Typography>
                         <Typography variant="body1">
-                            <strong>Description:</strong> {download.description || "N/A"}
+                            <strong>Description:</strong>
+                            <div
+                                dangerouslySetInnerHTML={{ __html: download.description || "N/A" }}
+                                // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                            />
                         </Typography>
                         <Typography variant="body1">
                             <strong>Status:</strong> {download.status || "N/A"}
@@ -178,7 +183,7 @@ const SingleDownload = () => {
                         value={editDownload.title || ""}
                         onChange={handleInputChange}
                     />
-                    <TextField
+                    {/* <TextField
                         label="Description"
                         fullWidth
                         margin="dense"
@@ -187,6 +192,11 @@ const SingleDownload = () => {
                         rows={3}
                         value={editDownload.description || ""}
                         onChange={handleInputChange}
+                    /> */}
+                    <ReactQuill
+                        value={editDownload.description || ""}
+                        onChange={(value) => setEditDownload({ ...editDownload, description: value })}
+                        style={{ height: "150px", marginBottom: "100px" }}
                     />
                     <TextField
                         label="Expiration Date"
