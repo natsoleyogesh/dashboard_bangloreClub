@@ -39,12 +39,7 @@ export const updateGCMDetails = async (gcmId, formData) => {
     try {
         const response = await axios.put(
             `${PUBLIC_API_URI}/gcm/update-gcm/${gcmId}`,
-            formData,
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            }
+            formData
         );
         return response;
     } catch (error) {
@@ -55,11 +50,7 @@ export const updateGCMDetails = async (gcmId, formData) => {
 
 export const addGCM = async (formData) => {
     try {
-        const response = await axios.post(`${PUBLIC_API_URI}/gcm/create`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+        const response = await axios.post(`${PUBLIC_API_URI}/gcm/create`, formData);
         return response;
     } catch (error) {
         console.error("API Error:", error);

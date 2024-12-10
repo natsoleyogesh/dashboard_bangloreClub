@@ -9,7 +9,7 @@ import Table from "../Table";
 const TransactionCustomer = () => {
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={6} lg={4}>
+      {/* <Grid item xs={12} md={6} lg={4}>
         <Paper
           sx={{
             boxShadow: "none !important",
@@ -75,7 +75,7 @@ const TransactionCustomer = () => {
             </Link>
           </Typography>
         </Paper>
-      </Grid>
+      </Grid> */}
       <Grid item xs={12} md={6} lg={8}>
         <Box
           sx={{

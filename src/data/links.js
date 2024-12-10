@@ -22,6 +22,34 @@ export const links = [
     icon: <FiHome />,
     url: "/",
   },
+  // MASTER DATA 
+  {
+    name: "Master Datas",
+    icon: <MdEmojiEvents />,
+    subLinks: [
+      {
+        name: "Members Master Data",
+        url: "/customers",
+        icon: <MdEmojiEvents />,
+      },
+      {
+        name: "Departments Master Data",
+        url: "/events/add",
+      },
+      {
+        name: "Restaurants Master Data",
+        url: "bookings",
+      },
+      {
+        name: "Amenities Master Data",
+        url: "bookings",
+      },
+      {
+        name: "Tax Types Master Data",
+        url: "bookings",
+      },
+    ],
+  },
   {
     name: "Club Events",
     icon: <MdEmojiEvents />,

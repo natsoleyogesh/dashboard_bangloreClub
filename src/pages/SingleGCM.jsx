@@ -394,19 +394,23 @@ const SingleGCM = () => {
 
     // Fetch GCM details by ID
     useEffect(() => {
-        const getGCMById = async (gcmId) => {
-            try {
-                const response = await fetchGCMDetails(gcmId);
-                setGcm(response.data.gcm);
-                setEditGcm(response.data.gcm);
-            } catch (error) {
-                console.error("Failed to fetch GCM details:", error);
-                showToast("Failed to fetch GCM details. Please try again.", "error");
-            }
-        };
 
         getGCMById(id);
     }, [id]);
+
+    const getGCMById = async (gcmId) => {
+        try {
+            const response = await fetchGCMDetails(gcmId);
+            setGcm(response.data.gcm);
+            setEditGcm(response.data.gcm);
+        } catch (error) {
+            console.error("Failed to fetch GCM details:", error);
+            showToast("Failed to fetch GCM details. Please try again.", "error");
+        }
+    };
+
+
+    // console.log(gcm, "gcm")
 
     // Handle input changes
     const handleInputChange = (e) => {
@@ -471,22 +475,31 @@ const SingleGCM = () => {
     // Save changes to the GCM
     const handleSaveChanges = async () => {
         try {
-            const formData = new FormData();
-            Object.entries(editGcm).forEach(([key, value]) => {
-                if (key === "categories") {
-                    formData.append(key, JSON.stringify(value));
-                } else if (value !== null && value !== undefined) {
-                    formData.append(key, value);
-                }
-            });
+            // const formData = new FormData();
+            // Object.entries(editGcm).forEach(([key, value]) => {
+            //     if (key === "categories") {
+            //         formData.append(key, JSON.stringify(value));
+            //     } else if (value !== null && value !== undefined) {
+            //         formData.append(key, value);
+            //     }
+            // });
 
-            if (selectedFile) {
-                formData.append("profileImage", selectedFile);
-            }
+            // if (selectedFile) {
+            //     formData.append("profileImage", selectedFile);
+            // }
 
-            const response = await updateGCMDetails(id, formData);
+            const requestBody = {
+                // name: editGcm.name,
+                designation: editGcm.designation,
+                // contactNumber: editGcm.contactNumber,
+                status: editGcm.status,
+                categories: editGcm.categories,
+            };
+
+            const response = await updateGCMDetails(id, requestBody);
             if (response.status === 200 && response.data.gcm) {
-                setGcm(response.data.gcm);
+                // setGcm(response.data.gcm);
+                getGCMById(id);
                 setEditGcm(response.data.gcm);
                 setEditDialogOpen(false);
                 showToast("GCM details updated successfully!", "success");
@@ -584,7 +597,7 @@ const SingleGCM = () => {
                         margin="dense"
                         name="name"
                         value={editGcm.name || ""}
-                        onChange={handleInputChange}
+                    // onChange={handleInputChange}
                     />
                     <TextField
                         label="Designation"
@@ -600,7 +613,7 @@ const SingleGCM = () => {
                         margin="dense"
                         name="contactNumber"
                         value={editGcm.contactNumber || ""}
-                        onChange={handleInputChange}
+                    // onChange={handleInputChange}
                     />
                     <FormControl fullWidth margin="dense">
                         <InputLabel>Status</InputLabel>
@@ -669,10 +682,10 @@ const SingleGCM = () => {
                         </Box>
                     ))}
                     <Button onClick={addCategory}>Add Category</Button>
-                    <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }}>
+                    {/* <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }}>
                         Upload New Profile Image
                         <input type="file" accept="image/*" hidden onChange={handleFileChange} />
-                    </Button>
+                    </Button> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="secondary">
