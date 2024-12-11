@@ -40,7 +40,17 @@ const FoodAndBeverages = () => {
             ),
         },
         { accessorKey: "name", header: "Category Name" },
-        { accessorKey: "description", header: "Description" },
+        // { accessorKey: "description", header: "Description" },
+        {
+            accessorKey: "description", // normal accessorKey
+            header: "Description",
+            Cell: ({ row }) => (
+                <div
+                    dangerouslySetInnerHTML={{ __html: row.original.description }}
+                    style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                />
+            ),
+        },
         {
             accessorKey: "status",
             header: "Status",

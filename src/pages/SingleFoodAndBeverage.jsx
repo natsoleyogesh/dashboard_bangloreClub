@@ -54,6 +54,7 @@ const SingleFoodAndBeverage = () => {
         const getFoodAndBeverageById = async (categoryId) => {
             try {
                 const response = await fetchFoodAndBeverageDetails(categoryId);
+                console.log(response.data.foodAndBeverage.timings, response.data.foodAndBeverage.timings.length, "yttidfiudjkfh")
                 setFoodAndBeverage(response.data.foodAndBeverage);
                 setEditData(response.data.foodAndBeverage);
             } catch (error) {
@@ -63,7 +64,7 @@ const SingleFoodAndBeverage = () => {
         };
 
         getFoodAndBeverageById(id);
-    }, [id]);
+    }, []);
 
     // Handle Input Changes
     const handleInputChange = (e) => {
@@ -191,6 +192,9 @@ const SingleFoodAndBeverage = () => {
         }
     };
 
+    // console.log(foodAndBeverage.timings, foodAndBeverage.timings.length, "external")
+
+
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
             <Typography variant="h4" sx={{ mb: 2, textAlign: "center" }}>
@@ -206,12 +210,42 @@ const SingleFoodAndBeverage = () => {
                 />
                 <CardContent>
                     <Typography variant="h5">{foodAndBeverage.name || "N/A"}</Typography>
+                    <Typography variant="body1">
+                        <strong>Description:</strong>
+                        <div
+                            dangerouslySetInnerHTML={{ __html: foodAndBeverage.description || "N/A" }}
+                        // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                        />
+                    </Typography>
                     <Typography variant="body2" sx={{ mt: 1 }}>
-                        {foodAndBeverage.description || "N/A"}
+                        <strong>Location:</strong> {foodAndBeverage.location || "N/A"}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                        <strong>Extatiopn No:</strong> {foodAndBeverage.extansion_no || "N/A"}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                        <strong>Timings:</strong>
+                        {foodAndBeverage.timings?.map((timing, i) => (
+                            <div key={i}>
+                                <div>{timing.title}</div>
+                                <div>{timing.startDay} - {timing.endDay}, {timing.startTime} - {timing.endTime}</div>
+                            </div>
+                        ))}
                     </Typography>
                     <Typography variant="body2" sx={{ mt: 1 }}>
                         <strong>Status:</strong> {foodAndBeverage.status || "N/A"}
                     </Typography>
+                    {foodAndBeverage.mainmenu && (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            href={`${PUBLIC_API_URI}${foodAndBeverage.mainmenu}`}
+                            target="_blank"
+                            sx={{ mt: 2 }}
+                        >
+                            View Menu
+                        </Button>
+                    )}
                 </CardContent>
 
                 <Divider />
@@ -221,7 +255,11 @@ const SingleFoodAndBeverage = () => {
                         <Grid item xs={12} md={6} key={index}>
                             <Paper sx={{ p: 2, borderRadius: "8px" }}>
                                 <Typography variant="h6">{subCategory.name}</Typography>
-                                <Typography>{subCategory.description}</Typography>
+                                {/* <Typography>{subCategory.description}</Typography> */}
+                                <div
+                                    dangerouslySetInnerHTML={{ __html: subCategory.description || "N/A" }}
+                                // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                                />
                                 <Typography>{subCategory.location}</Typography>
                                 <Typography>{subCategory.extansion_no}</Typography>
                                 <Typography variant="body2" sx={{ mt: 1 }}>

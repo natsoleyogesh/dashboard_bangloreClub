@@ -65,6 +65,18 @@ import MemberApplications from "./pages/MemberApplications";
 import SingleApplication from "./pages/SingleApplication";
 import Bookings from "./pages/eventBooking/Bookings";
 import SingleBooking from "./pages/eventBooking/SingleBooking";
+import Departments from "./pages/masterData/Department/Departments";
+import SingleDepartment from "./pages/masterData/Department/SingleDepartment";
+import AddDepartment from "./pages/masterData/Department/AddDepartment";
+import Restaurants from "./pages/masterData/Restaurant/Restaurant";
+import SingleRestaurant from "./pages/masterData/Restaurant/SingleRestaurant";
+import AddRestaurant from "./pages/masterData/Restaurant/AddRestaurant";
+import TaxTypes from "./pages/masterData/TaxType/TaxTypes";
+import SingleTaxType from "./pages/masterData/TaxType/SingleTaxType";
+import AddTaxType from "./pages/masterData/TaxType/AddTaxType";
+import Amenities from "./pages/masterData/Amenitie/Amenities";
+import SingleAmenitie from "./pages/masterData/Amenitie/SingleAmenities";
+import AddAmenitie from "./pages/masterData/Amenitie/AddAmenitie";
 
 const sideBarWidth = 250;
 
@@ -569,8 +581,110 @@ function App() {
               </ProtectedRoute>
             }
           /> */}
+          {/* MAster DATA ROUTES */}
+          {/* department routes */}
+          <Route
+            path="/departments"
+            element={
+              <ProtectedRoute>
+                <Departments />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/department/:id"
+            element={
+              <ProtectedRoute>
+                < SingleDepartment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/department/add"
+            element={
+              <ProtectedRoute>
+                <AddDepartment />
+              </ProtectedRoute>
+            }
+          />
 
+          {/* RESTAURANT routes */}
+          <Route
+            path="/restaurants"
+            element={
+              <ProtectedRoute>
+                <Restaurants />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurant/:id"
+            element={
+              <ProtectedRoute>
+                < SingleRestaurant />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurant/add"
+            element={
+              <ProtectedRoute>
+                <AddRestaurant />
+              </ProtectedRoute>
+            }
+          />
 
+          {/* TAXTYPE routes */}
+          <Route
+            path="/taxTypes"
+            element={
+              <ProtectedRoute>
+                <TaxTypes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/taxType/:id"
+            element={
+              <ProtectedRoute>
+                < SingleTaxType />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/taxType/add"
+            element={
+              <ProtectedRoute>
+                <AddTaxType />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Amenitie routes */}
+          <Route
+            path="/amenities"
+            element={
+              <ProtectedRoute>
+                <Amenities />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/amenitie/:id"
+            element={
+              <ProtectedRoute>
+                < SingleAmenitie />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/amenitie/add"
+            element={
+              <ProtectedRoute>
+                <AddAmenitie />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/settings"

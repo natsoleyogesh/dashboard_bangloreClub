@@ -34,19 +34,19 @@ export const links = [
       },
       {
         name: "Departments Master Data",
-        url: "/events/add",
+        url: "/departments",
       },
       {
         name: "Restaurants Master Data",
-        url: "bookings",
+        url: "/restaurants",
       },
       {
         name: "Amenities Master Data",
-        url: "bookings",
+        url: "/amenities",
       },
       {
         name: "Tax Types Master Data",
-        url: "bookings",
+        url: "/taxTypes",
       },
     ],
   },

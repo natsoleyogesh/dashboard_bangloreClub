@@ -258,9 +258,11 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    FormControl,
     Grid,
     MenuItem,
     Paper,
+    Select,
     TextField,
     Typography,
 } from "@mui/material";
@@ -270,6 +272,7 @@ import { fetchHodDetails, updateHodDetails } from "../api/clubhods";
 import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+import { fetchAllActiveDepartments } from "../api/member";
 
 const SingleHod = () => {
     const { id } = useParams();
@@ -277,6 +280,8 @@ const SingleHod = () => {
     const [isEditDialogOpen, setEditDialogOpen] = useState(false);
     const [editHod, setEditHod] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
+    const [activeDepartments, setActiveDepartments] = useState([]);
+
 
     // Fetch HOD details by ID
     useEffect(() => {
@@ -293,6 +298,25 @@ const SingleHod = () => {
 
         getHodById(id);
     }, [id]);
+
+    useEffect(() => {
+        getActiveDepartments()
+    }, [id])
+
+    const getActiveDepartments = async () => {
+        try {
+            const department = await fetchAllActiveDepartments();
+            console.log(department, "hh")
+            setActiveDepartments(department.data.activeDepartments);
+
+        } catch (error) {
+            console.error("Failed to fetch members :", error);
+            showToast("Failed to fetch Members. Please try again.", "error");
+        }
+    };
+
+
+
 
     // Handle input changes
     const handleInputChange = (e) => {
@@ -436,7 +460,15 @@ const SingleHod = () => {
                         margin="dense"
                         name="name"
                         value={editHod.name || ""}
-                        onChange={handleInputChange}
+                    // onChange={handleInputChange}
+                    />
+                    <TextField
+                        label="Contact Number"
+                        fullWidth
+                        margin="dense"
+                        name="contactNumber"
+                        value={editHod.contactNumber || ""}
+                    // onChange={handleInputChange}
                     />
                     <TextField
                         label="Designation"
@@ -446,22 +478,33 @@ const SingleHod = () => {
                         value={editHod.designation || ""}
                         onChange={handleInputChange}
                     />
-                    <TextField
+                    {/* <TextField
                         label="Department"
                         fullWidth
                         margin="dense"
                         name="department"
                         value={editHod.department || ""}
                         onChange={handleInputChange}
-                    />
-                    <TextField
-                        label="Contact Number"
-                        fullWidth
-                        margin="dense"
-                        name="contactNumber"
-                        value={editHod.contactNumber || ""}
-                        onChange={handleInputChange}
-                    />
+                    /> */}
+
+                    <FormControl fullWidth >
+                        <Select
+                            name="departmentId"
+                            value={editHod.departmentId}
+                            onChange={handleInputChange}
+                            displayEmpty
+                        >
+                            <MenuItem value="" disabled>
+                                Select department
+                            </MenuItem>
+                            {activeDepartments.map((option) => (
+                                <MenuItem key={option._id} value={option._id}>
+                                    {option.departmentName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+
+                    </FormControl>
                     <TextField
                         label="Status"
                         select
@@ -475,7 +518,7 @@ const SingleHod = () => {
                         <MenuItem value="Inactive">Inactive</MenuItem>
                     </TextField>
 
-                    <Avatar
+                    {/* <Avatar
                         src={
                             selectedImage
                                 ? URL.createObjectURL(selectedImage)
@@ -493,7 +536,7 @@ const SingleHod = () => {
                     <Button variant="contained" component="label" fullWidth>
                         Upload New Image
                         <input type="file" hidden onChange={handleImageChange} />
-                    </Button>
+                    </Button> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="secondary">
