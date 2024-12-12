@@ -816,9 +816,9 @@ const SingleRoom = () => {
                             </>
                         )}
 
-                        <Button variant="contained" onClick={handleEditRoom} sx={{ mt: 2 }}>
+                        {/* <Button variant="contained" onClick={handleEditRoom} sx={{ mt: 2 }}>
                             Edit Room
-                        </Button>
+                        </Button> */}
                     </Grid>
                 </Grid>
             </Paper>

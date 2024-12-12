@@ -42,18 +42,20 @@ import ReactQuill from "react-quill";
 // import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 const guestTypeOptions = [
-    'Club Member',
-    'Club Member (Self Stay)',
+    'Member',
+    'Member Spouse & Children',
     'Corporate Member',
-    'Guest of Member (Indian)',
-    'Affiliated Club Member (Indian)',
-    'Nominees of Corporate Member',
-    'Affiliated Foreign Club',
+    'Guest of Member',
+    'Affiliated Club Member',
+    'Nominee of Corporate Member',
+    'Affiliated Foreign Club Member',
     'Foreign Guest',
 ];
 
 const bedTypeOptions = ['Single', 'Double', 'Queen', 'King', 'Twin', 'Sofa Bed'];
 const statusOptions = ['Active', 'Inactive',];
+const roomStatusOptions = ['Available', 'Booked', 'Under Maintenance'];
+
 
 const AddRoom = () => {
     // const [roomData, setRoomData] = useState({
@@ -84,9 +86,8 @@ const AddRoom = () => {
         bedType: '',
         features: { smokingAllowed: false, petFriendly: false, accessible: false },
         status: 'Active',
-        roomDetails: [{ roomNumber: '', status: '' }],
-        totalAvailableRoom: '',
-        images: [],
+        roomDetails: [{ roomNumber: '', status: "Available" }],
+        totalAvailableRoom: 1,
         taxTypes: [],
         checkInTime: '',
         checkOutTime: '',
@@ -147,8 +148,23 @@ const AddRoom = () => {
         setErrors({ ...errors, [name]: "" }); // Clear error on change
     };
 
+    const handlePriceInputChange = (event) => {
+        const { name, value } = event.target;
+
+        // Update minPrice or maxPrice based on the field name
+        setRoomData((prevData) => ({
+            ...prevData,
+            priceRange: {
+                ...prevData.priceRange,
+                [name]: value,
+            },
+        }));
+    };
+    // Handle input changes for both check-in and check-out times
+
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
+        console.log(files)
         setImages((prevImages) => [...prevImages, ...files]);
     };
 
@@ -318,7 +334,7 @@ const AddRoom = () => {
         } else if (isNaN(roomData.extraBedPrice) || Number(roomData.extraBedPrice) < 0) {
             newErrors.extraBedPrice = "Extra bed price must be a valid positive number.";
         }
-
+        console.log(newErrors, "newErr---------------")
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -327,67 +343,136 @@ const AddRoom = () => {
         if (!validateForm()) return; // Prevent submission if validation fails
 
         setLoading(true);
+
         try {
             const formData = new FormData();
 
             // Add basic room data to formData
-            Object.entries(roomData).forEach(([key, value]) => {
-                if (key === "pricingDetails") {
-                    // Handle nested pricingDetails array
-                    value.forEach((detail, index) => {
-                        formData.append(`pricingDetails[${index}][guestType]`, detail.guestType);
-                        formData.append(`pricingDetails[${index}][price]`, detail.price);
-                        formData.append(`pricingDetails[${index}][description]`, detail.description || "");
-                    });
-                } else if (key === "amenities") {
-                    // Handle amenities array
-                    value.forEach((amenity) => formData.append("amenities", amenity));
-                } else if (key === "features") {
-                    // Handle features as a JSON string
-                    formData.append(key, JSON.stringify({
-                        smokingAllowed: roomData.smokingAllowed,
-                        petFriendly: roomData.petFriendly,
-                        accessible: roomData.accessible,
-                    }));
-                } else {
-                    formData.append(key, value);
-                }
-            });
+            addBasicRoomDataToFormData(formData);
+
+            // Add pricing details to formData
+            addPricingDetailsToFormData(formData);
+
+            // Add amenities to formData
+            addAmenitiesToFormData(formData);
+
+            // Add features (JSON) to formData
+            addFeaturesToFormData(formData);
+
+            // Add features (JSON) to formData
+            addPriceRangeToFormData(formData);
 
             // Add images to formData
-            images.forEach((image) => formData.append("images", image));
+            addImagesToFormData(formData);
 
-            console.log("Submitting FormData:", formData);
+            // Add special day tariff if any
+            addSpecialDayTariffToFormData(formData);
 
+            // Add cancellation policy to formData
+            addCancellationPolicyToFormData(formData);
+
+            // Add room details if any
+            addRoomDetailsToFormData(formData);
+
+            // Add tax types to formData
+            addTaxTypesToFormData(formData);
+            // Add images to formData
+            // images.forEach((image) => formData.append("images", image));
             // Call the addRoom API with formData
             const response = await addRoom(formData);
+
             if (response.status === 201) {
                 showToast("Room added successfully!", "success");
-                navigate("/rooms");
+                navigate("/roomwith-categories");
             } else {
+                console.log(response, "error400")
+
                 showToast(response.message || "Failed to add room.", "error");
             }
         } catch (error) {
+            console.log(error, "error500")
             showToast(error.message || "An error occurred while adding the room.", "error");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (type === 'checkbox') {
-            setRoomData({ ...roomData, features: { ...roomData.features, [name]: checked } });
-        } else if (name.includes('[]')) {
-            const fieldName = name.split('[')[0];
-            const index = parseInt(name.split('[')[1].split(']')[0], 10);
-            const newArray = [...roomData[fieldName]];
-            newArray[index] = { ...newArray[index], [name.split('[')[1].split(']')[0]]: value };
-            setRoomData({ ...roomData, [fieldName]: newArray });
-        } else {
-            setRoomData({ ...roomData, [name]: value });
-        }
+    // Function to add basic room data to formData
+    const addBasicRoomDataToFormData = (formData) => {
+        console.log(formData, "formdat")
+        Object.entries(roomData).forEach(([key, value]) => {
+            console.log(roomData, "formdat")
+
+            if (key === 'cancellationPolicy' || key === 'priceRange' || key === 'pricingDetails' || key === 'amenities' || key === 'features' || key === 'specialDayTariff' || key === 'roomDetails') {
+                // Handle complex fields separately (already covered in other functions)
+                return;
+            }
+            formData.append(key, value);
+        });
     };
+
+    // Function to add pricing details to formData
+    const addPricingDetailsToFormData = (formData) => {
+        roomData.pricingDetails.forEach((detail, index) => {
+            formData.append(`pricingDetails[${index}][guestType]`, detail.guestType);
+            formData.append(`pricingDetails[${index}][price]`, detail.price);
+            formData.append(`pricingDetails[${index}][description]`, detail.description || '');
+        });
+    };
+
+    // Function to add amenities to formData
+    const addAmenitiesToFormData = (formData) => {
+        roomData.amenities.forEach((amenity) => formData.append('amenities', amenity));
+    };
+
+    // Function to add features as JSON to formData
+    const addFeaturesToFormData = (formData) => {
+        formData.append('features', JSON.stringify(roomData.features));
+    };
+
+    // Function to add features as JSON to formData
+    const addPriceRangeToFormData = (formData) => {
+        formData.append('priceRange', JSON.stringify(roomData.priceRange));
+    };
+
+    // Function to add images to formData
+    const addImagesToFormData = (formData) => {
+        images.forEach((image) => formData.append('images', image));
+    };
+
+    // Function to add special day tariff to formData
+    const addSpecialDayTariffToFormData = (formData) => {
+        roomData.specialDayTariff.forEach((tariff, index) => {
+            formData.append(`specialDayTariff[${index}][special_day_name]`, tariff.special_day_name);
+            formData.append(`specialDayTariff[${index}][startDate]`, tariff.startDate);
+            formData.append(`specialDayTariff[${index}][endDate]`, tariff.endDate);
+            formData.append(`specialDayTariff[${index}][extraCharge]`, tariff.extraCharge);
+        });
+    };
+
+    // Function to add cancellation policy to formData
+    const addCancellationPolicyToFormData = (formData) => {
+        // Object.entries(roomData.cancellationPolicy).forEach(([key, value]) => {
+        //     formData.append(`cancellationPolicy[${key}]`, value);
+        // });
+        formData.append('cancellationPolicy', JSON.stringify(roomData.cancellationPolicy));
+    };
+
+    // Function to add room details to formData
+    const addRoomDetailsToFormData = (formData) => {
+        roomData.roomDetails.forEach((room, index) => {
+            formData.append(`roomDetails[${index}][roomNumber]`, room.roomNumber);
+            formData.append(`roomDetails[${index}][status]`, room.status);
+        });
+    };
+
+    // Function to add tax types to formData
+    const addTaxTypesToFormData = (formData) => {
+        roomData.taxTypes.forEach((taxType) => formData.append('taxTypes', taxType));
+    };
+
+
+
 
     const handleChangeTaxTypes = (event) => {
         console.log(event.target.name, "-", event.target.value, "taxtype")
@@ -465,6 +550,51 @@ const AddRoom = () => {
             totalAvailableRoom: totalRooms,
             roomDetails: updatedRoomDetails,
         });
+    };
+
+
+    // Handle change for form inputs
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        const [field, index, prop] = name.split('[').map((item) => item.replace(']', ''));
+
+        if (index !== undefined && prop !== undefined) {
+            const updatedSpecialDayTariff = [...roomData.specialDayTariff];
+            updatedSpecialDayTariff[index][prop] = value;
+            setRoomData({
+                ...roomData,
+                specialDayTariff: updatedSpecialDayTariff,
+            });
+        } else {
+            setRoomData({
+                ...roomData,
+                [field]: value,
+            });
+        }
+    };
+
+    // Add a new special day tariff entry
+    const addSpecialDayTariff = () => {
+        setRoomData({
+            ...roomData,
+            specialDayTariff: [
+                ...roomData.specialDayTariff,
+                { special_day_name: '', startDate: '', endDate: '', extraCharge: '' },
+            ],
+        });
+    };
+
+    // Remove a special day tariff entry
+    const removeSpecialDayTariff = (index) => {
+        const updatedSpecialDayTariff = roomData.specialDayTariff.filter((_, i) => i !== index);
+        setRoomData({
+            ...roomData,
+            specialDayTariff: updatedSpecialDayTariff,
+        });
+    };
+
+    const handleDiscriptionChange = (value) => {
+        setRoomData({ ...roomData, description: value });
     };
 
 
@@ -597,8 +727,8 @@ const AddRoom = () => {
                         fullWidth
                         margin="dense"
                         name="minPrice"
-                        value={roomData.minPrice}
-                        onChange={handleInputChange}
+                        value={roomData.priceRange.minPrice}
+                        onChange={handlePriceInputChange}
                         error={!!errors.minPrice}
                         helperText={errors.minPrice}
                         InputProps={{
@@ -613,8 +743,8 @@ const AddRoom = () => {
                         fullWidth
                         margin="dense"
                         name="maxPrice"
-                        value={roomData.maxPrice}
-                        onChange={handleInputChange}
+                        value={roomData.priceRange.maxPrice}
+                        onChange={handlePriceInputChange}
                         error={!!errors.maxPrice}
                         helperText={errors.maxPrice}
                         InputProps={{
@@ -855,11 +985,71 @@ const AddRoom = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Special Day Tarrif Details</InputLabel>
+                    {roomData.specialDayTariff.map((tariff, index) => (
+                        <Box key={index} sx={{ display: "flex", gap: 2, margin: "5px" }}>
+                            <TextField
+                                fullWidth
+                                name={`specialDayTariff[${index}][special_day_name]`}
+                                label="Special Day Name"
+                                value={tariff.special_day_name}
+                                onChange={handleChange}
+                            />
+                            <TextField
+                                fullWidth
+                                name={`specialDayTariff[${index}][startDate]`}
+                                label="Start Date"
+                                type="date"
+                                value={tariff.startDate}
+                                onChange={handleChange}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <TextField
+                                fullWidth
+                                name={`specialDayTariff[${index}][endDate]`}
+                                label="End Date"
+                                type="date"
+                                value={tariff.endDate}
+                                onChange={handleChange}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                            <TextField
+                                fullWidth
+                                name={`specialDayTariff[${index}][extraCharge]`}
+                                label="Extra Charge"
+                                type="number"
+                                value={tariff.extraCharge}
+                                onChange={handleChange}
+                            />
+
+                            {/* Remove Button */}
+                            {roomData.specialDayTariff.length > 1 && (
+                                <IconButton onClick={() => removeSpecialDayTariff(index)}>
+                                    <FiTrash />
+                                </IconButton>
+                            )}
+                        </Box>
+                    ))}
+
+                    {/* Add Button */}
+                    <Box sx={{ mb: 2 }}>
+                        <Button variant="contained" onClick={addSpecialDayTariff}>
+                            Add Special Day Tariff
+                        </Button>
+                    </Box>
+                </Box>
+
+
+                <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Facilities</InputLabel>
                     <ReactQuill
                         name="description"
                         value={roomData.description}
-                        onChange={handleInputChange}
+                        onChange={handleDiscriptionChange}
                         placeholder="Enter Room Facilities"
                         style={{
                             height: "100px",
@@ -896,9 +1086,9 @@ const AddRoom = () => {
                         name="totalAvailableRoom"
                         value={roomData.totalAvailableRoom}
                         onChange={handleTotalRoomChange}
-                        InputProps={{
-                            startAdornment: <span>Rooms</span>,
-                        }}
+                    // InputProps={{
+                    //     startAdornment: <span>Rooms</span>,
+                    // }}
                     />
 
                     {roomData.roomDetails.map((room, index) => (
@@ -913,13 +1103,26 @@ const AddRoom = () => {
                             />
 
                             <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Room {index + 1} - Status</InputLabel>
-                            <TextField
+                            {/* <TextField
                                 fullWidth
                                 margin="dense"
                                 name={`roomDetails.${index}.status`}
                                 value={room.status}
                                 onChange={handleRoomInputChange}
-                            />
+                            /> */}
+
+                            <FormControl fullWidth margin="dense" >
+                                <Select name={`roomDetails.${index}.status`} value={room.status} onChange={handleRoomInputChange} displayEmpty
+                                    startAdornment={<HotelIcon sx={{ color: "gray", mr: 1 }} />}>
+                                    <MenuItem value="" disabled>
+                                        Please Choose Status
+                                    </MenuItem>
+                                    {roomStatusOptions.map((option) => (
+                                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                                    ))}
+                                </Select>
+
+                            </FormControl>
                         </Box>
                     ))}
                 </Box>

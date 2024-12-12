@@ -1,8 +1,8 @@
 import { format } from "date-fns";
 
 
-export const PUBLIC_API_URI = "http://localhost:3005/api"
-// export const PUBLIC_API_URI = "https://13.53.129.30/api"
+// export const PUBLIC_API_URI = "http://localhost:3005/api"
+export const PUBLIC_API_URI = "https://13.53.129.30/api"
 
 
 export const formatDate = (date) => {

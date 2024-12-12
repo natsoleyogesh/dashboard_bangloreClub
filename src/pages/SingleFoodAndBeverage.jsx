@@ -299,7 +299,7 @@ const SingleFoodAndBeverage = () => {
                         </Grid>
                     ))}
                 </Grid>
-                <Box sx={{ textAlign: "center", mt: 3 }}>
+                {/* <Box sx={{ textAlign: "center", mt: 3 }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -308,7 +308,7 @@ const SingleFoodAndBeverage = () => {
                     >
                         Edit Details
                     </Button>
-                </Box>
+                </Box> */}
             </Card>
 
             <Dialog open={isEditDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="lg">
