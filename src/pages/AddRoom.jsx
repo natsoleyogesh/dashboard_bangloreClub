@@ -1,311 +1,3 @@
-// import React, { useEffect, useState, useRef } from "react";
-// import {
-//     Box,
-//     Button,
-//     CircularProgress,
-//     FormControl,
-//     InputLabel,
-//     MenuItem,
-//     Paper,
-//     Select,
-//     TextField,
-//     Typography,
-//     Checkbox,
-//     FormControlLabel,
-//     IconButton,
-// } from "@mui/material";
-// import { BiImageAdd } from "react-icons/bi";
-// import { FiPlus, FiTrash } from "react-icons/fi";
-// import { showToast } from "../api/toast";
-// import { useNavigate } from "react-router-dom";
-// import { addRoom } from "../api/room";
-// import { fetchAllCategories } from "../api/category";
-
-// const guestTypeOptions = [
-//     'Club Member',
-//     'Club Member (Self Stay)',
-//     'Corporate Member',
-//     'Guest of Member (Indian)',
-//     'Affiliated Club Member (Indian)',
-//     'Nominees of Corporate Member',
-//     'Affiliated Foreign Club',
-//     'Foreign Guest',
-// ];
-
-// const amenitiesOptions = [
-//     'WiFi',
-//     'AC',
-//     'Television',
-//     'Mini Bar',
-//     'Room Service',
-//     'Gym Access',
-//     'Swimming Pool',
-//     'Laundry Service',
-//     'Parking',
-//     'Breakfast Included',
-//     'Laundry'
-// ];
-
-// const bedTypeOptions = ['Single', 'Double', 'Queen', 'King', 'Twin', 'Sofa Bed'];
-// const statusOptions = ['Available', 'Booked', 'Under Maintenance'];
-
-// const AddRoom = () => {
-//     const [roomData, setRoomData] = useState({
-//         roomName: "",
-//         roomNumber: "",
-//         floorNumber: "",
-//         roomType: "",
-//         minPrice: "",
-//         maxPrice: "",
-//         pricingDetails: [],
-//         capacity: "",
-//         amenities: [],
-//         roomSize: "",
-//         bedType: "",
-//         smokingAllowed: false,
-//         petFriendly: false,
-//         accessible: false,
-//         status: "",
-//         description: "",
-//     });
-//     const [roomTypes, setRoomTypes] = useState([]);
-//     const [images, setImages] = useState([]);
-//     const [loading, setLoading] = useState(false);
-//     const imageInput = useRef(null);
-//     const navigate = useNavigate();
-
-//     // Fetch room types (categories)
-//     useEffect(() => {
-//         const fetchCategories = async () => {
-//             try {
-//                 const response = await fetchAllCategories();
-//                 setRoomTypes(response.data.categories);
-//             } catch (error) {
-//                 showToast("Failed to fetch room types.", "error");
-//             }
-//         };
-//         fetchCategories();
-//     }, []);
-
-//     const handleInputChange = (e) => {
-//         const { name, value } = e.target;
-//         setRoomData({ ...roomData, [name]: value });
-//     };
-
-//     const handleAmenitiesChange = (e) => {
-//         const { value } = e.target;
-//         setRoomData({ ...roomData, amenities: typeof value === 'string' ? value.split(',') : value });
-//     };
-
-//     const handleImageChange = (e) => {
-//         const files = Array.from(e.target.files);
-//         setImages((prevImages) => [...prevImages, ...files]);
-//     };
-
-//     const handleRemoveImage = (index) => {
-//         const updatedImages = images.filter((_, i) => i !== index);
-//         setImages(updatedImages);
-//     };
-
-//     // Add new pricing detail
-//     const handleAddPricingDetail = () => {
-//         setRoomData((prevData) => ({
-//             ...prevData,
-//             pricingDetails: [...prevData.pricingDetails, { guestType: "", price: "", description: "" }],
-//         }));
-//     };
-
-//     const handlePricingDetailChange = (index, field, value) => {
-//         const updatedPricingDetails = [...roomData.pricingDetails];
-//         updatedPricingDetails[index] = {
-//             ...updatedPricingDetails[index],
-//             [field]: value,
-//         };
-//         setRoomData({ ...roomData, pricingDetails: updatedPricingDetails });
-//     };
-//     const handleRemovePricingDetail = (index) => {
-//         const updatedPricingDetails = roomData.pricingDetails.filter((_, i) => i !== index);
-//         setRoomData({ ...roomData, pricingDetails: updatedPricingDetails });
-//     };
-
-//     const handleCheckboxChange = (e) => {
-//         const { name, checked } = e.target;
-//         setRoomData({ ...roomData, [name]: checked });
-//     };
-//     const handleSubmit = async () => {
-//         setLoading(true);
-//         try {
-//             const formData = new FormData();
-
-//             // Add basic room data to formData
-//             Object.entries(roomData).forEach(([key, value]) => {
-//                 if (key === "pricingDetails") {
-//                     // Handle nested pricingDetails array
-//                     value.forEach((detail, index) => {
-//                         formData.append(`pricingDetails[${index}][guestType]`, detail.guestType);
-//                         formData.append(`pricingDetails[${index}][price]`, detail.price);
-//                         formData.append(`pricingDetails[${index}][description]`, detail.description || "");
-//                     });
-//                 } else if (key === "amenities") {
-//                     // Handle amenities array
-//                     value.forEach((amenity) => formData.append("amenities", amenity));
-//                 } else if (key === "features") {
-//                     // Handle features as a JSON string
-//                     formData.append(key, JSON.stringify({
-//                         smokingAllowed: roomData.smokingAllowed,
-//                         petFriendly: roomData.petFriendly,
-//                         accessible: roomData.accessible,
-//                     }));
-//                 } else {
-//                     formData.append(key, value);
-//                 }
-//             });
-
-//             // Add images to formData
-//             images.forEach((image) => formData.append("images", image));
-
-//             console.log("Submitting FormData:", formData);
-
-//             // Call the addRoom API with formData
-//             const response = await addRoom(formData);
-//             if (response.status === 201) {
-//                 showToast("Room added successfully!", "success");
-//                 navigate("/rooms");
-//             } else {
-//                 showToast(response.message || "Failed to add room.", "error");
-//             }
-//         } catch (error) {
-//             showToast(error.message || "An error occurred while adding the room.", "error");
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//     console.log(roomData, "addRoom data")
-
-
-// const UploadBox = ({ onClick }) => (
-//     <Box
-//         onClick={onClick}
-//         sx={{
-//             marginTop: 3,
-//             height: 200,
-//             borderRadius: "10px",
-//             display: "flex",
-//             alignItems: "center",
-//             justifyContent: "center",
-//             flexDirection: "column",
-//             borderStyle: "dashed",
-//             borderWidth: "2px",
-//             borderColor: "divider",
-//             cursor: "pointer",
-//         }}
-//     >
-//         <BiImageAdd style={{ fontSize: "50px", color: "#027edd" }} />
-//         <Typography>Click to upload images</Typography>
-//     </Box>
-// );
-
-//     return (
-//         <Box sx={{ pt: "80px", pb: "20px" }}>
-//             <Typography variant="h6">Add Room</Typography>
-//             <Paper sx={{ p: 3, maxWidth: "800px", margin: "0 auto" }}>
-//                 <TextField label="Room Name" fullWidth margin="dense" name="roomName" value={roomData.roomName} onChange={handleInputChange} />
-//                 <TextField label="Room Number" fullWidth margin="dense" name="roomNumber" value={roomData.roomNumber} onChange={handleInputChange} />
-//                 <TextField label="Floor Number" fullWidth margin="dense" name="floorNumber" value={roomData.floorNumber} onChange={handleInputChange} />
-//                 <TextField label="Min Price" fullWidth margin="dense" name="minPrice" value={roomData.minPrice} onChange={handleInputChange} />
-//                 <TextField label="Max Price" fullWidth margin="dense" name="maxPrice" value={roomData.maxPrice} onChange={handleInputChange} />
-//                 <TextField label="Capacity" fullWidth margin="dense" name="capacity" value={roomData.capacity} onChange={handleInputChange} />
-//                 <TextField label="Room Size" fullWidth margin="dense" name="roomSize" value={roomData.roomSize} onChange={handleInputChange} /><FormControl fullWidth margin="dense">
-//                     <InputLabel>Room Type</InputLabel>
-//                     <Select name="roomType" value={roomData.roomType} onChange={handleInputChange}>
-//                         {roomTypes.map((type) => <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>)}
-//                     </Select>
-//                 </FormControl>
-//                 <FormControl fullWidth margin="dense">
-//                     <InputLabel>Bed Type</InputLabel>
-//                     <Select name="bedType" value={roomData.bedType} onChange={handleInputChange}>
-//                         {bedTypeOptions.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
-//                     </Select>
-//                 </FormControl>
-//                 <FormControl fullWidth margin="dense">
-//                     <InputLabel>Amenities</InputLabel>
-//                     <Select
-//                         multiple
-//                         value={roomData.amenities}
-//                         onChange={handleAmenitiesChange}
-//                         renderValue={(selected) => selected.join(", ")}
-//                     >
-//                         {amenitiesOptions.map((option) => (
-//                             <MenuItem key={option} value={option}>
-//                                 <Checkbox checked={roomData.amenities.includes(option)} />
-//                                 {option}
-//                             </MenuItem>
-//                         ))}
-//                     </Select>
-//                 </FormControl>
-//                 <FormControl fullWidth margin="dense">
-//                     <InputLabel>Status</InputLabel>
-//                     <Select name="status" value={roomData.status} onChange={handleInputChange}>
-//                         {statusOptions.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
-//                     </Select>
-//                 </FormControl>
-//                 <FormControlLabel
-//                     control={<Checkbox checked={roomData.smokingAllowed} onChange={handleCheckboxChange} name="smokingAllowed" />}
-//                     label="Smoking Allowed"
-//                 />
-//                 <FormControlLabel
-//                     control={<Checkbox checked={roomData.petFriendly} onChange={handleCheckboxChange} name="petFriendly" />}
-//                     label="Pet Friendly"
-//                 />
-//                 <FormControlLabel
-//                     control={<Checkbox checked={roomData.accessible} onChange={handleCheckboxChange} name="accessible" />}
-//                     label="Accessible"
-//                 />
-//                 <TextField label="Facilities" fullWidth margin="dense" name="description" value={roomData.description} onChange={handleInputChange} />
-
-
-//                 <Typography variant="h6">Pricing Details</Typography>
-//                 {roomData.pricingDetails.map((detail, index) => (
-//                     <Box key={index} sx={{ display: "flex", gap: 2 }}>
-//                         <Select value={detail.guestType} onChange={(e) => handlePricingDetailChange(index, "guestType", e.target.value)}>
-//                             {guestTypeOptions.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
-//                         </Select>
-//                         <TextField label="Price" value={detail.price} onChange={(e) => handlePricingDetailChange(index, "price", e.target.value)} />
-//                         <IconButton onClick={() => handleRemovePricingDetail(index)}>
-//                             <FiTrash />
-//                         </IconButton>
-//                     </Box>
-//                 ))}
-//                 <Button variant="contained" color="primary" startIcon={<FiPlus />} onClick={handleAddPricingDetail}>
-//                     Add Pricing Detail
-//                 </Button>
-
-//                 <UploadBox onClick={() => imageInput.current.click()} />
-//                 <input type="file" hidden ref={imageInput} multiple onChange={handleImageChange} />
-
-//                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 2 }}>
-//                     {images.map((image, index) => (
-//                         <Box key={index} sx={{ position: "relative" }}>
-//                             <img src={URL.createObjectURL(image)} alt="Room" style={{ width: 100, height: 100, borderRadius: 8 }} />
-//                             <IconButton onClick={() => handleRemoveImage(index)} sx={{ position: "absolute", top: 0, right: 0 }}>
-//                                 <FiTrash color="red" />
-//                             </IconButton>
-//                         </Box>
-//                     ))}
-//                 </Box>
-
-//                 <Button variant="contained" fullWidth sx={{ mt: 3 }} disabled={loading} onClick={handleSubmit}>
-//                     {loading ? <CircularProgress size={24} /> : "Submit"}
-//                 </Button>
-//             </Paper>
-//         </Box>
-//     );
-// };
-
-// export default AddRoom;
-
-
 import React, { useEffect, useState, useRef } from "react";
 import {
     Box,
@@ -341,6 +33,11 @@ import KingBedIcon from "@mui/icons-material/KingBed";
 import HotelIcon from "@mui/icons-material/Hotel";
 import RoomPreferencesIcon from "@mui/icons-material/RoomPreferences";
 import PersonIcon from "@mui/icons-material/Person";
+import { fetchAllActiveTaxTypes } from "../api/masterData/taxType";
+import { fetchAllActiveAmenities } from "../api/masterData/amenities";
+import ReactQuill from "react-quill";
+// import { LocalizationProvider, TimePicker, AdapterDateFns } from "@mui/x-date-pickers";
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const guestTypeOptions = [
     'Club Member',
@@ -353,41 +50,49 @@ const guestTypeOptions = [
     'Foreign Guest',
 ];
 
-const amenitiesOptions = [
-    'WiFi',
-    'AC',
-    'Television',
-    'Mini Bar',
-    'Room Service',
-    'Gym Access',
-    'Swimming Pool',
-    'Laundry Service',
-    'Parking',
-    'Breakfast Included',
-    'Laundry'
-];
-
 const bedTypeOptions = ['Single', 'Double', 'Queen', 'King', 'Twin', 'Sofa Bed'];
-const statusOptions = ['Available', 'Booked', 'Under Maintenance'];
+const statusOptions = ['Active', 'Inactive',];
 
 const AddRoom = () => {
+    // const [roomData, setRoomData] = useState({
+    //     roomName: "",
+    //     roomNumber: "",
+    //     floorNumber: "",
+    //     roomType: "",
+    //     minPrice: "",
+    //     maxPrice: "",
+    //     pricingDetails: [],
+    //     capacity: "",
+    //     amenities: [],
+    //     roomSize: "",
+    //     bedType: "",
+    //     smokingAllowed: false,
+    //     petFriendly: false,
+    //     accessible: false,
+    //     status: "",
+    //     description: "",
+    // });
     const [roomData, setRoomData] = useState({
-        roomName: "",
-        roomNumber: "",
-        floorNumber: "",
-        roomType: "",
-        minPrice: "",
-        maxPrice: "",
-        pricingDetails: [],
-        capacity: "",
+        categoryName: '',
+        description: '',
+        priceRange: { minPrice: '', maxPrice: '' },
+        pricingDetails: [{ guestType: '', price: '', description: '' }],
         amenities: [],
-        roomSize: "",
-        bedType: "",
-        smokingAllowed: false,
-        petFriendly: false,
-        accessible: false,
-        status: "",
-        description: "",
+        roomSize: '',
+        bedType: '',
+        features: { smokingAllowed: false, petFriendly: false, accessible: false },
+        status: 'Active',
+        roomDetails: [{ roomNumber: '', status: '' }],
+        totalAvailableRoom: '',
+        images: [],
+        taxTypes: [],
+        checkInTime: '',
+        checkOutTime: '',
+        maxAllowedPerRoom: '',
+        cancellationPolicy: { before7Days: '', between7To2Days: '', between48To24Hours: '', lessThan24Hours: '' },
+        breakfastIncluded: false,
+        specialDayTariff: [{ special_day_name: '', startDate: '', endDate: '', extraCharge: '' }],
+        extraBedPrice: '',
     });
     const [roomTypes, setRoomTypes] = useState([]);
     const [images, setImages] = useState([]);
@@ -395,6 +100,10 @@ const AddRoom = () => {
     const [errors, setErrors] = useState({});
     const imageInput = useRef(null);
     const navigate = useNavigate();
+
+    // fetch the data in master table 
+    const [amenitiesOptions, setAmenitiesOptions] = useState([]);
+    const [taxTypes, setTaxTypes] = useState([]);
 
     // Fetch room types (categories)
     useEffect(() => {
@@ -407,17 +116,33 @@ const AddRoom = () => {
             }
         };
         fetchCategories();
+        fetchTaxTypes();
+        fetchAmenioties();
     }, []);
 
+    const fetchTaxTypes = async () => {
+        try {
+            const response = await fetchAllActiveTaxTypes();
+            setTaxTypes(response?.data?.data);
+        } catch (error) {
+            showToast("Failed to fetch room types.", "error");
+        }
+    };
+
+    const fetchAmenioties = async () => {
+        try {
+            const response = await fetchAllActiveAmenities();
+            setAmenitiesOptions(response?.data?.data);
+        } catch (error) {
+            showToast("Failed to fetch room types.", "error");
+        }
+    };
+
     const handleInputChange = (e) => {
+        console.log(e.target.name, "-", e.target.value, "handleInputChangew")
         const { name, value } = e.target;
         setRoomData({ ...roomData, [name]: value });
         setErrors({ ...errors, [name]: "" }); // Clear error on change
-    };
-
-    const handleAmenitiesChange = (e) => {
-        const { value } = e.target;
-        setRoomData({ ...roomData, amenities: typeof value === 'string' ? value.split(',') : value });
     };
 
     const handleImageChange = (e) => {
@@ -460,26 +185,28 @@ const AddRoom = () => {
     const validateForm = () => {
         const newErrors = {};
 
-        if (!roomData.roomName) newErrors.roomName = "Room Name is required.";
-        if (!roomData.roomNumber) newErrors.roomNumber = "Room Number is required.";
-        if (!roomData.floorNumber) newErrors.floorNumber = "Floor Number is required.";
-        if (!roomData.minPrice) newErrors.minPrice = "Min Price is required.";
-        else if (isNaN(roomData.minPrice) || Number(roomData.minPrice) < 0) newErrors.minPrice = "Min Price must be a valid number.";
+        // Validate categoryName
+        if (!roomData.categoryName) newErrors.categoryName = "Room category is required.";
 
-        if (!roomData.maxPrice) newErrors.maxPrice = "Max Price is required.";
-        else if (isNaN(roomData.maxPrice) || Number(roomData.maxPrice) < 0) newErrors.maxPrice = "Max Price must be a valid number.";
+        // Validate description
+        if (!roomData.description) newErrors.description = "Room description is required.";
 
-        if (Number(roomData.minPrice) > Number(roomData.maxPrice)) newErrors.maxPrice = "Max Price must be greater than Min Price.";
+        // Validate priceRange
+        const { minPrice, maxPrice } = roomData.priceRange;
+        if (!minPrice) newErrors.minPrice = "Min Price is required.";
+        else if (isNaN(minPrice) || Number(minPrice) < 0) newErrors.minPrice = "Min Price must be a valid positive number.";
 
-        if (!roomData.capacity) newErrors.capacity = "Capacity is required.";
-        else if (isNaN(roomData.capacity) || Number(roomData.capacity) <= 0) newErrors.capacity = "Capacity must be a valid positive number.";
-        if (!roomData.roomType) newErrors.roomType = "Room Type is required.";
-        if (!roomData.roomSize) newErrors.roomSize = "Room Size is required.";
-        if (!roomData.bedType) newErrors.bedType = "Bed Type is required.";
-        if (!roomData.status) newErrors.status = "Status is required.";
+        if (!maxPrice) newErrors.maxPrice = "Max Price is required.";
+        else if (isNaN(maxPrice) || Number(maxPrice) < 0) newErrors.maxPrice = "Max Price must be a valid positive number.";
 
-        if (roomData.pricingDetails.length === 0) newErrors.pricingDetails = "At least one pricing detail is required.";
-        else {
+        if (minPrice && maxPrice && Number(minPrice) > Number(maxPrice)) {
+            newErrors.maxPrice = "Max Price must be greater than Min Price.";
+        }
+
+        // Validate pricingDetails
+        if (roomData.pricingDetails.length === 0) {
+            newErrors.pricingDetails = "At least one pricing detail is required.";
+        } else {
             roomData.pricingDetails.forEach((detail, index) => {
                 if (!detail.guestType) {
                     newErrors[`guestType_${index}`] = "Guest Type is required.";
@@ -487,9 +214,107 @@ const AddRoom = () => {
                 if (!detail.price) {
                     newErrors[`price_${index}`] = "Price is required.";
                 } else if (isNaN(detail.price) || Number(detail.price) < 0) {
-                    newErrors[`price_${index}`] = "Price must be a valid number.";
+                    newErrors[`price_${index}`] = "Price must be a valid positive number.";
                 }
             });
+        }
+
+        // Validate amenities
+        if (roomData.amenities.length === 0) {
+            newErrors.amenities = "At least one amenity is required.";
+        }
+
+        // Validate roomSize
+        if (!roomData.roomSize) {
+            newErrors.roomSize = "Room size is required.";
+        } else if (isNaN(roomData.roomSize) || Number(roomData.roomSize) <= 0) {
+            newErrors.roomSize = "Room size must be a valid positive number.";
+        }
+
+        // Validate bedType
+        if (!roomData.bedType) newErrors.bedType = "Bed type is required.";
+
+        // Validate features
+        if (roomData.features.smokingAllowed === undefined) {
+            newErrors.smokingAllowed = "Smoking allowed field is required.";
+        }
+        if (roomData.features.petFriendly === undefined) {
+            newErrors.petFriendly = "Pet-friendly field is required.";
+        }
+        if (roomData.features.accessible === undefined) {
+            newErrors.accessible = "Accessible field is required.";
+        }
+
+        // Validate status
+        if (!roomData.status) newErrors.status = "Room status is required.";
+
+        // Validate roomDetails
+        if (roomData.roomDetails.length === 0) {
+            newErrors.roomDetails = "At least one room detail is required.";
+        } else {
+            roomData.roomDetails.forEach((detail, index) => {
+                if (!detail.roomNumber) {
+                    newErrors[`roomNumber_${index}`] = "Room number is required.";
+                }
+                if (!detail.status) {
+                    newErrors[`roomStatus_${index}`] = "Room status is required.";
+                }
+            });
+        }
+
+        // Validate taxTypes
+        if (roomData.taxTypes.length === 0) {
+            newErrors.taxTypes = "At least one tax type is required.";
+        }
+
+        // Validate cancellationPolicy
+        const { before7Days, between7To2Days, between48To24Hours, lessThan24Hours } = roomData.cancellationPolicy;
+        if (!before7Days) newErrors.before7Days = "Cancellation policy for 'Before 7 Days' is required.";
+        if (!between7To2Days) newErrors.between7To2Days = "Cancellation policy for 'Between 7 to 2 Days' is required.";
+        if (!between48To24Hours) newErrors.between48To24Hours = "Cancellation policy for 'Between 48 to 24 Hours' is required.";
+        if (!lessThan24Hours) newErrors.lessThan24Hours = "Cancellation policy for 'Less Than 24 Hours' is required.";
+
+        // Validate check-in and check-out times
+        if (!roomData.checkInTime) newErrors.checkInTime = "Check-in time is required.";
+        if (!roomData.checkOutTime) newErrors.checkOutTime = "Check-out time is required.";
+
+        // Validate maximum occupancy per room
+        if (!roomData.maxAllowedPerRoom) {
+            newErrors.maxAllowedPerRoom = "Maximum occupancy per room is required.";
+        } else if (isNaN(roomData.maxAllowedPerRoom) || Number(roomData.maxAllowedPerRoom) <= 0) {
+            newErrors.maxAllowedPerRoom = "Maximum occupancy must be a valid positive number.";
+        }
+
+        // Validate breakfastIncluded
+        if (roomData.breakfastIncluded === undefined) {
+            newErrors.breakfastIncluded = "Breakfast included field is required.";
+        }
+
+        // Validate specialDayTariff
+        if (roomData.specialDayTariff.length > 0) {
+            roomData.specialDayTariff.forEach((tariff, index) => {
+                if (!tariff.special_day_name) {
+                    newErrors[`specialDayName_${index}`] = "Special day name is required.";
+                }
+                if (!tariff.startDate) {
+                    newErrors[`startDate_${index}`] = "Start date is required.";
+                }
+                if (!tariff.endDate) {
+                    newErrors[`endDate_${index}`] = "End date is required.";
+                }
+                if (!tariff.extraCharge) {
+                    newErrors[`extraCharge_${index}`] = "Extra charge is required.";
+                } else if (isNaN(tariff.extraCharge) || Number(tariff.extraCharge) < 0) {
+                    newErrors[`extraCharge_${index}`] = "Extra charge must be a valid positive number.";
+                }
+            });
+        }
+
+        // Validate extraBedPrice
+        if (!roomData.extraBedPrice) {
+            newErrors.extraBedPrice = "Extra bed price is required.";
+        } else if (isNaN(roomData.extraBedPrice) || Number(roomData.extraBedPrice) < 0) {
+            newErrors.extraBedPrice = "Extra bed price must be a valid positive number.";
         }
 
         setErrors(newErrors);
@@ -547,6 +372,70 @@ const AddRoom = () => {
         }
     };
 
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        if (type === 'checkbox') {
+            setRoomData({ ...roomData, features: { ...roomData.features, [name]: checked } });
+        } else if (name.includes('[]')) {
+            const fieldName = name.split('[')[0];
+            const index = parseInt(name.split('[')[1].split(']')[0], 10);
+            const newArray = [...roomData[fieldName]];
+            newArray[index] = { ...newArray[index], [name.split('[')[1].split(']')[0]]: value };
+            setRoomData({ ...roomData, [fieldName]: newArray });
+        } else {
+            setRoomData({ ...roomData, [name]: value });
+        }
+    };
+
+    const handleChangeTaxTypes = (event) => {
+        console.log(event.target.name, "-", event.target.value, "taxtype")
+
+        const { value, checked } = event.target;
+        if (checked) {
+            setRoomData({
+                ...roomData,
+                taxTypes: [...roomData.taxTypes, value],
+            });
+        } else {
+            setRoomData({
+                ...roomData,
+                taxTypes: roomData.taxTypes.filter((tax) => tax !== value),
+            });
+        }
+    };
+
+    // Handle checkbox changes for Amenities
+    const handleChangeAmenities = (event) => {
+        console.log(event.target.name, "-", event.target.checked, event.target.value, "amenities")
+
+        const { value, checked } = event.target;
+        if (checked) {
+            setRoomData({
+                ...roomData,
+                amenities: [...roomData.amenities, value], // Add amenity ID to array
+            });
+        } else {
+            setRoomData({
+                ...roomData,
+                amenities: roomData.amenities.filter((amenity) => amenity !== value), // Remove amenity ID from array
+            });
+        }
+    };
+
+    const handleCancalletionChange = (e) => {
+        const { name, value } = e.target;
+        console.log(name, value, "handleInputChange");
+        setRoomData({
+            ...roomData,
+            cancellationPolicy: {
+                ...roomData.cancellationPolicy,
+                [name]: value,
+            },
+        });
+        setErrors({ ...errors, [name]: '' }); // Clear error on change
+    };
+
+
     const UploadBox = ({ onClick }) => (
         <Box
             onClick={onClick}
@@ -586,53 +475,89 @@ const AddRoom = () => {
                 }}
             >
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Name</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Type</InputLabel>
+                    <FormControl fullWidth margin="dense" error={!!errors.categoryName}>
+                        {/* <InputLabel>Room Type</InputLabel> */}
+                        <Select name="categoryName" value={roomData.categoryName} onChange={handleInputChange}
+                            startAdornment={<CategoryIcon sx={{ color: "gray", mr: 1 }} />}
+                        >
+                            <MenuItem value="" disabled>
+                                Please Choose Room Category
+                            </MenuItem>
+                            {roomTypes.map((type) => (
+                                <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
+                            ))}
+                        </Select>
+                        {errors.categoryName && <Typography color="error">{errors.categoryName}</Typography>}
+                    </FormControl>
+                </Box>
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Maxium Allowed PerRoom</InputLabel>
                     <TextField
-                        placeholder="Enter room name"
+                        placeholder="Enter Maxium Allowed PerRoom"
                         fullWidth
                         margin="dense"
-                        name="roomName"
-                        value={roomData.roomName}
+                        name="maxAllowedPerRoom"
+                        value={roomData.maxAllowedPerRoom}
                         onChange={handleInputChange}
-                        error={!!errors.roomName}
-                        helperText={errors.roomName}
+                        error={!!errors.maxAllowedPerRoom}
+                        helperText={errors.maxAllowedPerRoom}
                         InputProps={{
                             startAdornment: <MeetingRoomIcon sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Number</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>ExtraBed Price</InputLabel>
                     <TextField
-                        placeholder="Enter room number"
+                        placeholder="Enter ExtraBed Price"
                         fullWidth
                         margin="dense"
-                        name="roomNumber"
-                        value={roomData.roomNumber}
+                        name="extraBedPrice"
+                        value={roomData.extraBedPrice}
                         onChange={handleInputChange}
-                        error={!!errors.roomNumber}
-                        helperText={errors.roomNumber}
+                        error={!!errors.extraBedPrice}
+                        helperText={errors.extraBedPrice}
                         InputProps={{
                             startAdornment: <NumbersIcon sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Floor Number</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Check In Time</InputLabel>
                     <TextField
-                        placeholder="Enter floor number"
+                        type="time"
+                        placeholder="Enter Check In Time"
                         fullWidth
                         margin="dense"
-                        name="floorNumber"
-                        value={roomData.floorNumber}
+                        name="checkInTime"
+                        value={roomData.checkInTime}
                         onChange={handleInputChange}
-                        error={!!errors.floorNumber}
-                        helperText={errors.floorNumber}
+                        error={!!errors.checkInTime}
+                        helperText={errors.checkInTime}
                         InputProps={{
-                            startAdornment: <ApartmentIcon sx={{ color: "gray", mr: 1 }} />,
+                            startAdornment: <CurrencyRupee sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Check Out Time</InputLabel>
+                    <TextField
+                        type="time"
+                        placeholder="Enter Chack Out Time"
+                        fullWidth
+                        margin="dense"
+                        name="checkOutTime"
+                        value={roomData.checkOutTime}
+                        onChange={handleInputChange}
+                        error={!!errors.checkOutTime}
+                        helperText={errors.checkOutTime}
+                        InputProps={{
+                            startAdornment: <CurrencyRupee sx={{ color: "gray", mr: 1 }} />,
+                        }}
+                    />
+                </Box>
+
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Min Price</InputLabel>
                     <TextField
@@ -698,23 +623,6 @@ const AddRoom = () => {
                     />
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Type</InputLabel>
-                    <FormControl fullWidth margin="dense" error={!!errors.roomType}>
-                        {/* <InputLabel>Room Type</InputLabel> */}
-                        <Select name="roomType" value={roomData.roomType} onChange={handleInputChange} displayEmpty
-                            startAdornment={<CategoryIcon sx={{ color: "gray", mr: 1 }} />}
-                        >
-                            <MenuItem value="" disabled>
-                                Please Choose Room Type
-                            </MenuItem>
-                            {roomTypes.map((type) => (
-                                <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
-                            ))}
-                        </Select>
-                        {errors.roomType && <Typography color="error">{errors.roomType}</Typography>}
-                    </FormControl>
-                </Box>
-                <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Bed Type</InputLabel>
                     <FormControl fullWidth margin="dense" error={!!errors.bedType}>
                         {/* <InputLabel>Bed Type</InputLabel> */}
@@ -732,39 +640,32 @@ const AddRoom = () => {
                 </Box>
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Amenities</InputLabel>
-                    <FormControl fullWidth margin="dense">
+                    <FormControl fullWidth>
                         {/* <InputLabel>Amenities</InputLabel> */}
-                        <Select
-                            multiple
-                            value={roomData.amenities}
-                            onChange={handleAmenitiesChange}
-                            // renderValue={(selected) => selected.join(", ")}
-                            renderValue={(selected) =>
-                                selected.length === 0 ? "Please Choose Room Amenities" : selected.join(", ")
-                            }
-                            displayEmpty
-                            startAdornment={<RoomPreferencesIcon sx={{ color: "gray", mr: 1 }} />}
-                        >
-                            <MenuItem value="" disabled>
-                                Please Choose Room Amenities
-                            </MenuItem>
-                            {amenitiesOptions.map((option) => (
-                                <MenuItem key={option} value={option}>
-                                    <Checkbox checked={roomData.amenities.includes(option)} />
-                                    {option}
-                                </MenuItem>
+                        <div>
+                            {amenitiesOptions.map(amenity => (
+                                <FormControlLabel
+                                    key={amenity._id}
+                                    control={
+                                        <Checkbox
+                                            checked={roomData.amenities.includes(amenity._id)}
+                                            onChange={handleChangeAmenities}
+                                            value={amenity._id}
+                                        />
+                                    }
+                                    label={amenity.name}
+                                />
                             ))}
-                        </Select>
+                        </div>
                     </FormControl>
                 </Box>
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Status</InputLabel>
                     <FormControl fullWidth margin="dense" error={!!errors.status}>
-                        {/* <InputLabel>Status</InputLabel> */}
                         <Select name="status" value={roomData.status} onChange={handleInputChange} displayEmpty
                             startAdornment={<HotelIcon sx={{ color: "gray", mr: 1 }} />}>
                             <MenuItem value="" disabled>
-                                Please Choose Room Status
+                                Please Choose  Status
                             </MenuItem>
                             {statusOptions.map((option) => (
                                 <MenuItem key={option} value={option}>{option}</MenuItem>
@@ -786,20 +687,6 @@ const AddRoom = () => {
                     <FormControlLabel
                         control={<Checkbox checked={roomData.accessible} onChange={handleCheckboxChange} name="accessible" />}
                         label="Accessible"
-                    />
-                </Box>
-                <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Facilities</InputLabel>
-                    <TextField
-                        placeholder="Enter Room Facilities"
-                        fullWidth
-                        margin="dense"
-                        name="description"
-                        value={roomData.description}
-                        onChange={handleInputChange}
-                        InputProps={{
-                            startAdornment: <Description sx={{ color: "gray", mr: 1 }} />,
-                        }}
                     />
                 </Box>
                 <Box sx={{ mb: 2 }}>
@@ -844,6 +731,113 @@ const AddRoom = () => {
                         Add Pricing Detail
                     </Button>
                 </Box>
+                {/* Tax Types */}
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Applicable Tax Types</InputLabel>
+
+                    <FormControl fullWidth>
+                        {/* <InputLabel>Tax Types</InputLabel> */}
+                        <div>
+                            {taxTypes.map(tax => (
+                                <FormControlLabel
+                                    key={tax._id}
+                                    control={
+                                        <Checkbox
+                                            checked={roomData.taxTypes.includes(tax._id)}
+                                            onChange={handleChangeTaxTypes}
+                                            value={tax._id}
+                                        />
+                                    }
+                                    label={tax.name}
+                                />
+                            ))}
+                        </div>
+                    </FormControl>
+                </Box>
+                {/* Cancellation Policy */}
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: 'bold', mb: 2 }}>Cancellation Policies In (%)</InputLabel>
+
+                    {/* Cancellation Before 7 Days */}
+                    <Box sx={{ mb: 2 }}>
+                        <InputLabel sx={{ fontWeight: 'medium', mb: 1 }}>Cancellation Before 7 Days</InputLabel>
+                        <TextField
+                            fullWidth
+                            name="before7Days"
+                            type="text"
+                            value={roomData.cancellationPolicy.before7Days}
+                            onChange={handleCancalletionChange}
+                            error={!!errors.before7Days}
+                            helperText={errors.before7Days}
+                        />
+                    </Box>
+
+                    {/* Cancellation Between 7 to 2 Days */}
+                    <Box sx={{ mb: 2 }}>
+                        <InputLabel sx={{ fontWeight: 'medium', mb: 1 }}>Between 7 to 2 Days</InputLabel>
+                        <TextField
+                            fullWidth
+                            name="between7To2Days"
+                            type="text"
+                            value={roomData.cancellationPolicy.between7To2Days}
+                            onChange={handleCancalletionChange}
+                            error={!!errors.between7To2Days}
+                            helperText={errors.between7To2Days}
+                        />
+                    </Box>
+
+                    {/* Cancellation Between 48 to 24 Hours */}
+                    <Box sx={{ mb: 2 }}>
+                        <InputLabel sx={{ fontWeight: 'medium', mb: 1 }}>Between 48 to 24 Hours</InputLabel>
+                        <TextField
+                            fullWidth
+                            name="between48To24Hours"
+                            type="text"
+                            value={roomData.cancellationPolicy.between48To24Hours}
+                            onChange={handleCancalletionChange}
+                            error={!!errors.between48To24Hours}
+                            helperText={errors.between48To24Hours}
+                        />
+                    </Box>
+
+                    {/* Cancellation Less Than 24 Hours */}
+                    <Box sx={{ mb: 2 }}>
+                        <InputLabel sx={{ fontWeight: 'medium', mb: 1 }}>Less Than 24 Hours</InputLabel>
+                        <TextField
+                            fullWidth
+                            name="lessThan24Hours"
+                            type="text"
+                            value={roomData.cancellationPolicy.lessThan24Hours}
+                            onChange={handleCancalletionChange}
+                            error={!!errors.lessThan24Hours}
+                            helperText={errors.lessThan24Hours}
+                        />
+                    </Box>
+                </Box>
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Breakfast Included</InputLabel>
+                    <FormControlLabel
+                        control={<Checkbox checked={roomData.breakfastIncluded} onChange={handleCheckboxChange} name="breakfastIncluded" />}
+                        label="Breakfast Included"
+                    />
+                </Box>
+
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Facilities</InputLabel>
+                    <ReactQuill
+                        name="description"
+                        value={roomData.description}
+                        onChange={handleInputChange}
+                        placeholder="Enter Room Facilities"
+                        style={{
+                            height: "100px",
+                            // border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginBottom: "100px"
+                        }}
+                    />
+                </Box>
+
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Images</InputLabel>
                     <UploadBox onClick={() => imageInput.current.click()} />

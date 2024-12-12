@@ -77,3 +77,15 @@ export const deleteAmenitie = async (amenitieId) => {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
     }
 };
+
+
+// Function to fetch all users
+export const fetchAllActiveAmenities = async () => {
+    try {
+        const response = await axiosInstance.get("/active-amenities");
+        return response; // Assuming the API returns user data in `response.data`
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+    }
+};

@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 // Function to fetch all users
 export const fetchAllRooms = async () => {
     try {
-        const response = await axiosInstance.get("/room/all-rooms");
+        const response = await axiosInstance.get("/roomwithcategorys");
         return response; // Assuming the API returns user data in `response.data`
     } catch (error) {
         console.error("Error fetching users:", error);
@@ -26,7 +26,7 @@ export const fetchAllRooms = async () => {
 export const fetchRoomDetails = async (id) => {
     try {
         // Make the GET request to fetch member details
-        const response = await axiosInstance.get(`/room/${id}`);
+        const response = await axiosInstance.get(`/roomwithcategory/${id}`);
         // Return the member data from the response
         return response;
     } catch (error) {
@@ -38,7 +38,7 @@ export const fetchRoomDetails = async (id) => {
 export const updateRoomDetails = async (roomId, roomData) => {
     try {
         const response = await axios.put(
-            `${PUBLIC_API_URI}/room/update-room/${roomId}`,
+            `${PUBLIC_API_URI}/roomwithcategory/update-roomwithcategory/${roomId}`,
             roomData,
             {
                 headers: {
@@ -54,7 +54,7 @@ export const updateRoomDetails = async (roomId, roomData) => {
 };
 export const addRoom = async (formData) => {
     try {
-        const response = await axios.post(`${PUBLIC_API_URI}/room/create`, formData, {
+        const response = await axios.post(`${PUBLIC_API_URI}/roomwithcategory/create`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -69,7 +69,7 @@ export const addRoom = async (formData) => {
 // Delete Member API
 export const deleteRoom = async (roomId) => {
     try {
-        const response = await axios.delete(`${PUBLIC_API_URI}/room/delete-room/${roomId}`);
+        const response = await axios.delete(`${PUBLIC_API_URI}/roomwithcategory/delete-roomwithcategory/${roomId}`);
         return response;
     } catch (error) {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
@@ -78,7 +78,7 @@ export const deleteRoom = async (roomId) => {
 
 export const deleteRoomImage = async (roomId, index) => {
     try {
-        const response = await axios.delete(`${PUBLIC_API_URI}/room/delete-image/${roomId}/${index}`);
+        const response = await axios.delete(`${PUBLIC_API_URI}/roomwithcategory/delete-image/${roomId}/${index}`);
         return response;
     } catch (error) {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
@@ -87,7 +87,7 @@ export const deleteRoomImage = async (roomId, index) => {
 
 export const uploadRoomImage = async (roomId, formData) => {
     try {
-        const response = await axios.put(`${PUBLIC_API_URI}/room/upload-images/${roomId}`, formData, {
+        const response = await axios.put(`${PUBLIC_API_URI}/roomwithcategory/upload-image/${roomId}`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },

@@ -83,20 +83,20 @@ export const links = [
       },
     ],
   },
-  // {
-  //   name: "Rooms",
-  //   icon: <MdBed />,
-  //   subLinks: [
-  //     {
-  //       name: "All Rooms",
-  //       url: "/rooms",
-  //     },
-  //     {
-  //       name: "Add Room",
-  //       url: "/room/add",
-  //     },
-  //   ],
-  // },
+  {
+    name: "Room With Category",
+    icon: <MdBed />,
+    subLinks: [
+      {
+        name: "All Rooms",
+        url: "/roomwith-categories",
+      },
+      {
+        name: "Add Room",
+        url: "/roomwith-category/add",
+      },
+    ],
+  },
   // {
   //   name: "Banquets",
   //   icon: <MdEmojiEvents />,

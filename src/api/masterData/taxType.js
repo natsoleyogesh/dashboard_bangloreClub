@@ -67,3 +67,16 @@ export const deleteTaxType = async (taxTypeId) => {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
     }
 };
+
+
+// Function to fetch all users
+export const fetchAllActiveTaxTypes = async () => {
+    try {
+        const response = await axiosInstance.get("/active-taxTypes");
+        return response; // Assuming the API returns user data in `response.data`
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+    }
+};
+

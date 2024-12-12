@@ -253,7 +253,7 @@ function App() {
           />
 
           <Route
-            path="/rooms"
+            path="/roomwith-categories"
             element={
               <ProtectedRoute>
                 <Rooms />
@@ -261,7 +261,7 @@ function App() {
             }
           />
           <Route
-            path="/rooms/:id"
+            path="/roomwith-category/:id"
             element={
               <ProtectedRoute>
                 < SingleRoom />
@@ -269,7 +269,7 @@ function App() {
             }
           />
           <Route
-            path="/room/add"
+            path="/roomwith-category/add"
             element={
               <ProtectedRoute>
                 <AddRoom />
