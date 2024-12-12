@@ -36,8 +36,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import { fetchAllActiveTaxTypes } from "../api/masterData/taxType";
 import { fetchAllActiveAmenities } from "../api/masterData/amenities";
 import ReactQuill from "react-quill";
-// import { LocalizationProvider, TimePicker, AdapterDateFns } from "@mui/x-date-pickers";
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 const guestTypeOptions = [
     'Club Member',
@@ -433,6 +435,36 @@ const AddRoom = () => {
             },
         });
         setErrors({ ...errors, [name]: '' }); // Clear error on change
+    };
+
+
+    // Handle change for inputs
+    const handleRoomInputChange = (e) => {
+        const { name, value } = e.target;
+        const [field, index, prop] = name.split('.');
+
+        if (index !== undefined && prop !== undefined) {
+            const updatedRoomDetails = [...roomData.roomDetails];
+            updatedRoomDetails[index][prop] = value;
+            setRoomData({ ...roomData, roomDetails: updatedRoomDetails });
+        } else {
+            setRoomData({
+                ...roomData,
+                [name]: value,
+            });
+        }
+    };
+
+    // Handle change in the totalAvailableRoom
+    const handleTotalRoomChange = (e) => {
+        const totalRooms = parseInt(e.target.value, 10);
+        const updatedRoomDetails = Array(totalRooms).fill({ roomNumber: '', status: '' });
+
+        setRoomData({
+            ...roomData,
+            totalAvailableRoom: totalRooms,
+            roomDetails: updatedRoomDetails,
+        });
     };
 
 
@@ -855,6 +887,42 @@ const AddRoom = () => {
                     </Box>
                 </Box>
 
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Total Available Rooms</InputLabel>
+                    <TextField
+                        type="number"
+                        fullWidth
+                        margin="dense"
+                        name="totalAvailableRoom"
+                        value={roomData.totalAvailableRoom}
+                        onChange={handleTotalRoomChange}
+                        InputProps={{
+                            startAdornment: <span>Rooms</span>,
+                        }}
+                    />
+
+                    {roomData.roomDetails.map((room, index) => (
+                        <Box key={index} sx={{ mb: 2 }}>
+                            <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Room {index + 1} - Room Number</InputLabel>
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                name={`roomDetails.${index}.roomNumber`}
+                                value={room.roomNumber}
+                                onChange={handleRoomInputChange}
+                            />
+
+                            <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Room {index + 1} - Status</InputLabel>
+                            <TextField
+                                fullWidth
+                                margin="dense"
+                                name={`roomDetails.${index}.status`}
+                                value={room.status}
+                                onChange={handleRoomInputChange}
+                            />
+                        </Box>
+                    ))}
+                </Box>
                 {/* <Button variant="contained" fullWidth sx={{ mt: 3 }} disabled={loading} onClick={handleSubmit}>
                     {loading ? <CircularProgress size={24} /> : "Submit"}
                 </Button> */}
