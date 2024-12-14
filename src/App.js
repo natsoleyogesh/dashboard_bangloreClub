@@ -78,6 +78,14 @@ import Amenities from "./pages/masterData/Amenitie/Amenities";
 import SingleAmenitie from "./pages/masterData/Amenitie/SingleAmenities";
 import AddAmenitie from "./pages/masterData/Amenitie/AddAmenitie";
 
+// Banquets
+import BanquetCategory from "./pages/banquet/category/Categories";
+import SingleBanquetCategory from "./pages/banquet/category/SingleCategory";
+import AddBanquetCategory from "./pages/banquet/category/AddCategory";
+import Banquets from "./pages/banquet/banquet-creatation/Banquets";
+import SingleBanquet from "./pages/banquet/banquet-creatation/SingleBanquet";
+import AddBanquet from "./pages/banquet/banquet-creatation/AddBanquet";
+
 const sideBarWidth = 250;
 
 function App() {
@@ -282,6 +290,59 @@ function App() {
             element={
               <ProtectedRoute>
                 <EditRoom />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* Banquet Routes */}
+
+          <Route
+            path="/banquet-categories"
+            element={
+              <ProtectedRoute>
+                <BanquetCategory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/banquet-category/:id"
+            element={
+              <ProtectedRoute>
+                < SingleBanquetCategory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/banquet-category/add"
+            element={
+              <ProtectedRoute>
+                <AddBanquetCategory />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/banquets"
+            element={
+              <ProtectedRoute>
+                <Banquets />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/banquet/:id"
+            element={
+              <ProtectedRoute>
+                < SingleBanquet />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/banquet/add"
+            element={
+              <ProtectedRoute>
+                <AddBanquet />
               </ProtectedRoute>
             }
           />

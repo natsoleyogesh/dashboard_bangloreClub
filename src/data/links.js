@@ -24,29 +24,49 @@ export const links = [
   },
   // MASTER DATA 
   {
-    name: "Master Datas",
+    name: "Masters",
     icon: <MdEmojiEvents />,
     subLinks: [
       {
-        name: "Members Master Data",
+        name: "Members",
         url: "/customers",
         icon: <MdEmojiEvents />,
       },
       {
-        name: "Departments Master Data",
+        name: "Departments",
         url: "/departments",
       },
       {
-        name: "Restaurants Master Data",
+        name: "Restaurants",
         url: "/restaurants",
       },
       {
-        name: "Amenities Master Data",
+        name: "Amenities",
         url: "/amenities",
       },
       {
-        name: "Tax Types Master Data",
+        name: "Tax Types",
         url: "/taxTypes",
+      },
+      {
+        name: "Banquet Categories",
+        url: "/banquet-categories",
+      },
+      {
+        name: "Banquets",
+        url: "/banquets",
+      },
+      {
+        name: "Room Categories",
+        url: "/categories",
+      },
+      {
+        name: "Rooms",
+        url: "/roomwith-categories",
+      },
+      {
+        name: "Room Bookings",
+        url: "/room-bookings",
       },
     ],
   },
@@ -69,34 +89,34 @@ export const links = [
       },
     ],
   },
-  {
-    name: "Room Categories",
-    icon: <MdCategory />,
-    subLinks: [
-      {
-        name: "All Categories",
-        url: "/categories",
-      },
-      {
-        name: "Add Category",
-        url: "/category/add",
-      },
-    ],
-  },
-  {
-    name: "Room With Category",
-    icon: <MdBed />,
-    subLinks: [
-      {
-        name: "All Rooms",
-        url: "/roomwith-categories",
-      },
-      {
-        name: "Add Room",
-        url: "/roomwith-category/add",
-      },
-    ],
-  },
+  // {
+  //   name: "Room Categories",
+  //   icon: <MdCategory />,
+  //   subLinks: [
+  //     {
+  //       name: "All Categories",
+  //       url: "/categories",
+  //     },
+  //     {
+  //       name: "Add Category",
+  //       url: "/category/add",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "Room With Category",
+  //   icon: <MdBed />,
+  //   subLinks: [
+  //     {
+  //       name: "All Rooms",
+  //       url: "/roomwith-categories",
+  //     },
+  //     {
+  //       name: "Add Room",
+  //       url: "/roomwith-category/add",
+  //     },
+  //   ],
+  // },
   // {
   //   name: "Banquets",
   //   icon: <MdEmojiEvents />,
@@ -111,20 +131,20 @@ export const links = [
   //     },
   //   ],
   // },
-  {
-    name: "Club Members",
-    icon: <FiUsers />,
-    subLinks: [
-      {
-        name: "All Members",
-        url: "/customers",
-      },
-      {
-        name: "Add Member",
-        url: "/member/add",
-      },
-    ],
-  },
+  // {
+  //   name: "Club Members",
+  //   icon: <FiUsers />,
+  //   subLinks: [
+  //     {
+  //       name: "All Members",
+  //       url: "/customers",
+  //     },
+  //     {
+  //       name: "Add Member",
+  //       url: "/member/add",
+  //     },
+  //   ],
+  // },
 
   {
     name: "Offers",
