@@ -57,6 +57,10 @@ export const links = [
         url: "/banquets",
       },
       {
+        name: "Banquet Bookings",
+        url: "/banquet-bookings",
+      },
+      {
         name: "Room Categories",
         url: "/categories",
       },

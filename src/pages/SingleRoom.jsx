@@ -503,19 +503,19 @@
 // //             <Paper sx={{ p: 3, mb: 3 }}>
 // //                 <Grid container spacing={4}>
 // //                     <Grid item xs={12} md={5}>
-// //                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-// //                             {room.images?.map((image, index) => (
-// //                                 <Box key={index} sx={{ position: "relative" }}>
-// //                                     <Avatar
-// //                                         src={`${PUBLIC_API_URI}${image}`}
-// //                                         sx={{ width: 120, height: 120 }}
-// //                                     />
-// //                                     <IconButton onClick={() => handleDeleteImage(index)}>
-// //                                         <FiTrash />
-// //                                     </IconButton>
-// //                                 </Box>
-// //                             ))}
-// //                         </Box>
+// <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+//     {room.images?.map((image, index) => (
+//         <Box key={index} sx={{ position: "relative" }}>
+//             <Avatar
+//                 src={`${PUBLIC_API_URI}${image}`}
+//                 sx={{ width: 120, height: 120 }}
+//             />
+//             <IconButton onClick={() => handleDeleteImage(index)}>
+//                 <FiTrash />
+//             </IconButton>
+//         </Box>
+//     ))}
+// </Box>
 // //                     </Grid>
 // //                     <Typography variant="h5">{room.roomName}</Typography>
 // //                     <Typography>Room Number: {room.roomNumber}</Typography>
@@ -735,6 +735,7 @@ const SingleRoom = () => {
                         <Typography>Price Range: ₹{room.priceRange?.minPrice} - ₹{room.priceRange?.maxPrice}</Typography>
                         <Typography>Capacity: {room.maxAllowedPerRoom}</Typography>
                         {/* <Typography>Amenities: {room.amenities?.map(am => am.name).join(", ")}</Typography> */}
+                        <Typography variant="h  6">Room Amenities</Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
                             {room.amenities?.map((amenity, index) => (
                                 <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -750,7 +751,13 @@ const SingleRoom = () => {
                         <Typography>Room Size: {room.roomSize} sq ft</Typography>
                         <Typography>Bed Type: {room.bedType}</Typography>
                         <Typography>Status: {room.status}</Typography>
-                        <Typography>Description: {room.description}</Typography>
+                        <Typography>Description:
+
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: room?.description || "N/A",
+                                }}
+                            /></Typography>
 
                         <Typography variant="h6">Features:</Typography>
                         <Typography>

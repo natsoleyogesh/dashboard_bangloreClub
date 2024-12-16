@@ -21,14 +21,24 @@ import { showToast } from "../../../api/toast";
 import { CurrencyRupee } from "@mui/icons-material";
 import { fetchAllActiveTaxTypes } from "../../../api/masterData/taxType";
 import { fetchAllActiveAmenities } from "../../../api/masterData/amenities";
-import { FiTrash } from "react-icons/fi";
+import { FiTrash, FiPlus } from "react-icons/fi";
 import { BiImageAdd } from "react-icons/bi";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import CategoryIcon from "@mui/icons-material/Category";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import HotelIcon from "@mui/icons-material/Hotel";
+import dayjs from "dayjs";
 
 const statusOptions = ["Active", "Inactive"];
+const daysOptions = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+];
 
 const AddBanquet = () => {
     const [banquetData, setBanquetData] = useState({
@@ -38,7 +48,7 @@ const AddBanquet = () => {
         checkOutTime: "01:00 PM",
         maxAllowedPerRoom: "",
         priceRange: { minPrice: "", maxPrice: "" },
-        pricingDetails: "",
+        pricingDetails: [{ days: [], timeSlots: [{ start: null, end: null }], price: "" }],
         amenities: [],
         taxTypes: [],
         breakfastIncluded: false,
@@ -157,6 +167,19 @@ const AddBanquet = () => {
                 amenities: banquetData.amenities.filter((amenity) => amenity !== value), // Remove amenity ID from array
             });
         }
+    };
+
+
+    const handleFeatureChange = (e) => {
+        const { name, checked } = e.target;
+        console.log(name, checked, "handleInputChange");
+        setBanquetData({
+            ...banquetData,
+            features: {
+                ...banquetData.features,
+                [name]: checked,
+            },
+        });
     };
 
     const handleCancalletionChange = (e) => {
@@ -319,9 +342,9 @@ const AddBanquet = () => {
             newErrors.banquetHallSize = "Room size must be a valid positive number.";
         }
 
-        
+
         // Validate status
-        if (!roomData.status) newErrors.status = "Room status is required.";
+        if (!banquetData.status) newErrors.status = "Room status is required.";
 
 
         console.log(newErrors, "newErr---------------")
@@ -342,19 +365,36 @@ const AddBanquet = () => {
         setLoading(true);
         try {
             // setLoading(true);
+            console.log(banquetData, "banq")
 
             const formData = new FormData();
-            Object.keys(banquetData).forEach((key) => {
-                if (key === "priceRange" || key === "cancellationPolicy" || key === "features") {
-                    Object.keys(banquetData[key]).forEach((subKey) => {
-                        formData.append(`${key}[${subKey}]`, banquetData[key][subKey]);
-                    });
-                } else {
-                    formData.append(key, banquetData[key]);
-                }
-            });
 
-            formData.append("images", images);
+            addBasicBanquetDataToFormData(formData);
+
+            // Add amenities to formData
+            addAmenitiesToFormData(formData);
+
+            // Add features (JSON) to formData
+            addFeaturesToFormData(formData);
+
+            // Add features (JSON) to formData
+            addPriceRangeToFormData(formData);
+
+            // Add images to formData
+            addImagesToFormData(formData);
+
+            // Add special day tariff if any
+            addSpecialDayTariffToFormData(formData);
+
+            // Add cancellation policy to formData
+            addCancellationPolicyToFormData(formData);
+
+            // add pricindeails
+            addPricingDetailsToFormData(formData);
+
+            addTaxTypesToFormData(formData);
+
+            // formData.append("images", images);
 
             const response = await addBanquet(formData);
 
@@ -371,6 +411,165 @@ const AddBanquet = () => {
             setLoading(false);
         }
     };
+
+
+
+    // Function to add basic room data to formData
+    const addBasicBanquetDataToFormData = (formData) => {
+        console.log(formData, "formdat")
+        Object.entries(banquetData).forEach(([key, value]) => {
+            console.log(banquetData, "formdat")
+
+            if (key === 'cancellationPolicy' || key === 'priceRange' || key === 'pricingDetails' || key === 'features' || key === 'specialDayTariff' || key === "taxTypes" || key === "amenities") {
+                // Handle complex fields separately (already covered in other functions)
+                return;
+            }
+            formData.append(key, value);
+        });
+    };
+
+
+    // // Function to add pricing details to formData
+    const addPricingDetailsToFormData = (formData) => {
+        banquetData.pricingDetails.forEach((detail, index) => {
+            // Add selected days
+            detail.days.forEach((day, dayIndex) => {
+                formData.append(`pricingDetails[${index}][days][${dayIndex}]`, day);
+            });
+
+            // Add time slots
+            detail.timeSlots.forEach((slot, slotIndex) => {
+                formData.append(`pricingDetails[${index}][timeSlots][${slotIndex}][start]`, slot.start || "");
+                formData.append(`pricingDetails[${index}][timeSlots][${slotIndex}][end]`, slot.end || "");
+            });
+
+            // Add price
+            formData.append(`pricingDetails[${index}][price]`, detail.price || "");
+        });
+    };
+
+    // Function to add amenities to formData
+    const addAmenitiesToFormData = (formData) => {
+        // banquetData.amenities.forEach((amenity) => formData.append('amenities', JSON.stringify(amenity)));
+        banquetData.amenities.forEach((amenity, index) => {
+            formData.append(`amenities[${index}]`, amenity);
+        });
+    };
+
+    // Function to add features as JSON to formData
+    const addFeaturesToFormData = (formData) => {
+        formData.append('features', JSON.stringify(banquetData.features));
+    };
+
+    // Function to add features as JSON to formData
+    const addPriceRangeToFormData = (formData) => {
+        formData.append('priceRange', JSON.stringify(banquetData.priceRange));
+    };
+
+    // Function to add images to formData
+    const addImagesToFormData = (formData) => {
+        images.forEach((image) => formData.append('images', image));
+    };
+
+    // Function to add special day tariff to formData
+    const addSpecialDayTariffToFormData = (formData) => {
+        banquetData.specialDayTariff.forEach((tariff, index) => {
+            formData.append(`specialDayTariff[${index}][special_day_name]`, tariff.special_day_name);
+            formData.append(`specialDayTariff[${index}][startDate]`, tariff.startDate);
+            formData.append(`specialDayTariff[${index}][endDate]`, tariff.endDate);
+            formData.append(`specialDayTariff[${index}][extraCharge]`, tariff.extraCharge);
+        });
+    };
+
+    // Function to add cancellation policy to formData
+    const addCancellationPolicyToFormData = (formData) => {
+        // Object.entries(banquetData.cancellationPolicy).forEach(([key, value]) => {
+        //     formData.append(`cancellationPolicy[${key}]`, value);
+        // });
+        formData.append('cancellationPolicy', JSON.stringify(banquetData.cancellationPolicy));
+    };
+
+
+    // Function to add tax types to formData
+    const addTaxTypesToFormData = (formData) => {
+        // banquetData.taxTypes.forEach((taxType) => formData.append('taxTypes', JSON.stringify(taxType)));
+        banquetData.taxTypes.forEach((taxType, index) => {
+            formData.append(`taxTypes[${index}]`, taxType);
+        });
+    };
+
+
+
+    const handleAddPricingDetail = () => {
+        setBanquetData((prevData) => ({
+            ...prevData,
+            pricingDetails: [
+                ...prevData.pricingDetails,
+                { days: [], timeSlots: [{ start: null, end: null }], price: "" },
+            ],
+        }));
+    };
+
+    const handleRemovePricingDetail = (index) => {
+        setBanquetData((prevData) => ({
+            ...prevData,
+            pricingDetails: prevData.pricingDetails.filter((_, i) => i !== index),
+        }));
+    };
+
+    const handlePricingDetailChange = (index, field, value) => {
+        const updatedPricingDetails = [...banquetData.pricingDetails];
+        updatedPricingDetails[index][field] = value;
+        setBanquetData((prevData) => ({
+            ...prevData,
+            pricingDetails: updatedPricingDetails,
+        }));
+    };
+
+    const handleDaySelection = (index, day) => {
+        const updatedPricingDetails = [...banquetData.pricingDetails];
+        const currentDays = updatedPricingDetails[index].days;
+        if (currentDays.includes(day)) {
+            updatedPricingDetails[index].days = currentDays.filter((d) => d !== day);
+        } else {
+            updatedPricingDetails[index].days.push(day);
+        }
+        setBanquetData((prevData) => ({
+            ...prevData,
+            pricingDetails: updatedPricingDetails,
+        }));
+    };
+
+    const handleTimeSlotChange = (pricingIndex, slotIndex, field, value) => {
+        const updatedPricingDetails = [...banquetData.pricingDetails];
+        updatedPricingDetails[pricingIndex].timeSlots[slotIndex][field] = value;
+        setBanquetData((prevData) => ({
+            ...prevData,
+            pricingDetails: updatedPricingDetails,
+        }));
+    };
+
+    const handleAddTimeSlot = (index) => {
+        const updatedPricingDetails = [...banquetData.pricingDetails];
+        updatedPricingDetails[index].timeSlots.push({ start: null, end: null });
+        setBanquetData((prevData) => ({
+            ...prevData,
+            pricingDetails: updatedPricingDetails,
+        }));
+    };
+
+    // Function to remove a specific time slot
+    const handleRemoveTimeSlot = (pricingIndex, slotIndex) => {
+        setBanquetData((prevData) => {
+            const updatedPricingDetails = [...prevData.pricingDetails];
+            const updatedTimeSlots = updatedPricingDetails[pricingIndex].timeSlots.filter(
+                (_, index) => index !== slotIndex
+            );
+            updatedPricingDetails[pricingIndex].timeSlots = updatedTimeSlots;
+            return { ...prevData, pricingDetails: updatedPricingDetails };
+        });
+    };
+
 
 
     const UploadBox = ({ onClick }) => (
@@ -447,7 +646,7 @@ const AddBanquet = () => {
                             setBanquetData((prev) => ({ ...prev, description: value }))
                         }
                         placeholder="Describe the banquet"
-                        style={{ height: "120px", borderRadius: "8px" }}
+                        style={{ height: "120px", borderRadius: "8px", marginBottom: "80px" }}
                     />
                 </Box>
 
@@ -500,24 +699,6 @@ const AddBanquet = () => {
                         helperText={errors.checkOutTime}
                         InputProps={{
                             startAdornment: <CurrencyRupee sx={{ color: "gray", mr: 1 }} />,
-                        }}
-                    />
-                </Box>
-
-                {/* Max Allowed Per Room */}
-                <Box sx={{ mb: 3 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Max Allowed Per Room</InputLabel>
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        size="small"
-                        name="maxAllowedPerRoom"
-                        value={banquetData.maxAllowedPerRoom}
-                        onChange={handleInputChange}
-                        error={!!errors.maxAllowedPerRoom}
-                        helperText={errors.maxAllowedPerRoom}
-                        InputProps={{
-                            startAdornment: <MeetingRoomIcon sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>
@@ -613,18 +794,167 @@ const AddBanquet = () => {
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Permissions</InputLabel>
                     <FormControlLabel
-                        control={<Checkbox checked={banquetData.smokingAllowed} onChange={handleCheckboxChange} name="smokingAllowed" />}
+                        control={<Checkbox checked={banquetData.features.smokingAllowed} onChange={handleFeatureChange} name="smokingAllowed" />}
                         label="Smoking Allowed"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={banquetData.petFriendly} onChange={handleCheckboxChange} name="petFriendly" />}
+                        control={<Checkbox checked={banquetData.features.petFriendly} onChange={handleFeatureChange} name="petFriendly" />}
                         label="Pet Friendly"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={banquetData.accessible} onChange={handleCheckboxChange} name="accessible" />}
+                        control={<Checkbox checked={banquetData.features.accessible} onChange={handleFeatureChange} name="accessible" />}
                         label="Accessible"
                     />
                 </Box>
+
+
+                <Paper sx={{ p: 3, borderRadius: "12px", mt: 3 }}>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                        Pricing Details
+                    </Typography>
+                    {banquetData.pricingDetails.map((detail, index) => (
+                        <Box
+                            key={index}
+                            sx={{
+                                mb: 3,
+                                p: 2,
+                                border: "1px solid #ddd",
+                                borderRadius: "8px",
+                            }}
+                        >
+                            {/* Days Selection */}
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
+                                    Select Days
+                                </Typography>
+                                {daysOptions.map((day) => (
+                                    <FormControlLabel
+                                        key={day}
+                                        control={
+                                            <Checkbox
+                                                checked={detail.days.includes(day)}
+                                                onChange={() => handleDaySelection(index, day)}
+                                            />
+                                        }
+                                        label={day}
+                                    />
+                                ))}
+                                {errors[`days_${index}`] && (
+                                    <Typography color="error">{errors[`days_${index}`]}</Typography>
+                                )}
+                            </Box>
+
+                            {/* Time Slots */}
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
+                                    Time Slots
+                                </Typography>
+                                {detail.timeSlots.map((slot, slotIndex) => (
+                                    <Box key={slotIndex} sx={{ display: "flex", gap: 2, mb: 1 }}>
+                                        <TextField
+                                            label="Start Time"
+                                            type="time"
+                                            fullWidth
+                                            margin="dense"
+                                            value={slot.start || ""}
+                                            onChange={(e) =>
+                                                handleTimeSlotChange(index, slotIndex, "start", e.target.value)
+                                            }
+                                            error={!!errors[`timeSlotStart_${index}_${slotIndex}`]}
+                                            helperText={errors[`timeSlotStart_${index}_${slotIndex}`]}
+                                        />
+                                        <TextField
+                                            label="End Time"
+                                            type="time"
+                                            fullWidth
+                                            margin="dense"
+                                            value={slot.end || ""}
+                                            onChange={(e) =>
+                                                handleTimeSlotChange(index, slotIndex, "end", e.target.value)
+                                            }
+                                            error={!!errors[`timeSlotEnd_${index}_${slotIndex}`]}
+                                            helperText={errors[`timeSlotEnd_${index}_${slotIndex}`]}
+                                        />
+
+                                        {detail.timeSlots.length > 1 && (
+                                            <Button
+                                                variant="outlined"
+                                                color="error"
+                                                onClick={() => handleRemoveTimeSlot(index, slotIndex)}
+                                                size="small"
+                                                sx={{
+                                                    margin: "15px"
+                                                }}
+                                            >
+                                                <FiTrash />
+                                            </Button>
+                                        )}
+
+                                        {slotIndex === detail.timeSlots.length - 1 && (
+                                            <Button
+                                                variant="outlined"
+                                                color="primary"
+                                                onClick={() => handleAddTimeSlot(index)}
+                                                size="small"
+                                                sx={{
+                                                    margin: "15px"
+                                                }}
+                                            >
+                                                <FiPlus />
+                                            </Button>
+                                        )}
+                                    </Box>
+                                ))}
+                                {errors[`timeSlots_${index}`] && (
+                                    <Typography color="error">
+                                        {errors[`timeSlots_${index}`]}
+                                    </Typography>
+                                )}
+                            </Box>
+
+                            {/* Price */}
+                            <Box sx={{ mb: 2 }}>
+                                <TextField
+                                    label="Price"
+                                    placeholder="Enter price"
+                                    value={detail.price}
+                                    onChange={(e) =>
+                                        handlePricingDetailChange(index, "price", e.target.value)
+                                    }
+                                    error={!!errors[`price_${index}`]}
+                                    helperText={errors[`price_${index}`]}
+                                    fullWidth
+                                    size="small"
+                                />
+                            </Box>
+
+                            {/* Remove Pricing Detail */}
+                            <Box>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    size="small"
+                                    onClick={() => handleRemovePricingDetail(index)}
+                                >
+                                    <FiTrash /> Remove Pricing
+                                </Button>
+                            </Box>
+                        </Box>
+                    ))}
+
+                    {/* Add Pricing Detail Button */}
+                    <Box>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<FiPlus />}
+                            onClick={handleAddPricingDetail}
+                        >
+                            Add Pricing Detail
+                        </Button>
+                    </Box>
+                </Paper>
+
 
                 {/* Tax Types */}
                 <Box sx={{ mb: 2 }}>
@@ -776,6 +1106,19 @@ const AddBanquet = () => {
                             Add Special Day Tariff
                         </Button>
                     </Box>
+                </Box>
+
+                {/* Description */}
+                <Box sx={{ mb: 3 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Pricing Details Description</InputLabel>
+                    <ReactQuill
+                        value={banquetData.pricingDetailDescription}
+                        onChange={(value) =>
+                            setBanquetData((prev) => ({ ...prev, pricingDetailDescription: value }))
+                        }
+                        placeholder="Describe the banquet"
+                        style={{ height: "120px", borderRadius: "8px", marginBottom: "100px" }}
+                    />
                 </Box>
 
                 <Box sx={{ mb: 2 }}>

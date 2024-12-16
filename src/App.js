@@ -85,6 +85,11 @@ import AddBanquetCategory from "./pages/banquet/category/AddCategory";
 import Banquets from "./pages/banquet/banquet-creatation/Banquets";
 import SingleBanquet from "./pages/banquet/banquet-creatation/SingleBanquet";
 import AddBanquet from "./pages/banquet/banquet-creatation/AddBanquet";
+import EditBanquet from "./pages/banquet/banquet-creatation/EditBanquet";
+import BanquetBookings from "./pages/banquet/booking/Bookings";
+import SingleBanquetBooking from "./pages/banquet/booking/SingleBooking";
+import RoomBookings from "./pages/room/booking/RoomBookings";
+import SingleRoomBooking from "./pages/room/booking/SingleBooking";
 
 const sideBarWidth = 250;
 
@@ -294,6 +299,23 @@ function App() {
             }
           />
 
+          <Route
+            path="/room-bookings"
+            element={
+              <ProtectedRoute>
+                <RoomBookings />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/room-booking/:id"
+            element={
+              <ProtectedRoute>
+                <SingleRoomBooking />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Banquet Routes */}
 
@@ -343,6 +365,32 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddBanquet />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/banquet/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditBanquet />
+              </ProtectedRoute>
+            }
+          />
+
+
+          <Route
+            path="/banquet-bookings"
+            element={
+              <ProtectedRoute>
+                <BanquetBookings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/banquet-booking/:id"
+            element={
+              <ProtectedRoute>
+                < SingleBanquetBooking />
               </ProtectedRoute>
             }
           />

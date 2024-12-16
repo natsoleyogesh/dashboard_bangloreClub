@@ -98,3 +98,56 @@ export const uploadRoomImage = async (roomId, formData) => {
         throw error;
     }
 };
+
+
+// Room Booking API
+
+
+// Fetch all banquets
+export const fetchAllRoomBookingss = async () => {
+    try {
+        const response = await axiosInstance.get("/room-bookings");
+        return response; // Assuming the data is in response.data
+    } catch (error) {
+        console.error("Error fetching all banquets:", error);
+        throw new Error(error);
+    }
+};
+
+// Fetch banquet details by ID
+export const fetchRoomBookingDetails = async (bookingId) => {
+    try {
+        const response = await axiosInstance.get(`/room-booking/${bookingId}`);
+        return response; // Assuming the banquet details are in response.data
+    } catch (error) {
+        console.error(`Error fetching banquet details for bookingId ${bookingId}:`, error);
+        throw new Error(error);
+    }
+};
+
+
+// Delete a banquet by ID
+export const deleteRoomBooking = async (bookingId) => {
+    try {
+        const response = await axiosInstance.delete(`/room-booking/${bookingId}`);
+        return response; // Assuming the response confirms successful deletion
+    } catch (error) {
+        console.error("Error deleting banquet:", error);
+        throw new Error(error);
+    }
+};
+
+// Update banquet details
+export const updateRoomBooking = async (bookingId, banquetData) => {
+    try {
+        const response = await axiosInstance.post(`/room-booking/allocate-room/${bookingId}`, banquetData, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response; // Assuming the updated banquet data is in response.data
+    } catch (error) {
+        console.error("Error updating banquet details:", error);
+        throw new Error(error);
+    }
+};

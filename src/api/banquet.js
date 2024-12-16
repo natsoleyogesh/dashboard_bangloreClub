@@ -108,6 +108,17 @@ export const fetchBanquetDetails = async (id) => {
     }
 };
 
+// Fetch banquet details by ID
+export const fetchEditBanquetDetails = async (id) => {
+    try {
+        const response = await axiosInstance.get(`/banquet-editDetails/${id}`);
+        return response; // Assuming the banquet details are in response.data
+    } catch (error) {
+        console.error(`Error fetching banquet details for ID ${id}:`, error);
+        throw new Error(error);
+    }
+};
+
 // Update banquet details
 export const updateBanquetDetails = async (banquetId, banquetData) => {
     try {
@@ -126,6 +137,8 @@ export const updateBanquetDetails = async (banquetId, banquetData) => {
 // Add a new banquet
 export const addBanquet = async (formData) => {
     try {
+        console.log(formData, "banquet.jsformdata")
+
         const response = await axiosInstance.post("/banquet/create", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -176,3 +189,53 @@ export const uploadBanquetImage = async (banquetId, formData) => {
 };
 
 // Banquet Booking APIs Functions
+
+
+// Fetch all banquets
+export const fetchAllBanquetBookingss = async () => {
+    try {
+        const response = await axiosInstance.get("/banquet-bookings");
+        return response; // Assuming the data is in response.data
+    } catch (error) {
+        console.error("Error fetching all banquets:", error);
+        throw new Error(error);
+    }
+};
+
+// Fetch banquet details by ID
+export const fetchBanquetBookingDetails = async (banquetId) => {
+    try {
+        const response = await axiosInstance.get(`/banquet-booking/${banquetId}`);
+        return response; // Assuming the banquet details are in response.data
+    } catch (error) {
+        console.error(`Error fetching banquet details for banquetId ${banquetId}:`, error);
+        throw new Error(error);
+    }
+};
+
+
+// Delete a banquet by ID
+export const deleteBanquetBooking = async (banquetId) => {
+    try {
+        const response = await axiosInstance.delete(`/banquet-booking/${banquetId}`);
+        return response; // Assuming the response confirms successful deletion
+    } catch (error) {
+        console.error("Error deleting banquet:", error);
+        throw new Error(error);
+    }
+};
+
+// Update banquet details
+export const updateBanquetBooking = async (banquetData) => {
+    try {
+        const response = await axiosInstance.post(`/banquet-booking-allocate`, banquetData, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response; // Assuming the updated banquet data is in response.data
+    } catch (error) {
+        console.error("Error updating banquet details:", error);
+        throw new Error(error);
+    }
+};
