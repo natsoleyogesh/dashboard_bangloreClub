@@ -54,11 +54,12 @@ export const Table = ({
       enableTopToolbar={enableTopToolBar}
       renderRowActions={({ row }) => (
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Tooltip arrow placement="right" title="Delete">
+
+          {(routeLink) && (< Tooltip arrow placement="right" title="Delete">
             <IconButton color="error" onClick={() => handleDelete(row.original)}>
               <FiTrash />
             </IconButton>
-          </Tooltip>
+          </Tooltip>)}
           {showPreview && routeLink && (
             <Tooltip arrow placement="right" title="View">
               <Link to={`/${routeLink}/${row.id}`}>
@@ -68,7 +69,7 @@ export const Table = ({
               </Link>
             </Tooltip>
           )}
-        </Box>
+        </Box >
       )}
       muiTableBodyRowProps={{ hover: false }}
       muiTablePaperProps={{

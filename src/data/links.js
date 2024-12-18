@@ -72,6 +72,14 @@ export const links = [
         name: "Room Bookings",
         url: "/room-bookings",
       },
+      {
+        name: "Billing",
+        url: "/billings",
+      },
+      {
+        name: "Transacation",
+        url: "/transactions",
+      },
     ],
   },
   {

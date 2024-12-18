@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 // Function to fetch all categories with optional isActive filter
 export const fetchAllBanquetCategories = async () => {
     try {
-        const response = await axiosInstance.get("/banquet-categories");
+        const response = await axiosInstance.get("/all-banquet-categories");
         return response; // Assuming the API returns categories in `response.data`
     } catch (error) {
         console.error("Error fetching categories:", error);

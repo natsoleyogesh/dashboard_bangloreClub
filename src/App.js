@@ -90,6 +90,9 @@ import BanquetBookings from "./pages/banquet/booking/Bookings";
 import SingleBanquetBooking from "./pages/banquet/booking/SingleBooking";
 import RoomBookings from "./pages/room/booking/RoomBookings";
 import SingleRoomBooking from "./pages/room/booking/SingleBooking";
+import Billings from "./pages/Billings/Billings";
+import SingleBilling from "./pages/Billings/SingleBilling";
+import Transactions from "./pages/Transaction/Transactions";
 
 const sideBarWidth = 250;
 
@@ -791,6 +794,50 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddAmenitie />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Billing routes */}
+          <Route
+            path="/billings"
+            element={
+              <ProtectedRoute>
+                <Billings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/billing/:id"
+            element={
+              <ProtectedRoute>
+                < SingleBilling />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
+            path="/amenitie/add"
+            element={
+              <ProtectedRoute>
+                <AddAmenitie />
+              </ProtectedRoute>
+            }
+          /> */}
+
+          {/* Billing routes */}
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <Transactions />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transaction/:id"
+            element={
+              <ProtectedRoute>
+                < SingleBilling />
               </ProtectedRoute>
             }
           />
