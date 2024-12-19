@@ -12,9 +12,13 @@ const axiosInstance = axios.create({
 });
 
 // Function to fetch all users
-export const fetchAllBillings = async () => {
+export const fetchAllBillings = async (params) => {
     try {
-        const response = await axiosInstance.get("/billings");
+        // const response = await axiosInstance.get("/billings");
+        const queryString = new URLSearchParams(params).toString();
+
+        // Append query string to the API endpoint
+        const response = await axiosInstance.get(`/billings?${queryString}`);
         return response; // Assuming the API returns user data in `response.data`
     } catch (error) {
         console.error("Error fetching users:", error);

@@ -117,10 +117,10 @@ const SingleBilling = () => {
                                     <strong>Final Total Amount:</strong> ₹{billing.serviceDetails.banquetBooking.pricingDetails.final_totalAmount || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Sub Total Tax Amount:</strong> ₹{billing.serviceDetails.banquetBooking.pricingDetails.totalAmount || "N/A"}
+                                    <strong>Sub Total Amount:</strong> ₹{(billing.serviceDetails.banquetBooking.pricingDetails.totalAmount + billing.serviceDetails.banquetBooking.pricingDetails.specialDayExtraCharge) || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Final Total Tax Amount:</strong> ₹{billing.serviceDetails.banquetBooking.pricingDetails.totalTaxAmount || "N/A"}
+                                    <strong>Total Tax Amount:</strong> ₹{billing.serviceDetails.banquetBooking.pricingDetails.totalTaxAmount || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
                                     <strong>Invitation Of Member:</strong> ₹{billing.serviceDetails.banquetBooking.invitationOfmember || "N/A"}
@@ -129,10 +129,10 @@ const SingleBilling = () => {
                                     <strong>Address:</strong> ₹{billing.serviceDetails.banquetBooking.address || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Total Attending Guests:</strong> ₹{billing.serviceDetails.banquetBooking.attendingGuests || "N/A"}
+                                    <strong>Total Attending Guests:</strong> {billing.serviceDetails.banquetBooking.attendingGuests || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Occasion:</strong> ₹{billing.serviceDetails.banquetBooking.occasion || "N/A"}
+                                    <strong>Occasion:</strong> {billing.serviceDetails.banquetBooking.occasion || "N/A"}
                                 </Typography>
                             </Box>
                         )}
@@ -147,10 +147,10 @@ const SingleBilling = () => {
                                     <strong>Final Total Amount:</strong> ₹{billing.serviceDetails.eventBooking.ticketDetails.totalAmount || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Sub Total Tax Amount:</strong> ₹{billing.serviceDetails.eventBooking.ticketDetails.subtotal || "N/A"}
+                                    <strong>Sub Total Amount:</strong> ₹{billing.serviceDetails.eventBooking.ticketDetails.subtotal || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Final Total Tax Amount:</strong> ₹{billing.serviceDetails.eventBooking.ticketDetails.taxAmount || "N/A"}
+                                    <strong>Total Tax Amount:</strong> ₹{billing.serviceDetails.eventBooking.ticketDetails.taxAmount || "N/A"}
                                 </Typography>
                                 <Typography variant="body1">
                                     <strong>Event Date:</strong> {new Date(billing.serviceDetails.eventBooking.eventId?.eventDate).toLocaleDateString() || "N/A"}
