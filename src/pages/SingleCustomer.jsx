@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteMember, fetchMemberDetails, updateMemberDetails, updateProfilePicture } from "../api/member";
 import Table from "../components/Table";
 import { invoiceDataColumns } from "../data/invoiceList";
@@ -61,7 +61,7 @@ const SingleProduct = () => {
 
 
   console.log(member, memberList, "memberList")
-  const { memberId, name, email, address, mobileNumber, familyMembers, profilePicture, status, address1,
+  const { _id, memberId, name, email, address, mobileNumber, familyMembers, profilePicture, status, address1,
     address2,
     city,
     state,
@@ -343,6 +343,48 @@ const SingleProduct = () => {
             routeLink="customers"
             handleDelete={handleDeleteClick}
           />
+          {/* Action Buttons */}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            display="flex"
+            justifyContent="flex-start"
+            flexWrap="wrap"
+            gap={2}
+          >
+            {/* Link to All Invoices */}
+            <Link to={`/billings/${_id}`} style={{ textDecoration: "none" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<FiPlus />}
+                sx={{
+                  borderRadius: "20px",
+                  textTransform: "capitalize",
+                  padding: "10px 20px",
+                }}
+              >
+                All Invoices of {name}
+              </Button>
+            </Link>
+
+            {/* Link to All Transactions */}
+            <Link to={`/transactions/${_id}`} style={{ textDecoration: "none" }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<FiPlus />}
+                sx={{
+                  borderRadius: "20px",
+                  textTransform: "capitalize",
+                  padding: "10px 10px",
+                }}
+              >
+                All Transactions of {name}
+              </Button>
+            </Link>
+          </Grid>
         </Grid>
       </Grid>
 

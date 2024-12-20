@@ -124,6 +124,12 @@ import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
+    FormControl,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
     Typography,
 } from "@mui/material";
 import Table from "../../components/Table";
@@ -132,9 +138,20 @@ import { showToast } from "../../api/toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { fetchAllMembers } from "../../api/member";
+import { useParams } from "react-router-dom";
 
 const Transactions = () => {
+    const { id } = useParams();
+
     const [transactions, setTransactions] = useState([]);
+    const [filterType, setFilterType] = useState("all");
+    const [paymentStatus, setPaymentStatus] = useState("all");
+    const [customStartDate, setCustomStartDate] = useState("");
+    const [customEndDate, setCustomEndDate] = useState("");
+    // const [userId, setUserId] = useState("all");
+    const [userId, setUserId] = useState(id || "all");
+    const [activeMembers, setActiveMembers] = useState([]);
 
     // Utility function to format dates
     const formatDate = (dateString) => {
@@ -192,7 +209,18 @@ const Transactions = () => {
     // Fetch all transactions
     const fetchAllTransactionData = async () => {
         try {
-            const response = await fetchAllTransactions();
+            const queryParams = {
+                filterType,
+                customStartDate: customStartDate || undefined,
+                customEndDate: customEndDate || undefined,
+            };
+            if (paymentStatus !== "all") {
+                queryParams.paymentStatus = paymentStatus
+            }
+            if (userId !== "all") {
+                queryParams.userId = userId;
+            }
+            const response = await fetchAllTransactions(queryParams);
             setTransactions(response?.data?.transactions || []); // Set transactions to the fetched data
         } catch (error) {
             console.error("Error fetching transactions:", error);
@@ -200,10 +228,25 @@ const Transactions = () => {
         }
     };
 
+    const getActiveMembers = async () => {
+        try {
+            const response = await fetchAllMembers();
+            setActiveMembers(response.users);
+        } catch (error) {
+            console.error("Failed to fetch members :", error);
+            showToast("Failed to fetch Members. Please try again.", "error");
+        }
+    };
+
+    // Fetch billings on component mount and when filters change
+    useEffect(() => {
+        getActiveMembers();
+    }, [])
+
     // Fetch transactions on component mount
     useEffect(() => {
         fetchAllTransactionData();
-    }, []);
+    }, [filterType, paymentStatus, customStartDate, customEndDate, userId]);
 
     // Export to PDF
     const exportToPDF = () => {
@@ -264,16 +307,87 @@ const Transactions = () => {
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
             {/* Header Section */}
-            <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    mb: 2,
-                }}
-            >
-                <Typography variant="h6">Transactions</Typography>
-                <Box>
+            <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>Billings</Typography>
+                <Grid container spacing={2} alignItems="center">
+                    {!id && <Grid item xs={12} sm={3} md={2}>
+                        <InputLabel>Select Member</InputLabel>
+                        <FormControl fullWidth size="small">
+
+                            <Select
+                                name="userId"
+                                value={userId}
+                                onChange={(e) => setUserId(e.target.value)}
+                            >
+                                <MenuItem value="all">All</MenuItem>
+                                {activeMembers.map((member) => (
+                                    <MenuItem key={member._id} value={member._id}>
+                                        {member.name} (ID: {member.memberId})
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>}
+                    <Grid item xs={12} sm={3} md={2}>
+                        <InputLabel>Filter Type</InputLabel>
+                        <FormControl fullWidth size="small">
+                            <Select
+                                value={filterType}
+                                onChange={(e) => setFilterType(e.target.value)}
+                            >
+                                <MenuItem value="today">Today</MenuItem>
+                                <MenuItem value="last7days">Last 7 Days</MenuItem>
+                                <MenuItem value="lastMonth">Last Month</MenuItem>
+                                <MenuItem value="lastThreeMonths">Last 3 Months</MenuItem>
+                                <MenuItem value="lastSixMonths">Last 6 Months</MenuItem>
+                                <MenuItem value="last1year">Last 1 Year</MenuItem>
+                                <MenuItem value="custom">Custom</MenuItem>
+                                <MenuItem value="all">All</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={3} md={2}>
+                        <InputLabel>Payment Status</InputLabel>
+                        <FormControl fullWidth size="small">
+                            <Select
+                                value={paymentStatus}
+                                onChange={(e) => setPaymentStatus(e.target.value)}
+                            >
+                                <MenuItem value="Success">Success</MenuItem>
+                                <MenuItem value="Failed">Failed</MenuItem>
+                                <MenuItem value="Pending">Pending</MenuItem>
+                                <MenuItem value="all">All</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {filterType === "custom" && (
+                        <>
+                            <Grid item xs={12} sm={3} md={2}>
+                                <TextField
+                                    label="Start Date"
+                                    type="date"
+                                    fullWidth
+                                    size="small"
+                                    value={customStartDate}
+                                    onChange={(e) => setCustomStartDate(e.target.value)}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={3} md={2}>
+                                <TextField
+                                    label="End Date"
+                                    type="date"
+                                    fullWidth
+                                    size="small"
+                                    value={customEndDate}
+                                    onChange={(e) => setCustomEndDate(e.target.value)}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
+                        </>
+                    )}
+                </Grid>
+                <Box sx={{ mt: 3 }}>
                     <Button variant="contained" color="primary" onClick={exportToPDF} sx={{ mr: 1 }}>
                         Export to PDF
                     </Button>

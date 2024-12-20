@@ -223,13 +223,23 @@ import { showToast } from "../../api/toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { fetchAllMembers } from "../../api/member"
+import { useParams } from "react-router-dom";
 
 const Billings = () => {
+
+    const { id } = useParams();
+
     const [billings, setBillings] = useState([]);
     const [filterType, setFilterType] = useState("all");
     const [paymentStatus, setPaymentStatus] = useState("all");
     const [customStartDate, setCustomStartDate] = useState("");
     const [customEndDate, setCustomEndDate] = useState("");
+    // const [userId, setUserId] = useState("all");
+    const [userId, setUserId] = useState(id || "all");
+    const [activeMembers, setActiveMembers] = useState([]);
+
+
 
     // Utility function to format dates
     const formatDate = (dateString) => {
@@ -266,6 +276,9 @@ const Billings = () => {
             if (paymentStatus !== "all") {
                 queryParams.paymentStatus = paymentStatus
             }
+            if (userId !== "all") {
+                queryParams.userId = userId;
+            }
 
             const response = await fetchAllBillings(queryParams);
             setBillings(response?.data?.billings || []); // Set billings to the fetched data
@@ -275,10 +288,23 @@ const Billings = () => {
         }
     };
 
+    const getActiveMembers = async () => {
+        try {
+            const response = await fetchAllMembers();
+            setActiveMembers(response.users);
+        } catch (error) {
+            console.error("Failed to fetch members :", error);
+            showToast("Failed to fetch Members. Please try again.", "error");
+        }
+    };
+
     // Fetch billings on component mount and when filters change
     useEffect(() => {
+        getActiveMembers();
+    }, [])
+    useEffect(() => {
         fetchAllBillingData();
-    }, [filterType, paymentStatus, customStartDate, customEndDate]);
+    }, [filterType, paymentStatus, customStartDate, customEndDate, userId]);
 
     // Export to PDF
     const exportToPDF = () => {
@@ -333,17 +359,36 @@ const Billings = () => {
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
             {/* Header Section */}
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 3 }}>
                 <Typography variant="h6" sx={{ mb: 2 }}>Billings</Typography>
                 <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} sm={2}>
-                        <FormControl fullWidth>
-                            <InputLabel>Filter Type</InputLabel>
+                    {!id && <Grid item xs={12} sm={3} md={2}>
+                        <InputLabel>Select Member</InputLabel>
+                        <FormControl fullWidth size="small">
+
+                            <Select
+                                name="userId"
+                                value={userId}
+                                onChange={(e) => setUserId(e.target.value)}
+                            >
+                                <MenuItem value="all">All</MenuItem>
+                                {activeMembers.map((member) => (
+                                    <MenuItem key={member._id} value={member._id}>
+                                        {member.name} (ID: {member.memberId})
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>}
+                    <Grid item xs={12} sm={3} md={2}>
+                        <InputLabel>Filter Type</InputLabel>
+                        <FormControl fullWidth size="small">
                             <Select
                                 value={filterType}
                                 onChange={(e) => setFilterType(e.target.value)}
                             >
-                                <MenuItem value="history">History</MenuItem>
+                                <MenuItem value="today">Today</MenuItem>
+                                <MenuItem value="last7days">Last 7 Days</MenuItem>
                                 <MenuItem value="lastMonth">Last Month</MenuItem>
                                 <MenuItem value="lastThreeMonths">Last 3 Months</MenuItem>
                                 <MenuItem value="lastSixMonths">Last 6 Months</MenuItem>
@@ -353,48 +398,48 @@ const Billings = () => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={2}>
-                        <FormControl fullWidth>
-                            <InputLabel>Payment Status</InputLabel>
+                    <Grid item xs={12} sm={3} md={2}>
+                        <InputLabel>Payment Status</InputLabel>
+                        <FormControl fullWidth size="small">
                             <Select
                                 value={paymentStatus}
                                 onChange={(e) => setPaymentStatus(e.target.value)}
                             >
-                                <MenuItem value="all" >All</MenuItem>
                                 <MenuItem value="Paid">Paid</MenuItem>
                                 <MenuItem value="Due">Due</MenuItem>
                                 <MenuItem value="Overdue">Overdue</MenuItem>
+                                <MenuItem value="all">All</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
                     {filterType === "custom" && (
                         <>
-                            <Grid item xs={12} sm={2}>
-                                <InputLabel>Choose Start Date</InputLabel>
+                            <Grid item xs={12} sm={3} md={2}>
                                 <TextField
-                                    // label="Start Date"
+                                    label="Start Date"
                                     type="date"
                                     fullWidth
-                                    // InputLabelProps={{ shrink: true }}
+                                    size="small"
                                     value={customStartDate}
                                     onChange={(e) => setCustomStartDate(e.target.value)}
+                                    InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={2}>
-                                <InputLabel>Choose End Date</InputLabel>
+                            <Grid item xs={12} sm={3} md={2}>
                                 <TextField
-                                    // label="End Date"
+                                    label="End Date"
                                     type="date"
                                     fullWidth
-                                    // InputLabelProps={{ shrink: true }}
+                                    size="small"
                                     value={customEndDate}
                                     onChange={(e) => setCustomEndDate(e.target.value)}
+                                    InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
                         </>
                     )}
                 </Grid>
-                <Box sx={{ mt: 2 }}>
+                <Box sx={{ mt: 3 }}>
                     <Button variant="contained" color="primary" onClick={exportToPDF} sx={{ mr: 1 }}>
                         Export to PDF
                     </Button>

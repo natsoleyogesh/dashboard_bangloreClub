@@ -808,6 +808,14 @@ function App() {
             }
           />
           <Route
+            path="/billings/:id"
+            element={
+              <ProtectedRoute>
+                <Billings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/billing/:id"
             element={
               <ProtectedRoute>
@@ -827,6 +835,14 @@ function App() {
           {/* Billing routes */}
           <Route
             path="/transactions"
+            element={
+              <ProtectedRoute>
+                <Transactions />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transactions/:id"
             element={
               <ProtectedRoute>
                 <Transactions />

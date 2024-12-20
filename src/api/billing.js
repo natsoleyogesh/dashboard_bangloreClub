@@ -76,9 +76,11 @@ export const deleteBilling = async (id) => {
 // Transactions details 
 
 // Function to fetch all users
-export const fetchAllTransactions = async () => {
+export const fetchAllTransactions = async (params) => {
     try {
-        const response = await axiosInstance.get("/transactions");
+        // const response = await axiosInstance.get("/billings");
+        const queryString = new URLSearchParams(params).toString();
+        const response = await axiosInstance.get(`/transactions?${queryString}`);
         return response; // Assuming the API returns user data in `response.data`
     } catch (error) {
         console.error("Error fetching users:", error);
