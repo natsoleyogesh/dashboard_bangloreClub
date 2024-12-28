@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { showToast } from "../../../api/toast";
 import { fetchDepartmentDetails, updateDepartmentDetails } from "../../../api/masterData/department";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const SingleDepartment = () => {
     const { id } = useParams();
@@ -70,12 +71,13 @@ const SingleDepartment = () => {
             }
         } catch (error) {
             console.error("Failed to update department details:", error);
-            showToast("Failed to update department details. Please try again.", "error");
+            showToast(error.response?.data?.message || "Failed to update department details. Please try again.", "error");
         }
     };
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Department Details
             </Typography>

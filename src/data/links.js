@@ -52,32 +52,50 @@ export const links = [
         name: "Banquet Categories",
         url: "/banquet-categories",
       },
-      {
-        name: "Banquets",
-        url: "/banquets",
-      },
-      {
-        name: "Banquet Bookings",
-        url: "/banquet-bookings",
-      },
+      // {
+      //   name: "Banquets",
+      //   url: "/banquets",
+      // },
+      // {
+      //   name: "Banquet Bookings",
+      //   url: "/banquet-bookings",
+      // },
       {
         name: "Room Categories",
         url: "/categories",
       },
+      // {
+      //   name: "Rooms",
+      //   url: "/roomwith-categories",
+      // },
+      // {
+      //   name: "Room Bookings",
+      //   url: "/room-bookings",
+      // },
+      // {
+      //   name: "Billing",
+      //   url: "/billings",
+      // },
+      // {
+      //   name: "Transacation",
+      //   url: "/transactions",
+      // },
       {
-        name: "Rooms",
-        url: "/roomwith-categories",
+        name: "Booking Requests",
+        url: "/requests",
       },
+    ],
+  },
+  {
+    name: "Billings",
+    icon: <MdEmojiEvents />,
+    subLinks: [
       {
-        name: "Room Bookings",
-        url: "/room-bookings",
-      },
-      {
-        name: "Billing",
+        name: "Invoices",
         url: "/billings",
       },
       {
-        name: "Transacation",
+        name: "Transactions",
         url: "/transactions",
       },
     ],
@@ -91,30 +109,44 @@ export const links = [
         url: "/events",
         icon: <MdEmojiEvents />,
       },
-      {
-        name: "Add Event",
-        url: "/events/add",
-      },
+      // {
+      //   name: "Add Event",
+      //   url: "/events/add",
+      // },
       {
         name: "Event Bookings",
         url: "bookings",
       },
     ],
   },
-  // {
-  //   name: "Room Categories",
-  //   icon: <MdCategory />,
-  //   subLinks: [
-  //     {
-  //       name: "All Categories",
-  //       url: "/categories",
-  //     },
-  //     {
-  //       name: "Add Category",
-  //       url: "/category/add",
-  //     },
-  //   ],
-  // },
+  {
+    name: "Room Categories",
+    icon: <MdCategory />,
+    subLinks: [
+      {
+        name: "Rooms",
+        url: "/roomwith-categories",
+      },
+      {
+        name: "Room Bookings",
+        url: "/room-bookings",
+      },
+    ],
+  },
+  {
+    name: "Banquets",
+    icon: <MdEmojiEvents />,
+    subLinks: [
+      {
+        name: "Banquets",
+        url: "/banquets",
+      },
+      {
+        name: "Banquet Bookings",
+        url: "/banquet-bookings",
+      },
+    ],
+  },
   // {
   //   name: "Room With Category",
   //   icon: <MdBed />,
@@ -129,20 +161,7 @@ export const links = [
   //     },
   //   ],
   // },
-  // {
-  //   name: "Banquets",
-  //   icon: <MdEmojiEvents />,
-  //   subLinks: [
-  //     {
-  //       name: "All Banquets",
-  //       url: "/banquets",
-  //     },
-  //     {
-  //       name: "Add Banquets",
-  //       url: "/banquet/add",
-  //     },
-  //   ],
-  // },
+
   // {
   //   name: "Club Members",
   //   icon: <FiUsers />,
@@ -257,9 +276,13 @@ export const links = [
         url: "/byeLaws",
       },
       {
-        name: "Add Club Rule & ByeLaw",
-        url: "/ruleByeLaw/add",
+        name: "All FAQs",
+        url: "/faqs",
       },
+      // {
+      //   name: "Add Club Rule & ByeLaw",
+      //   url: "/ruleByeLaw/add",
+      // },
     ],
   },
   {
@@ -306,20 +329,20 @@ export const links = [
     ],
   },
 
-  {
-    name: "FAQs",
-    icon: <QuestionAnswer />, // Icon for FAQs
-    subLinks: [
-      {
-        name: "All FAQs",
-        url: "/faqs",
-      },
-      {
-        name: "Add Club FAQs",
-        url: "/faq/add",
-      },
-    ],
-  },
+  // {
+  //   name: "FAQs",
+  //   icon: <QuestionAnswer />, // Icon for FAQs
+  //   subLinks: [
+  //     {
+  //       name: "All FAQs",
+  //       url: "/faqs",
+  //     },
+  //     {
+  //       name: "Add Club FAQs",
+  //       url: "/faq/add",
+  //     },
+  //   ],
+  // },
 
   {
     name: "Settings",

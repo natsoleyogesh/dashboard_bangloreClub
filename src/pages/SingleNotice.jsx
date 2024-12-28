@@ -19,6 +19,7 @@ import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import { fetchNoticeDetails, updateNoticeetails } from "../api/clubNotice";
 import ReactQuill from "react-quill";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleNotice = () => {
     const { id } = useParams();
@@ -131,6 +132,7 @@ const SingleNotice = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Notice Details
             </Typography>

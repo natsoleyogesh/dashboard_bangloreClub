@@ -169,13 +169,14 @@ import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
 import { addCategory } from "../api/category";
 import { Category, Code, Description, ToggleOn } from "@mui/icons-material";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const statusOptions = ["Active", "Inactive"];
 
 const AddCategory = () => {
     const [categoryData, setCategoryData] = useState({
         name: "",
-        code: "",
+        // code: "",
         description: "",
         isActive: true,
     });
@@ -183,35 +184,35 @@ const AddCategory = () => {
     const [validationErrors, setValidationErrors] = useState({});
     const navigate = useNavigate();
 
-    // Validation functions
-    const validateName = (name) => name.trim() !== "";
-    const validateCode = (code) => code.trim() !== "";
-    const validateDescription = (description) => description.trim() !== "";
+    // // Validation functions
+    // const validateName = (name) => name.trim() !== "";
+    // const validateCode = (code) => code.trim() !== "";
+    // const validateDescription = (description) => description.trim() !== "";
 
     // Handle input changes with validation
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCategoryData({ ...categoryData, [name]: value });
 
-        // Real-time validation
-        if (name === "name") {
-            setValidationErrors((prev) => ({
-                ...prev,
-                name: validateName(value) ? "" : "Category name is required.",
-            }));
-        } else if (name === "code") {
-            setValidationErrors((prev) => ({
-                ...prev,
-                code: validateCode(value) ? "" : "Category code is required.",
-            }));
-        } else if (name === "description") {
-            setValidationErrors((prev) => ({
-                ...prev,
-                description: validateDescription(value)
-                    ? ""
-                    : "Description is required.",
-            }));
-        }
+        // // Real-time validation
+        // if (name === "name") {
+        //     setValidationErrors((prev) => ({
+        //         ...prev,
+        //         name: validateName(value) ? "" : "Category name is required.",
+        //     }));
+        // } else if (name === "code") {
+        //     setValidationErrors((prev) => ({
+        //         ...prev,
+        //         code: validateCode(value) ? "" : "Category code is required.",
+        //     }));
+        // } else if (name === "description") {
+        //     setValidationErrors((prev) => ({
+        //         ...prev,
+        //         description: validateDescription(value)
+        //             ? ""
+        //             : "Description is required.",
+        //     }));
+        // }
     };
 
     // Handle input change for the status field
@@ -220,18 +221,37 @@ const AddCategory = () => {
         setCategoryData({ ...categoryData, isActive: value === "Active" });
     };
 
+    const validateForm = () => {
+        const errors = [];
+
+        if (!categoryData.name.trim()) {
+            errors.push("Category name is required");
+        }
+        if (!categoryData.description.trim()) {
+            errors.push("Description is required");
+        }
+
+        if (errors.length > 0) {
+            errors.forEach((error) => showToast(error, "error"));
+            return false;
+        }
+        return true;
+    };
+
+
     // Handle form submission with validation check
     const handleSubmit = async () => {
-        const errors = {};
-        if (!validateName(categoryData.name)) errors.name = "Category name is required.";
-        if (!validateCode(categoryData.code)) errors.code = "Category code is required.";
-        if (!validateDescription(categoryData.description)) errors.description = "Description is required.";
+        if (!validateForm()) return;
+        // const errors = {};
+        // if (!validateName(categoryData.name)) errors.name = "Category name is required.";
+        // if (!validateCode(categoryData.code)) errors.code = "Category code is required.";
+        // if (!validateDescription(categoryData.description)) errors.description = "Description is required.";
 
-        if (Object.keys(errors).length > 0) {
-            setValidationErrors(errors);
-            showToast("Please fix the validation errors.", "error");
-            return;
-        }
+        // if (Object.keys(errors).length > 0) {
+        //     setValidationErrors(errors);
+        //     showToast("Please fix the validation errors.", "error");
+        //     return;
+        // }
 
         try {
             setLoading(true);
@@ -252,6 +272,7 @@ const AddCategory = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New Category
             </Typography>
@@ -279,23 +300,6 @@ const AddCategory = () => {
                         helperText={validationErrors.name}
                         InputProps={{
                             startAdornment: <Category sx={{ color: "gray", mr: 1 }} />,
-                        }}
-                    />
-                </Box>
-                <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Category Code</InputLabel>
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        size="small"
-                        name="code"
-                        placeholder="Enter category code"
-                        value={categoryData.code}
-                        onChange={handleInputChange}
-                        error={!!validationErrors.code}
-                        helperText={validationErrors.code}
-                        InputProps={{
-                            startAdornment: <Code sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>

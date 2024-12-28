@@ -18,6 +18,7 @@ import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import { fetchCOMDetails, updateCOMDetails } from "../api/com";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleCOM = () => {
     const { id } = useParams();
@@ -108,6 +109,7 @@ const SingleCOM = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Consideration Of Membership Details
             </Typography>

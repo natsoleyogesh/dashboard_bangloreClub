@@ -28,6 +28,8 @@ import { formatDate, formatDateForInput, PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 import { FiPlus } from "react-icons/fi";
+import LocationSelector from "../components/common/LocationSelector";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 
 const SingleProduct = () => {
@@ -175,6 +177,7 @@ const SingleProduct = () => {
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
+      <Breadcrumb />
       <Box
         sx={{
           display: "flex",
@@ -339,7 +342,7 @@ const SingleProduct = () => {
             enableColumnFilters={false}
             enableEditing={true}
             enableColumnDragging={false}
-            showPreview
+            // showPreview
             routeLink="customers"
             handleDelete={handleDeleteClick}
           />
@@ -442,7 +445,7 @@ const SingleProduct = () => {
             value={editMember.address || ""}
             onChange={handleInputChange}
           />
-          <TextField
+          {/* <TextField
             margin="dense"
             label="Age"
             type="number"
@@ -450,7 +453,7 @@ const SingleProduct = () => {
             name="age"
             value={editMember.age || ""}
             onChange={handleInputChange}
-          />
+          /> */}
           <TextField
             margin="dense"
             label="Address Line 1"
@@ -469,7 +472,7 @@ const SingleProduct = () => {
             value={editMember.address2 || ""}
             onChange={handleInputChange}
           />
-          <TextField
+          {/* <TextField
             margin="dense"
             label="City"
             type="text"
@@ -495,7 +498,27 @@ const SingleProduct = () => {
             name="country"
             value={editMember.country || ""}
             onChange={handleInputChange}
-          />
+          /> */}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Location
+            </Typography>
+            <LocationSelector
+              onLocationChange={(location) => {
+                setEditMember({
+                  ...editMember,
+                  state: location.state,
+                  city: location.city,
+                  country: location.country, // Optional if country is editable
+                });
+              }}
+              defaultLocation={{
+                country: editMember.country || "India", // Pre-fill country
+                state: editMember.state || "Madhya Pradesh", // Pre-fill state if available
+                city: editMember.city || "", // Pre-fill city if available
+              }}
+            />
+          </Box>
           <TextField
             margin="dense"
             label="Pin Code"

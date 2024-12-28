@@ -28,6 +28,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import HotelIcon from "@mui/icons-material/Hotel";
 import dayjs from "dayjs";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const statusOptions = ["Active", "Inactive"];
 const daysOptions = [
@@ -60,7 +61,7 @@ const AddBanquet = () => {
             lessThan24Hours: "",
         },
         features: { smokingAllowed: false, petFriendly: false, accessible: false },
-        specialDayTariff: [{ special_day_name: '', startDate: '', endDate: '', extraCharge: '' }],
+        specialDayTariff: [],
         pricingDetailDescription: "",
         status: 'Active',
     });
@@ -253,10 +254,10 @@ const AddBanquet = () => {
     const validateForm = () => {
         const newErrors = {};
         // Validate banquetName
-        if (!banquetData.banquetName) newErrors.banquetName = "Room category is required.";
+        if (!banquetData.banquetName) newErrors.banquetName = "Banquet category is required.";
 
         // Validate description
-        if (!banquetData.description) newErrors.description = "Room description is required.";
+        if (!banquetData.description) newErrors.description = "Banquet description is required.";
 
         // Validate check-in and check-out times
         if (!banquetData.checkInTime) newErrors.checkInTime = "Check-in time is required.";
@@ -264,7 +265,7 @@ const AddBanquet = () => {
 
         // Validate maximum occupancy per room
         if (!banquetData.maxAllowedPerRoom) {
-            newErrors.maxAllowedPerRoom = "Maximum occupancy per room is required.";
+            newErrors.maxAllowedPerRoom = "Maximum occupancy per banquet is required.";
         } else if (isNaN(banquetData.maxAllowedPerRoom) || Number(banquetData.maxAllowedPerRoom) <= 0) {
             newErrors.maxAllowedPerRoom = "Maximum occupancy must be a valid positive number.";
         }
@@ -316,6 +317,7 @@ const AddBanquet = () => {
 
         // Validate specialDayTariff
         if (banquetData.specialDayTariff.length > 0) {
+            newErrors.specialDayTariff = "please add the special day tariff"
             banquetData.specialDayTariff.forEach((tariff, index) => {
                 if (!tariff.special_day_name) {
                     newErrors[`specialDayName_${index}`] = "Special day name is required.";
@@ -337,14 +339,14 @@ const AddBanquet = () => {
 
         // Validate banquetHallSize
         if (!banquetData.banquetHallSize) {
-            newErrors.banquetHallSize = "Room size is required.";
+            newErrors.banquetHallSize = "Banquet size is required.";
         } else if (isNaN(banquetData.banquetHallSize) || Number(banquetData.banquetHallSize) <= 0) {
-            newErrors.banquetHallSize = "Room size must be a valid positive number.";
+            newErrors.banquetHallSize = "Banquet size must be a valid positive number.";
         }
 
 
         // Validate status
-        if (!banquetData.status) newErrors.status = "Room status is required.";
+        if (!banquetData.status) newErrors.status = "Banquet status is required.";
 
 
         console.log(newErrors, "newErr---------------")
@@ -405,7 +407,7 @@ const AddBanquet = () => {
                 showToast(response.message || "Failed to add banquet. Please try again.", "error");
             }
         } catch (error) {
-            console.error("Error adding banquet:", error);
+            console.log("Error adding banquet:", error);
             showToast(error.response?.data?.message || "An error occurred. Please try again.", "error");
         } finally {
             setLoading(false);
@@ -597,6 +599,7 @@ const AddBanquet = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography
                 variant="h5"
                 sx={{
@@ -620,7 +623,7 @@ const AddBanquet = () => {
             >
                 {/* Banquet Name */}
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Type</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Type</InputLabel>
                     <FormControl fullWidth margin="dense" error={!!errors.banquetName}>
                         {/* <InputLabel>Room Type</InputLabel> */}
                         <Select name="banquetName" value={banquetData.banquetName} onChange={handleInputChange}
@@ -651,7 +654,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Maxium Allowed PerRoom</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Maxium Allowed Per Hall</InputLabel>
                     <TextField
                         placeholder="Enter Maxium Allowed PerRoom"
                         fullWidth
@@ -738,7 +741,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Size</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Hall Size</InputLabel>
                     <TextField
                         placeholder="Enter hall size"
                         fullWidth
@@ -755,7 +758,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Amenities</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Amenities</InputLabel>
                     <FormControl fullWidth>
                         {/* <InputLabel>Amenities</InputLabel> */}
                         <div>
@@ -776,7 +779,7 @@ const AddBanquet = () => {
                     </FormControl>
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Status</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Status</InputLabel>
                     <FormControl fullWidth margin="dense" error={!!errors.status}>
                         <Select name="status" value={banquetData.status} onChange={handleInputChange} displayEmpty
                             startAdornment={<HotelIcon sx={{ color: "gray", mr: 1 }} />}>
@@ -792,7 +795,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Permissions</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Permissions</InputLabel>
                     <FormControlLabel
                         control={<Checkbox checked={banquetData.features.smokingAllowed} onChange={handleFeatureChange} name="smokingAllowed" />}
                         label="Smoking Allowed"
@@ -1042,7 +1045,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Breakfast Included</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Breakfast Included</InputLabel>
                     <FormControlLabel
                         control={<Checkbox checked={banquetData.breakfastIncluded} onChange={handleCheckboxChange} name="breakfastIncluded" />}
                         label="Breakfast Included"
@@ -1059,6 +1062,8 @@ const AddBanquet = () => {
                                 label="Special Day Name"
                                 value={tariff.special_day_name}
                                 onChange={handleChange}
+                                error={!!errors[`special_day_name${index}`]}
+                                helperText={errors[`special_day_name${index}`]}
                             />
                             <TextField
                                 fullWidth
@@ -1070,6 +1075,8 @@ const AddBanquet = () => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
+                                error={!!errors[`startDate${index}`]}
+                                helperText={errors[`startDate${index}`]}
                             />
                             <TextField
                                 fullWidth
@@ -1081,24 +1088,29 @@ const AddBanquet = () => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
+                                error={!!errors[`endDate${index}`]}
+                                helperText={errors[`endDate${index}`]}
                             />
                             <TextField
                                 fullWidth
                                 name={`specialDayTariff[${index}][extraCharge]`}
-                                label="Extra Charge"
+                                label="Extra Charge In %"
                                 type="number"
                                 value={tariff.extraCharge}
                                 onChange={handleChange}
+                                error={!!errors[`extraCharge${index}`]}
+                                helperText={errors[`extraCharge${index}`]}
                             />
 
                             {/* Remove Button */}
-                            {banquetData.specialDayTariff.length > 1 && (
+                            {banquetData.specialDayTariff.length > 0 && (
                                 <IconButton onClick={() => removeSpecialDayTariff(index)}>
                                     <FiTrash />
                                 </IconButton>
                             )}
                         </Box>
                     ))}
+                    {errors.specialDayTariff && <Typography color="error">{errors.specialDayTariff}</Typography>}
 
                     {/* Add Button */}
                     <Box sx={{ mb: 2 }}>

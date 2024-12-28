@@ -16,6 +16,7 @@ import { Description } from "@mui/icons-material"; // Optional for icons if nece
 import { useNavigate } from "react-router-dom";
 import { addDepartment } from "../../../api/masterData/department";
 import { showToast } from "../../../api/toast";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const statusOptions = ["active", "inactive"]; // Department status options
 
@@ -32,7 +33,7 @@ const AddDepartment = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setDepartmentData((prev) => ({ ...prev, [name]: value }));
-        validateField(name, value);
+        // validateField(name, value);
     };
 
     // Validation logic for individual fields
@@ -50,13 +51,28 @@ const AddDepartment = () => {
     };
 
     // Validate the entire form before submission
+    // const validateForm = () => {
+    //     const validationErrors = {};
+
+    //     if (!departmentData.departmentName) validationErrors.departmentName = "Department Name is required.";
+
+    //     setErrors(validationErrors);
+    //     return Object.keys(validationErrors).length === 0;
+    // };
+
+
     const validateForm = () => {
-        const validationErrors = {};
+        const errors = [];
 
-        if (!departmentData.departmentName) validationErrors.departmentName = "Department Name is required.";
+        if (!departmentData.departmentName.trim()) {
+            errors.push("Department Name is required");
+        }
 
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
+        if (errors.length > 0) {
+            errors.forEach((error) => showToast(error, "error"));
+            return false;
+        }
+        return true;
     };
 
     // Handle form submission
@@ -82,6 +98,7 @@ const AddDepartment = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New Department
             </Typography>

@@ -29,6 +29,7 @@ import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import { Add, Delete, Save } from "@mui/icons-material";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const formatTo12Hour = (time) => {
     if (!time) return ""; // Return empty if no time is selected
@@ -197,6 +198,7 @@ const SingleFoodAndBeverage = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2, textAlign: "center" }}>
                 Food & Beverage Details
             </Typography>

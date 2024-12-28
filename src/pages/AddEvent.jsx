@@ -569,6 +569,7 @@ import { useNavigate } from "react-router-dom";
 import { addEvent } from "../api/event";
 import { AccessTime, AccessTimeFilled, AirplaneTicket, CurrencyRupee, CalendarToday, Category, Code, Description, Event, Info, LocationOn, People, ToggleOff, ToggleOn } from "@mui/icons-material";
 import ReactQuill from "react-quill";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 
 const rsvpOptions = ["Attending", "Not Attending", "Maybe", "Pending", "Cancelled", "N/A"];
@@ -857,6 +858,7 @@ const AddEvent = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Create New Event
             </Typography>

@@ -16,6 +16,7 @@ import { Description } from "@mui/icons-material"; // Optional for icons if nece
 import { useNavigate } from "react-router-dom";
 import { addTaxType } from "../../../api/masterData/taxType"; // Adjust the import to point to the correct API for tax types
 import { showToast } from "../../../api/toast";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const statusOptions = ["active", "inactive"]; // Tax type status options
 
@@ -33,7 +34,7 @@ const AddTaxType = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setTaxTypeData((prev) => ({ ...prev, [name]: value }));
-        validateField(name, value);
+        // validateField(name, value);
     };
 
     // Validation logic for individual fields
@@ -59,17 +60,26 @@ const AddTaxType = () => {
         setErrors(newErrors);
     };
 
-    // Validate the entire form before submission
     const validateForm = () => {
-        const validationErrors = {};
+        const errors = [];
 
-        if (!taxTypeData.name) validationErrors.name = "Tax Type Name is required.";
-        if (!taxTypeData.percentage) validationErrors.percentage = "Percentage is required.";
-        if (isNaN(taxTypeData.percentage)) validationErrors.percentage = "Percentage must be a valid number.";
+        if (!taxTypeData.name.trim()) {
+            errors.push("Department Name is required");
+        }
+        if (!taxTypeData.percentage.trim()) {
+            errors.push("Percentage is required.");
+        }
+        if (isNaN(taxTypeData.percentage)) {
+            errors.push("Percentage must be a valid number.");
+        }
 
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
+        if (errors.length > 0) {
+            errors.forEach((error) => showToast(error, "error"));
+            return false;
+        }
+        return true;
     };
+
 
     // Handle form submission
     const handleSubmit = async () => {
@@ -94,6 +104,7 @@ const AddTaxType = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New Tax Type
             </Typography>

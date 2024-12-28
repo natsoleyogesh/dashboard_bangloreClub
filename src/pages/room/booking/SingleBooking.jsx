@@ -301,6 +301,7 @@ import { useParams } from "react-router-dom";
 import { fetchBanquetBookingDetails, updateBanquetBooking } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
 import { fetchRoomBookingDetails } from "../../../api/room";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 // Format Time in AM/PM
 const formatTimeInIST = (timeStr) => {
@@ -369,6 +370,7 @@ const SingleRoomBooking = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2, color: "primary.main", fontWeight: "bold" }}>
                 Booking Details
             </Typography>

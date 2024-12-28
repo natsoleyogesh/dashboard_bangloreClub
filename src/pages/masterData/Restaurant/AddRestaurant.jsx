@@ -16,6 +16,7 @@ import { Description } from "@mui/icons-material"; // Optional for icons if nece
 import { useNavigate } from "react-router-dom";
 import { addRestaurant } from "../../../api/masterData/restaurant"; // Adjust the import to point to the correct API for restaurant
 import { showToast } from "../../../api/toast";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const statusOptions = ["active", "inactive"]; // Restaurant status options
 
@@ -32,7 +33,7 @@ const AddRestaurant = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setRestaurantData((prev) => ({ ...prev, [name]: value }));
-        validateField(name, value);
+        // validateField(name, value);
     };
 
     // Validation logic for individual fields
@@ -50,13 +51,27 @@ const AddRestaurant = () => {
     };
 
     // Validate the entire form before submission
+    // const validateForm = () => {
+    //     const validationErrors = {};
+
+    //     if (!restaurantData.name) validationErrors.name = "Restaurant Name is required.";
+
+    //     setErrors(validationErrors);
+    //     return Object.keys(validationErrors).length === 0;
+    // };
+
     const validateForm = () => {
-        const validationErrors = {};
+        const errors = [];
 
-        if (!restaurantData.name) validationErrors.name = "Restaurant Name is required.";
+        if (!restaurantData.name.trim()) {
+            errors.push("Restaurant Name is required.");
+        }
 
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
+        if (errors.length > 0) {
+            errors.forEach((error) => showToast(error, "error"));
+            return false;
+        }
+        return true;
     };
 
     // Handle form submission
@@ -82,6 +97,7 @@ const AddRestaurant = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New Restaurant
             </Typography>

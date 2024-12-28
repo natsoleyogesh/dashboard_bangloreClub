@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { fetchRuleByeLawDetails, updateRuleByeLawDetails } from "../api/ruleByelaws"; // Update with actual API functions
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleRuleByeLaw = () => {
     const { id } = useParams();
@@ -74,6 +75,7 @@ const SingleRuleByeLaw = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Rule/ByeLaw Details
             </Typography>

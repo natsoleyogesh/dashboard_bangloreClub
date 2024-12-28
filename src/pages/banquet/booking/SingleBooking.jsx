@@ -293,10 +293,11 @@ import {
     ListItemText,
     Divider,
 } from "@mui/material";
-import { FiEdit } from "react-icons/fi";
+import { FiCheck, FiEdit, FiX } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import { fetchBanquetBookingDetails, updateBanquetBooking } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 // Format Time in AM/PM
 const formatTimeInIST = (timeStr) => {
@@ -344,11 +345,13 @@ const SingleBooking = () => {
     const handleEditClick = () => setEditDialogOpen(true);
     const handleDialogClose = () => setEditDialogOpen(false);
 
-    const handleSaveChanges = async () => {
+    const handleSaveChanges = async (newStatus) => {
         try {
             const response = await updateBanquetBooking({
+                // bookingId: id,
+                // bookingStatus: editBooking.bookingStatus,
                 bookingId: id,
-                bookingStatus: editBooking.bookingStatus,
+                bookingStatus: newStatus,
             });
             if (response.status === 200) {
                 getBookingById(id);
@@ -365,6 +368,7 @@ const SingleBooking = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2, color: "primary.main", fontWeight: "bold" }}>
                 Booking Details
             </Typography>
@@ -500,7 +504,7 @@ const SingleBooking = () => {
                     </Grid>
                 </Grid>
 
-                <Button
+                {/* <Button
                     variant="contained"
                     color="primary"
                     startIcon={<FiEdit />}
@@ -508,7 +512,28 @@ const SingleBooking = () => {
                     sx={{ mt: 3 }}
                 >
                     Edit Booking
-                </Button>
+                </Button> */}
+                {/* Confirm and Cancel Buttons */}
+                {booking.bookingStatus === "Pending" && (
+                    <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
+                        <Button
+                            variant="contained"
+                            color="success"
+                            startIcon={<FiCheck />}
+                            onClick={() => handleSaveChanges("Confirmed")}
+                        >
+                            Confirm
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            startIcon={<FiX />}
+                            onClick={() => handleSaveChanges("Cancelled")}
+                        >
+                            Cancel
+                        </Button>
+                    </Box>
+                )}
             </Paper>
 
             {/* Edit Dialog */}

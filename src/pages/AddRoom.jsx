@@ -36,10 +36,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { fetchAllActiveTaxTypes } from "../api/masterData/taxType";
 import { fetchAllActiveAmenities } from "../api/masterData/amenities";
 import ReactQuill from "react-quill";
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const guestTypeOptions = [
     'Member',
@@ -58,24 +55,6 @@ const roomStatusOptions = ['Available', 'Booked', 'Under Maintenance'];
 
 
 const AddRoom = () => {
-    // const [roomData, setRoomData] = useState({
-    //     roomName: "",
-    //     roomNumber: "",
-    //     floorNumber: "",
-    //     roomType: "",
-    //     minPrice: "",
-    //     maxPrice: "",
-    //     pricingDetails: [],
-    //     capacity: "",
-    //     amenities: [],
-    //     roomSize: "",
-    //     bedType: "",
-    //     smokingAllowed: false,
-    //     petFriendly: false,
-    //     accessible: false,
-    //     status: "",
-    //     description: "",
-    // });
     const [roomData, setRoomData] = useState({
         categoryName: '',
         description: '',
@@ -94,7 +73,7 @@ const AddRoom = () => {
         maxAllowedPerRoom: '',
         cancellationPolicy: { before7Days: '', between7To2Days: '', between48To24Hours: '', lessThan24Hours: '' },
         breakfastIncluded: false,
-        specialDayTariff: [{ special_day_name: '', startDate: '', endDate: '', extraCharge: '' }],
+        specialDayTariff: [],
         extraBedPrice: '',
     });
     const [roomTypes, setRoomTypes] = useState([]);
@@ -221,21 +200,54 @@ const AddRoom = () => {
             newErrors.maxPrice = "Max Price must be greater than Min Price.";
         }
 
+        // // Validate pricingDetails
+        // if (roomData.pricingDetails.length === 0) {
+        //     newErrors.pricingDetails = "At least one pricing detail is required.";
+        // } else {
+        //     roomData.pricingDetails.forEach((detail, index) => {
+        //         if (!detail.guestType) {
+        //             newErrors[`guestType_${index}`] = "Guest Type is required.";
+        //         }
+        //         if (!detail.price) {
+        //             newErrors[`price_${index}`] = "Price is required.";
+        //         } else if (isNaN(detail.price) || Number(detail.price) < 0) {
+        //             newErrors[`price_${index}`] = "Price must be a valid positive number.";
+        //         }
+        //     });
+        // }
+        // Required guest types
+        const requiredGuestTypes = ['Member', 'Member Spouse & Children', 'Guest of Member'];
+
         // Validate pricingDetails
         if (roomData.pricingDetails.length === 0) {
             newErrors.pricingDetails = "At least one pricing detail is required.";
         } else {
+            // Track added guest types
+            const addedGuestTypes = new Set();
+
             roomData.pricingDetails.forEach((detail, index) => {
                 if (!detail.guestType) {
                     newErrors[`guestType_${index}`] = "Guest Type is required.";
+                } else {
+                    // Add guest type to the set for validation
+                    addedGuestTypes.add(detail.guestType);
                 }
+
                 if (!detail.price) {
                     newErrors[`price_${index}`] = "Price is required.";
                 } else if (isNaN(detail.price) || Number(detail.price) < 0) {
                     newErrors[`price_${index}`] = "Price must be a valid positive number.";
                 }
             });
+
+            // Check if all required guest types are included
+            requiredGuestTypes.forEach((requiredType) => {
+                if (!addedGuestTypes.has(requiredType)) {
+                    newErrors.pricingDetails = `Missing required guest type: ${requiredType}.`;
+                }
+            });
         }
+
 
         // Validate amenities
         if (roomData.amenities.length === 0) {
@@ -340,6 +352,7 @@ const AddRoom = () => {
     };
 
     const handleSubmit = async () => {
+        console.log(roomData, "rrrrrrrrrrrrr")
         if (!validateForm()) return; // Prevent submission if validation fails
 
         setLoading(true);
@@ -403,7 +416,7 @@ const AddRoom = () => {
         Object.entries(roomData).forEach(([key, value]) => {
             console.log(roomData, "formdat")
 
-            if (key === 'cancellationPolicy' || key === 'priceRange' || key === 'pricingDetails' || key === 'amenities' || key === 'features' || key === 'specialDayTariff' || key === 'roomDetails') {
+            if (key === 'cancellationPolicy' || key === 'priceRange' || key === 'pricingDetails' || key === 'amenities' || key === 'features' || key === 'specialDayTariff' || key === 'roomDetails' || key === 'taxTypes') {
                 // Handle complex fields separately (already covered in other functions)
                 return;
             }
@@ -528,22 +541,20 @@ const AddRoom = () => {
         const { name, value } = e.target;
         const [field, index, prop] = name.split('.');
 
-        if (index !== undefined && prop !== undefined) {
+        if (field === 'roomDetails' && index !== undefined && prop !== undefined) {
             const updatedRoomDetails = [...roomData.roomDetails];
-            updatedRoomDetails[index][prop] = value;
+            updatedRoomDetails[parseInt(index)][prop] = value; // Update specific room detail
             setRoomData({ ...roomData, roomDetails: updatedRoomDetails });
-        } else {
-            setRoomData({
-                ...roomData,
-                [name]: value,
-            });
         }
     };
 
     // Handle change in the totalAvailableRoom
     const handleTotalRoomChange = (e) => {
         const totalRooms = parseInt(e.target.value, 10);
-        const updatedRoomDetails = Array(totalRooms).fill({ roomNumber: '', status: '' });
+        const updatedRoomDetails = Array.from({ length: totalRooms }, () => ({
+            roomNumber: '',
+            status: ''
+        }));
 
         setRoomData({
             ...roomData,
@@ -623,6 +634,7 @@ const AddRoom = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Create New Room
             </Typography>
@@ -654,9 +666,9 @@ const AddRoom = () => {
                     </FormControl>
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Maxium Allowed PerRoom</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Maxium Member Allowed PerRoom</InputLabel>
                     <TextField
-                        placeholder="Enter Maxium Allowed PerRoom"
+                        placeholder="Enter Maxium Member PerRoom"
                         fullWidth
                         margin="dense"
                         name="maxAllowedPerRoom"
@@ -749,22 +761,6 @@ const AddRoom = () => {
                         helperText={errors.maxPrice}
                         InputProps={{
                             startAdornment: <CurrencyRupee sx={{ color: "gray", mr: 1 }} />,
-                        }}
-                    />
-                </Box>
-                <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Capacity</InputLabel>
-                    <TextField
-                        placeholder="Enter room capacity"
-                        fullWidth
-                        margin="dense"
-                        name="capacity"
-                        value={roomData.capacity}
-                        onChange={handleInputChange}
-                        error={!!errors.capacity}
-                        helperText={errors.capacity}
-                        InputProps={{
-                            startAdornment: <GroupsIcon sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>
@@ -892,6 +888,12 @@ const AddRoom = () => {
                     <Button variant="contained" color="primary" startIcon={<FiPlus />} onClick={handleAddPricingDetail} sx={{ marginTop: '5px', borderRadius: '15px', fontSize: '10px' }}>
                         Add Pricing Detail
                     </Button>
+                    {/* Display General Error for Missing Required Guest Types */}
+                    {errors.pricingDetails && (
+                        <Typography color="error" sx={{ mt: 2, fontWeight: 'bold' }}>
+                            {errors.pricingDetails}
+                        </Typography>
+                    )}
                 </Box>
                 {/* Tax Types */}
                 <Box sx={{ mb: 2 }}>
@@ -1027,7 +1029,7 @@ const AddRoom = () => {
                             />
 
                             {/* Remove Button */}
-                            {roomData.specialDayTariff.length > 1 && (
+                            {roomData.specialDayTariff.length > 0 && (
                                 <IconButton onClick={() => removeSpecialDayTariff(index)}>
                                     <FiTrash />
                                 </IconButton>
@@ -1086,9 +1088,6 @@ const AddRoom = () => {
                         name="totalAvailableRoom"
                         value={roomData.totalAvailableRoom}
                         onChange={handleTotalRoomChange}
-                    // InputProps={{
-                    //     startAdornment: <span>Rooms</span>,
-                    // }}
                     />
 
                     {roomData.roomDetails.map((room, index) => (
@@ -1103,32 +1102,27 @@ const AddRoom = () => {
                             />
 
                             <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Room {index + 1} - Status</InputLabel>
-                            {/* <TextField
-                                fullWidth
-                                margin="dense"
-                                name={`roomDetails.${index}.status`}
-                                value={room.status}
-                                onChange={handleRoomInputChange}
-                            /> */}
-
-                            <FormControl fullWidth margin="dense" >
-                                <Select name={`roomDetails.${index}.status`} value={room.status} onChange={handleRoomInputChange} displayEmpty
-                                    startAdornment={<HotelIcon sx={{ color: "gray", mr: 1 }} />}>
+                            <FormControl fullWidth margin="dense">
+                                <Select
+                                    name={`roomDetails.${index}.status`}
+                                    value={room.status}
+                                    onChange={handleRoomInputChange}
+                                    displayEmpty
+                                >
                                     <MenuItem value="" disabled>
                                         Please Choose Status
                                     </MenuItem>
                                     {roomStatusOptions.map((option) => (
-                                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
                                     ))}
                                 </Select>
-
                             </FormControl>
                         </Box>
                     ))}
                 </Box>
-                {/* <Button variant="contained" fullWidth sx={{ mt: 3 }} disabled={loading} onClick={handleSubmit}>
-                    {loading ? <CircularProgress size={24} /> : "Submit"}
-                </Button> */}
+
                 <Box sx={{ display: "flex", justifyContent: "center", mt: "20px" }}>
                     <Button
                         type="submit"

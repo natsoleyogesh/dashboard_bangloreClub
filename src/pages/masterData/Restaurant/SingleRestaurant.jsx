@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { showToast } from "../../../api/toast";
 import { fetchRestaurantDetails, updateRestaurantDetails } from "../../../api/masterData/restaurant";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const SingleRestaurant = () => {
     const { id } = useParams();
@@ -70,12 +71,13 @@ const SingleRestaurant = () => {
             }
         } catch (error) {
             console.error("Failed to update restaurant details:", error);
-            showToast("Failed to update restaurant details. Please try again.", "error");
+            showToast(error.response?.data?.message || "Failed to update restaurant details. Please try again.", "error");
         }
     };
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Restaurant Details
             </Typography>

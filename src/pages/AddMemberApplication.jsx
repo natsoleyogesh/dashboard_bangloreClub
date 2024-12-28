@@ -26,6 +26,8 @@ import { useNavigate } from "react-router-dom";
 import { showToast } from "../api/toast";
 import { CrisisAlert, Email, FamilyRestroom, LocationCity, People, Phone } from "@mui/icons-material";
 import { addMemberApplication, fetchAllActiveMembers } from "../api/memberWaiting";
+import LocationSelector from "../components/common/LocationSelector";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -69,7 +71,7 @@ const AddMemberApplication = () => {
     const [marriageDate, setMarriageDate] = useState("");
     const [title, setTitle] = useState("Mr.");
     const [image, setImage] = useState(null);
-    const [age, setAge] = useState("");
+    // const [age, setAge] = useState("");
     const [sponsoredBy, setSponsoredBy] = useState([]);
     const [memberList, setMemberList] = useState([]);
     const [parentUserId, setParentUserId] = useState("");
@@ -78,13 +80,15 @@ const AddMemberApplication = () => {
     const [validationErrors, setValidationErrors] = useState({});
     const imageInput = useRef(null);
     const navigate = useNavigate();
+    const [location, setLocation] = useState({ country: "India", state: null, city: null }); // Location state
+
 
     // Validation functions
     const validateName = (name) => name.trim() !== "";
     const validateEmail = (email) =>
         /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email);
     const validateMobileNumber = (mobile) => /^[0-9]{10}$/.test(mobile);
-    const validateAge = (age) => age && age > 0 && age <= 120;
+    // const validateAge = (age) => age && age > 0 && age <= 120;
     const validateAddress = (address) => address.trim() !== "";
     const validateRelation = (relation) => relation.trim() !== "";
     // Validation functions
@@ -119,20 +123,20 @@ const AddMemberApplication = () => {
         }));
     };
 
-    const handleAgeChange = (e) => {
-        const value = e.target.value;
-        setAge(value);
-        setValidationErrors((prev) => ({
-            ...prev,
-            age: validateAge(value) ? "" : "Age must be between 1 and 120.",
-        }));
-    };
+    // const handleAgeChange = (e) => {
+    //     const value = e.target.value;
+    //     setAge(value);
+    //     setValidationErrors((prev) => ({
+    //         ...prev,
+    //         age: validateAge(value) ? "" : "Age must be between 1 and 120.",
+    //     }));
+    // };
     const handlePinChange = (e) => {
         const value = e.target.value;
         setPin(value);
         setValidationErrors((prev) => ({
             ...prev,
-            pin: validatePin(value) ? "" : "Pin Is Required",
+            pin: validatePin(value) ? "" : "Pin Must Be 6 to 10 Digit.",
         }));
     };
 
@@ -162,7 +166,7 @@ const AddMemberApplication = () => {
         if (!validateEmail(email)) errors.email = "Invalid email address.";
         if (!validateMobileNumber(mobileNumber))
             errors.mobileNumber = "Mobile number must be 10 digits.";
-        if (!validateAge(age)) errors.age = "Age must be between 1 and 120.";
+        // if (!validateAge(age)) errors.age = "Age must be between 1 and 120.";
         if (!validateAddress(address)) errors.address = "Address is required.";
         if (!validateRelation(relation)) errors.relation = "Relation is required.";
         if (!validatePin(pin)) errors.pin = "Invalid PIN code.";
@@ -190,6 +194,9 @@ const AddMemberApplication = () => {
         getSponsors();
     }, []);
 
+    const handleLocationChange = (updatedLocation) => {
+        setLocation(updatedLocation);
+    };
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
@@ -219,7 +226,7 @@ const AddMemberApplication = () => {
         formData.append("marriageDate", marriageDate);
         formData.append("title", title);
         formData.append("relation", relation);
-        formData.append("age", age);
+        // formData.append("age", age);
         formData.append("parentUserId", parentUserId);
         if (image) {
             formData.append("profilePicture", image);
@@ -248,6 +255,7 @@ const AddMemberApplication = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ textAlign: "center", fontWeight: 600 }}>
                 Add Member Application
             </Typography>
@@ -357,7 +365,7 @@ const AddMemberApplication = () => {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
+                                {/* <Grid item xs={6}>
                                     <InputLabel sx={{ fontWeight: "bold" }}>City</InputLabel>
                                     <TextField
                                         placeholder="Enter Your City"
@@ -388,6 +396,17 @@ const AddMemberApplication = () => {
                                         value={country}
                                         onChange={(e) => setCountry(e.target.value)}
                                         fullWidth
+                                    />
+                                </Grid> */}
+                                <Grid item xs={12}>
+                                    <InputLabel sx={{ fontWeight: "bold" }}>Location</InputLabel>
+                                    <LocationSelector
+                                        onLocationChange={handleLocationChange}
+                                        defaultLocation={{
+                                            country: "India", // Default country
+                                            state: location.state, // Retain state if editing
+                                            city: location.city, // Retain city if editing
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -441,7 +460,7 @@ const AddMemberApplication = () => {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
+                                {/* <Grid item xs={6}>
                                     <InputLabel sx={{ fontWeight: "bold" }}>Age</InputLabel>
                                     <TextField
                                         placeholder="Enter age"
@@ -456,7 +475,7 @@ const AddMemberApplication = () => {
                                         sx={{ marginTop: "4px" }}
                                         InputProps={{ startAdornment: <CrisisAlert sx={{ color: "gray", mr: 1 }} /> }}
                                     />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={6}>
                                     <InputLabel sx={{ fontWeight: "bold" }}>Relation</InputLabel>
                                     <FormControl fullWidth size="small" sx={{ marginTop: "4px" }}>

@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { fetchFAQDetails, updateFAQDetails } from "../api/faq"; // Update with actual API functions
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleFAQ = () => {
     const { id } = useParams();
@@ -73,6 +74,7 @@ const SingleFAQ = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 FAQ Details
             </Typography>

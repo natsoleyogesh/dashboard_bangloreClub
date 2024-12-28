@@ -93,6 +93,9 @@ import SingleRoomBooking from "./pages/room/booking/SingleBooking";
 import Billings from "./pages/Billings/Billings";
 import SingleBilling from "./pages/Billings/SingleBilling";
 import Transactions from "./pages/Transaction/Transactions";
+import NotificationPopup from "./components/NotificationPopup";
+import AllRequests from "./pages/Requests/AllRequests";
+import SingleRequest from "./pages/Requests/SingleRequest";
 
 const sideBarWidth = 250;
 
@@ -140,6 +143,7 @@ function App() {
           width: { xs: "100%", md: `calc(100% - ${sideBarWidth}px)` },
         }}
       >
+        <NotificationPopup />
         {/* Routes */}
         <Routes>
           {/* Public Route */}
@@ -857,6 +861,29 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+
+          {/* All Requests */}
+          <Route
+            path="/requests"
+            element={
+              <ProtectedRoute>
+                <AllRequests />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/request/:id"
+            element={
+              <ProtectedRoute>
+                <SingleRequest />
+              </ProtectedRoute>
+            }
+          />
+
+
+
 
           <Route
             path="/settings"

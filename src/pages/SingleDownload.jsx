@@ -18,6 +18,7 @@ import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import ReactQuill from "react-quill";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleDownload = () => {
     const { id } = useParams();
@@ -108,6 +109,7 @@ const SingleDownload = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Download Details
             </Typography>
@@ -141,7 +143,7 @@ const SingleDownload = () => {
                             <strong>Description:</strong>
                             <div
                                 dangerouslySetInnerHTML={{ __html: download.description || "N/A" }}
-                                // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                            // style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                             />
                         </Typography>
                         <Typography variant="body1">

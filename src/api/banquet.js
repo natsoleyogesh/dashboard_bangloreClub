@@ -11,6 +11,18 @@ const axiosInstance = axios.create({
     },
 });
 
+// Add Authorization token to default headers
+axiosInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
+
 // Function to fetch all categories with optional isActive filter
 export const fetchAllBanquetCategories = async () => {
     try {
@@ -77,7 +89,7 @@ export const deleteBanquetCategory = async (categoryId) => {
 // Function to fetch all categories with optional isActive filter
 export const fetchActiveAllBanquetCategories = async () => {
     try {
-        const response = await axiosInstance.get("/banquet-categories?status=Active");
+        const response = await axiosInstance.get("/all-banquet-categories?status=Active");
         return response; // Assuming the API returns categories in `response.data`
     } catch (error) {
         console.error("Error fetching categories:", error);
@@ -146,7 +158,7 @@ export const addBanquet = async (formData) => {
         });
         return response; // Assuming the created banquet data is in response.data
     } catch (error) {
-        console.error("Error adding banquet:", error);
+        console.log("Error adding banquet:", error);
         throw new Error(error);
     }
 };

@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { showToast } from "../../../api/toast";
 import { fetchTaxTypeDetails, updateTaxTypeDetails } from "../../../api/masterData/taxType";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const SingleTaxType = () => {
     const { id } = useParams();
@@ -70,12 +71,13 @@ const SingleTaxType = () => {
             }
         } catch (error) {
             console.error("Failed to update tax type details:", error);
-            showToast("Failed to update tax type details. Please try again.", "error");
+            showToast(error.response?.data?.message || "Failed to update tax type details. Please try again.", "error");
         }
     };
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Tax Type Details
             </Typography>

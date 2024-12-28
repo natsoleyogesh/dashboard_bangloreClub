@@ -18,6 +18,7 @@ import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
 import { Description, DateRange, CloudUpload } from "@mui/icons-material";
 import { addCOM } from "../api/com";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -148,6 +149,7 @@ const AddCOM = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New Consideration Of Membership
             </Typography>

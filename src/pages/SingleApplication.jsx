@@ -33,6 +33,7 @@ import { showToast } from "../api/toast";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 import { FiPlus } from "react-icons/fi";
 import { deleteMemberApplication, fetchAllActiveMembers, fetchMemberApplicationDetails, updateMemberApplicationDetails, updateMemberApplicationStatus, updateMemberProfilePicture } from "../api/memberWaiting";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 
 const SingleApplication = () => {
@@ -232,6 +233,7 @@ const SingleApplication = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Box
                 sx={{
                     display: "flex",
@@ -444,7 +446,7 @@ const SingleApplication = () => {
                         value={editApplication.address || ""}
                         onChange={handleInputChange}
                     />
-                    <TextField
+                    {/* <TextField
                         margin="dense"
                         label="Age"
                         type="number"
@@ -452,7 +454,7 @@ const SingleApplication = () => {
                         name="age"
                         value={editApplication.age || ""}
                         onChange={handleInputChange}
-                    />
+                    /> */}
                     <TextField
                         margin="dense"
                         label="Address Line 1"

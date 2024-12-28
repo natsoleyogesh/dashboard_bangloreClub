@@ -21,6 +21,7 @@ import { FiEdit, FiUpload } from "react-icons/fi";
 import { showToast } from "../../../api/toast";
 import { fetchAmenitieDetails, updateAmenitieDetails } from "../../../api/masterData/amenities";
 import { PUBLIC_API_URI } from "../../../api/config";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const SingleAmenitie = () => {
     const { id } = useParams();
@@ -84,13 +85,14 @@ const SingleAmenitie = () => {
                 showToast("Failed to update amenity details. Please try again.", "error");
             }
         } catch (error) {
-            console.error("Failed to update amenity details:", error);
-            showToast("Failed to update amenity details. Please try again.", "error");
+            console.error("Failed to update amenity details:", error.response.data.message);
+            showToast(error.response.data.message || "Failed to update amenity details. Please try again.", "error");
         }
     };
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Amenity Details
             </Typography>

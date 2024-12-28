@@ -317,6 +317,7 @@ import { addHod } from "../api/clubhods";
 import { Person, Work, Apartment, Phone, CheckCircle, Title } from "@mui/icons-material";
 import { fetchAllActiveDepartments, fetchAllActiveMembers } from "../api/member";
 import { PUBLIC_API_URI } from "../api/config";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -480,6 +481,7 @@ const AddHod = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+             <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New HOD
             </Typography>

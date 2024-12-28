@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import { fetchCategoryDetails, updateCategoryDetails } from "../api/category";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleCategory = () => {
     const { id } = useParams();
@@ -74,6 +75,7 @@ const SingleCategory = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Category Details
             </Typography>
@@ -87,7 +89,7 @@ const SingleCategory = () => {
                 }}
             >
                 <Grid container spacing={4}>
-                   
+
                     <Grid item xs={12} md={7}>
                         <Typography variant="h4">{category.name}</Typography>
                         <Typography variant="subtitle1">{category.code}</Typography>

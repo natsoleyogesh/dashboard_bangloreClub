@@ -16,13 +16,13 @@ import { Description } from "@mui/icons-material"; // Optional for icons if nece
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../../api/toast";
 import { addAmenitie } from "../../../api/masterData/amenities";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const statusOptions = ["active", "inactive"]; // Tax type status options
 
 const AddAmenitie = () => {
     const [taxTypeData, setTaxTypeData] = useState({
         name: "",
-        percentage: "",
         status: "active",
         icon: null, // To hold the selected icon file
     });
@@ -35,7 +35,7 @@ const AddAmenitie = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setTaxTypeData((prev) => ({ ...prev, [name]: value }));
-        validateField(name, value);
+        // validateField(name, value);
     };
 
     // Handle file input change (SVG icon upload)
@@ -60,28 +60,26 @@ const AddAmenitie = () => {
             delete newErrors.name;
         }
 
-        // Percentage validation
-        if (name === "percentage" && !value.trim()) {
-            newErrors.percentage = "Percentage is required.";
-        } else if (name === "percentage" && isNaN(value)) {
-            newErrors.percentage = "Percentage must be a number.";
-        } else {
-            delete newErrors.percentage;
-        }
-
         setErrors(newErrors);
     };
 
-    // Validate the entire form before submission
     const validateForm = () => {
-        const validationErrors = {};
+        const errors = [];
 
-        if (!taxTypeData.name) validationErrors.name = "Tax Type Name is required.";
-        if (!taxTypeData.percentage) validationErrors.percentage = "Percentage is required.";
-        if (isNaN(taxTypeData.percentage)) validationErrors.percentage = "Percentage must be a valid number.";
+        if (!taxTypeData.name.trim()) {
+            errors.push("Amenity Name is required.");
+        }
 
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
+        if (!taxTypeData.icon) {
+            errors.push("Please select a valid SVG file.");
+        }
+
+
+        if (errors.length > 0) {
+            errors.forEach((error) => showToast(error, "error"));
+            return false;
+        }
+        return true;
     };
 
     // Handle form submission
@@ -93,7 +91,6 @@ const AddAmenitie = () => {
         try {
             const formData = new FormData();
             formData.append("name", taxTypeData.name);
-            formData.append("percentage", taxTypeData.percentage);
             formData.append("status", taxTypeData.status);
             if (taxTypeData.icon) formData.append("icon", taxTypeData.icon); // Append the icon if selected
 
@@ -113,6 +110,7 @@ const AddAmenitie = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New Amenity
             </Typography>
@@ -141,26 +139,6 @@ const AddAmenitie = () => {
                                 <InputAdornment position="start">
                                     <Description />
                                 </InputAdornment>
-                            ),
-                        }}
-                    />
-                </Box>
-
-                {/* Percentage */}
-                <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Percentage</InputLabel>
-                    <TextField
-                        placeholder="Enter Percentage"
-                        fullWidth
-                        name="percentage"
-                        value={taxTypeData.percentage}
-                        onChange={handleInputChange}
-                        error={!!errors.percentage}
-                        helperText={errors.percentage}
-                        type="number"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">%</InputAdornment>
                             ),
                         }}
                     />

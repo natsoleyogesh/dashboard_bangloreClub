@@ -681,6 +681,7 @@ import { fetchRoomDetails } from "../api/room";
 import { showToast } from "../api/toast";
 import { PUBLIC_API_URI } from "../api/config";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleRoom = () => {
     const { id } = useParams();
@@ -708,6 +709,7 @@ const SingleRoom = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4">Room Details</Typography>
             <Paper sx={{ p: 3, mb: 3 }}>
                 <Grid container spacing={4}>

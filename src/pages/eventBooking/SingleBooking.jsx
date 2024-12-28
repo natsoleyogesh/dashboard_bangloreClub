@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import { showToast } from "../../api/toast";
 import { FiEdit } from "react-icons/fi";
 import { fetchBookingDetails, updateBookingDetails } from "../../api/event";
+import Breadcrumb from "../../components/common/Breadcrumb";
 
 // Function to format time to IST (Indian Standard Time) in AM/PM format
 const formatTimeInIST = (timeStr) => {
@@ -101,8 +102,9 @@ const SingleBooking = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
-                Booking Details
+                Event Booking Details
             </Typography>
             <Paper
                 sx={{

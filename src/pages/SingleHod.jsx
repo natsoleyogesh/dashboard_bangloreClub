@@ -273,6 +273,7 @@ import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import { fetchAllActiveDepartments } from "../api/member";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleHod = () => {
     const { id } = useParams();
@@ -389,6 +390,7 @@ const SingleHod = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 HOD Details
             </Typography>

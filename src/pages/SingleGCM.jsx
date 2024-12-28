@@ -381,6 +381,7 @@ import { fetchGCMDetails, updateGCMDetails } from "../api/gcm";
 import { PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const categoryOptions = ["Chairperson", "Co-Chairperson", "Member"];
 const subCategoryOptions = ["Go Green", "Rooms", "Catering", "Sports"];
@@ -514,6 +515,7 @@ const SingleGCM = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 General Committee Member Details
             </Typography>

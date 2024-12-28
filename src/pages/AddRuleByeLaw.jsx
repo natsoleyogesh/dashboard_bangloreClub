@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { addRuleByeLaw } from "../api/ruleByelaws";
 import { Description, Category, Gavel } from "@mui/icons-material";
 import ReactQuill from "react-quill";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -133,6 +134,7 @@ const AddRuleByeLaw = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New Rule/Bylaw
             </Typography>

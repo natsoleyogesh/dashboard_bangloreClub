@@ -13,6 +13,7 @@ import { Link, useParams } from "react-router-dom";
 import Table from "../components/Table";
 import { orderDetails, orderDetailsColumns } from "../data/OrderDetails";
 import { orders } from "../data/orders";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const SingleProduct = () => {
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
+      <Breadcrumb />
       <Paper
         sx={{
           boxShadow: "none !important",

@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { Category, Description, ToggleOn } from "@mui/icons-material";
 import { addBanquetCategory } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const statusOptions = ["Active", "Inactive"];
 
@@ -89,6 +90,7 @@ const AddCategory = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography
                 variant="h5"
                 sx={{

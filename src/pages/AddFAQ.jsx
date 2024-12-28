@@ -16,6 +16,7 @@ import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
 import { addFAQ } from "../api/faq";
 import { Description, Category, QuestionAnswer } from "@mui/icons-material";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const statusOptions = ["Active", "Inactive"]; // FAQ status options
 const categoryOptions = ["General", "Technical", "Membership"]; // FAQ category options
@@ -101,6 +102,7 @@ const AddFAQ = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New FAQ
             </Typography>

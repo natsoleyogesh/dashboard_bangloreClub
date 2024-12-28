@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { addFoodAndBeverage } from "../api/foodAndBeverage";
 import { showToast } from "../api/toast";
 import ReactQuill from "react-quill";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -325,6 +326,7 @@ const AddFoodAndBeverage = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: "bold" }}>
                 Add New Food & Beverage
             </Typography>

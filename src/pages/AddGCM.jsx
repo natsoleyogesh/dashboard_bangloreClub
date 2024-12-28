@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { addGCM } from "../api/gcm";
 import { fetchAllActiveMembers } from "../api/member";
 import { PUBLIC_API_URI } from "../api/config";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const statusOptions = ["Active", "Inactive"];
 const categoryOptions = ["Chairperson", "Co-Chairperson", "Member"]; // Sample category options
@@ -206,6 +207,7 @@ const AddGCM = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add General Committee Member
             </Typography>

@@ -21,6 +21,7 @@ import ReactQuill from "react-quill";
 
 import { fetchBanquetCategoryDetails, updateBanquetCategoryDetails } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const SingleCategory = () => {
     const { id } = useParams();
@@ -81,6 +82,7 @@ const SingleCategory = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 3 }}>
                 Banquet Category Details
             </Typography>

@@ -264,6 +264,8 @@ import { addMember } from "../api/member";
 import { useNavigate, useParams } from "react-router-dom";
 import { showToast } from "../api/toast";
 import { CrisisAlert, Email, FamilyRestroom, LocationCity, People, Phone } from "@mui/icons-material";
+import LocationSelector from "../components/common/LocationSelector";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -307,13 +309,15 @@ const AddFamilyMember = () => {
     const [maritalStatus, setMaritalStatus] = useState("Single");
     const [marriageDate, setMarriageDate] = useState("");
     const [title, setTitle] = useState("Mr.");
-    const [age, setAge] = useState("");
+    // const [age, setAge] = useState("");
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [validationErrors, setValidationErrors] = useState({});
     const imageInput = useRef(null);
     const navigate = useNavigate();
+    const [location, setLocation] = useState({ country: "India", state: null, city: null }); // Location state
+
 
     // Validation functions
     const validateName = (name) => name.trim() !== "";
@@ -322,7 +326,7 @@ const AddFamilyMember = () => {
     const validateMobileNumber = (mobile) =>
         /^[0-9]{10}$/.test(mobile);
     const validateRelation = (relation) => relation !== "";
-    const validateAge = (age) => age && age > 0 && age <= 120;
+    // const validateAge = (age) => age && age > 0 && age <= 120;
     const validateAddress = (address) => address.length === 0 || address.length >= 5;
     const validatePin = (pin) => /^[0-9]{5,10}$/.test(pin);
 
@@ -366,22 +370,22 @@ const AddFamilyMember = () => {
         }));
     };
 
-    const handleAgeChange = (e) => {
-        const value = e.target.value;
-        setAge(value);
-        setValidationErrors((prev) => ({
-            ...prev,
-            age: validateAge(value) ? "" : "Age must be between 1 and 120.",
-        }));
-    };
+    // const handleAgeChange = (e) => {
+    //     const value = e.target.value;
+    //     setAge(value);
+    //     setValidationErrors((prev) => ({
+    //         ...prev,
+    //         age: validateAge(value) ? "" : "Age must be between 1 and 120.",
+    //     }));
+    // };
 
     const handlePinChange = (e) => {
         const value = e.target.value;
         setPin(value);
         setValidationErrors((prev) => ({
             ...prev,
-            pin: validatePin(value)   ? ""
-            : "pin must be 6 to 10 digits.",
+            pin: validatePin(value) ? ""
+                : "pin must be 6 to 10 digits.",
         }));
     };
 
@@ -392,6 +396,10 @@ const AddFamilyMember = () => {
             ...prev,
             address: validateAddress(value) ? "" : "Address must be at least 5 characters.",
         }));
+    };
+
+    const handleLocationChange = (updatedLocation) => {
+        setLocation(updatedLocation);
     };
 
     const handleSubmit = async (event) => {
@@ -420,7 +428,7 @@ const AddFamilyMember = () => {
         formData.append("maritalStatus", maritalStatus);
         formData.append("marriageDate", marriageDate);
         formData.append("title", title);
-        formData.append("age", age);
+        // formData.append("age", age);
         formData.append("parentUserId", parentUserId);
         if (image) {
             formData.append("profilePicture", image);
@@ -448,6 +456,7 @@ const AddFamilyMember = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
+            <Breadcrumb />
             <Typography variant="h5" sx={{ textAlign: "center", fontWeight: 600 }}>
                 Add Family Member
             </Typography>
@@ -562,7 +571,7 @@ const AddFamilyMember = () => {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
+                                {/* <Grid item xs={6}>
                                     <InputLabel sx={{ fontWeight: "bold" }}>City</InputLabel>
                                     <TextField
                                         placeholder="Enter Your City"
@@ -593,6 +602,17 @@ const AddFamilyMember = () => {
                                         value={country}
                                         onChange={(e) => setCountry(e.target.value)}
                                         fullWidth
+                                    />
+                                </Grid> */}
+                                <Grid item xs={12}>
+                                    <InputLabel sx={{ fontWeight: "bold" }}>Location</InputLabel>
+                                    <LocationSelector
+                                        onLocationChange={handleLocationChange}
+                                        defaultLocation={{
+                                            country: "India", // Default country
+                                            state: location.state, // Retain state if editing
+                                            city: location.city, // Retain city if editing
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -675,7 +695,7 @@ const AddFamilyMember = () => {
                                 </Grid>
 
 
-                                <Grid item xs={6}>
+                                {/* <Grid item xs={6}>
                                     <InputLabel sx={{ fontWeight: "bold" }}>Age</InputLabel>
                                     <TextField
                                         placeholder="Enter age"
@@ -691,7 +711,7 @@ const AddFamilyMember = () => {
                                         InputProps={{ startAdornment: <CrisisAlert sx={{ color: "gray", mr: 1 }} /> }}
 
                                     />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12}>
                                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Profile Image</InputLabel>
                                     <UploadBox onClick={() => imageInput.current.click()}>

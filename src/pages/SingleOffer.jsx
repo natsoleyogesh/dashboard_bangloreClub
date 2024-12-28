@@ -24,6 +24,7 @@ import { formatDate, PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import ReactQuill from "react-quill";
+import Breadcrumb from "../components/common/Breadcrumb";
 
 
 const departmentOptions = ["Recharge", "Purchase", "Subscription", "Entertainment", "Other"];
@@ -142,6 +143,7 @@ const SingleOffer = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Offer Details
             </Typography>
