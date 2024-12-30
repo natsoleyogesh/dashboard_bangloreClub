@@ -6,6 +6,7 @@ import Table from "../components/Table";
 import { showToast } from "../api/toast";
 import { fetchAllFAQs, deleteFAQ } from "../api/faq";
 import ConfirmationDialog from "../api/ConfirmationDialog";
+import { formatDateTime } from "../api/config";
 
 const FAQs = () => {
     const [faqs, setFaqs] = useState([]);
@@ -26,8 +27,8 @@ const FAQs = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

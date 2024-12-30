@@ -143,6 +143,7 @@ import Table from "../../components/Table";
 import { showToast } from "../../api/toast";
 import { deleteBooking, fetchAllBookings } from "../../api/event";
 import ConfirmationDialog from "../../api/ConfirmationDialog";
+import { formatDateTime } from "../../api/config";
 
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
@@ -158,14 +159,20 @@ const Bookings = () => {
     // Table columns definition
     const columns = [
         { accessorKey: "eventId.eventTitle", header: "Event Title" },
-        { accessorKey: "eventId.eventDate", header: "Event Date", Cell: ({ cell }) => formatDate(cell.getValue()) },
+        { accessorKey: "eventId.eventStartDate", header: "Event Start Date", Cell: ({ cell }) => formatDate(cell.getValue()) },
+        { accessorKey: "eventId.eventEndDate", header: "Event End Date", Cell: ({ cell }) => formatDate(cell.getValue()) },
         { accessorKey: "primaryMemberId.name", header: "Primary Member" },
         { accessorKey: "bookingStatus", header: "Booking Status" },
         { accessorKey: "ticketDetails.totalAmount", header: "Total Amount" },
+        // {
+        //     accessorKey: "createdAt",
+        //     header: "Created Date",
+        //     Cell: ({ cell }) => formatDate(cell.getValue()),
+        // },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()), // Format as date and time
         },
     ];
 

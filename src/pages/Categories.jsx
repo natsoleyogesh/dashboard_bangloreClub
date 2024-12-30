@@ -4,7 +4,7 @@ import { FiPlus } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "../components/Table";
 import { deleteCategory, fetchAllCategories } from "../api/category";
-import { PUBLIC_API_URI } from "../api/config";
+import { formatDateTime, PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 
@@ -42,13 +42,13 @@ const Categories = () => {
         },
         {
             accessorKey: "createdAt",
-            header: "Created At",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
         {
             accessorKey: "updatedAt",
-            header: "Updated At",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Updated Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

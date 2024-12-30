@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Table from "../components/Table";
 import { customers, customersColumns } from "../data/customers";
 import { deleteMember, fetchAllMembers } from "../api/member";
-import { PUBLIC_API_URI } from "../api/config";
+import { formatDateTime, PUBLIC_API_URI } from "../api/config";
 import { Link, useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 import { showToast } from "../api/toast";
@@ -47,6 +47,11 @@ const Customers = () => {
     {
       accessorKey: "address", //normal accessorKey
       header: "Address",
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created Date & Time",
+      Cell: ({ cell }) => formatDateTime(cell.getValue()),
     },
 
   ];

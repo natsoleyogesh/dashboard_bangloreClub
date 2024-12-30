@@ -6,7 +6,7 @@ import Table from "../../../components/Table";
 import ConfirmationDialog from "../../../api/ConfirmationDialog";
 import { deleteAmenitie, fetchAllAmenities } from "../../../api/masterData/amenities"; // Adjusted to use the correct API for amenities
 import { showToast } from "../../../api/toast";
-import { PUBLIC_API_URI } from "../../../api/config";
+import { formatDateTime, PUBLIC_API_URI } from "../../../api/config";
 
 const Amenities = () => {
     const [amenities, setAmenities] = useState([]);
@@ -36,8 +36,8 @@ const Amenities = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

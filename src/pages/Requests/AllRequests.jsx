@@ -11,6 +11,7 @@ import Table from "../../components/Table";
 import { showToast } from "../../api/toast";
 import ConfirmationDialog from "../../api/ConfirmationDialog";
 import Breadcrumb from "../../components/common/Breadcrumb";
+import { formatDateTime } from "../../api/config";
 
 const AllRequests = () => {
     const { requests, removeRequest } = useContext(WebSocketContext); // Consume WebSocketContext
@@ -30,8 +31,8 @@ const AllRequests = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()), // Format dates in table
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 
@@ -66,7 +67,7 @@ const AllRequests = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
-            <Breadcrumb />
+            {/* <Breadcrumb /> */}
             {/* Header Section */}
             <Box
                 sx={{

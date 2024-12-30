@@ -120,7 +120,10 @@ const SingleBooking = () => {
                     <Grid item xs={12} sm={6}>
                         <Typography variant="h6">Event: {booking.eventId?.eventTitle || "N/A"}</Typography>
                         <Typography variant="body1">
-                            <strong>Event Date:</strong> {new Date(booking.eventId?.eventDate).toLocaleDateString() || "N/A"}
+                            <strong>Event Start Date:</strong> {new Date(booking.eventId?.eventStartDate).toLocaleDateString() || "N/A"}
+                        </Typography>
+                        <Typography variant="body1">
+                            <strong>Event End Date:</strong> {new Date(booking.eventId?.eventEndDate).toLocaleDateString() || "N/A"}
                         </Typography>
                         <Typography variant="body1">
                             <strong>Event Time:</strong>  {booking.eventId?.startTime ? formatTimeInIST(booking.eventId.startTime) : "N/A"} -  {booking.eventId?.endTime ? formatTimeInIST(booking.eventId.endTime) : "N/A"}
@@ -151,9 +154,9 @@ const SingleBooking = () => {
                         <Typography variant="body1">
                             <strong>Guest Price:</strong> ₹{booking.ticketDetails?.guestPrice || "N/A"}
                         </Typography>
-                        <Typography variant="body1">
+                        {/* <Typography variant="body1">
                             <strong>Tax Rate:</strong> {booking.ticketDetails?.taxRate || "N/A"}%
-                        </Typography>
+                        </Typography> */}
                         <Typography variant="body1">
                             <strong>Subtotal:</strong> ₹{booking.ticketDetails?.subtotal || "N/A"}
                         </Typography>

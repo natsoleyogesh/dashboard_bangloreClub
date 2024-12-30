@@ -141,6 +141,8 @@ const SingleOffer = () => {
         }
     };
 
+
+
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
             <Breadcrumb />
@@ -196,6 +198,9 @@ const SingleOffer = () => {
                         <Typography variant="body1" sx={{ color: getStatusColor(offer.status) }}>
                             <strong>Status:</strong> {offer.status || "N/A"}
                         </Typography>
+                        <Typography variant="body1" >
+                            <strong>Show Banner Home:</strong> {offer.showBanner === true ? "Yes" : "No"}
+                        </Typography>
                         <Button
                             variant="contained"
                             color="primary"
@@ -228,6 +233,7 @@ const SingleOffer = () => {
                         name="startDate"
                         value={editOffer.startDate?.slice(0, 10) || ""}
                         onChange={handleInputChange}
+                        inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
                     />
                     <TextField
                         label="End Date"
@@ -237,6 +243,7 @@ const SingleOffer = () => {
                         name="endDate"
                         value={editOffer.endDate?.slice(0, 10) || ""}
                         onChange={handleInputChange}
+                        inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
                     />
                     <TextField
                         label="Discount Percentage"
@@ -344,6 +351,19 @@ const SingleOffer = () => {
                                 </Typography>
                             )} */}
                         </FormControl>
+                    </Box>
+
+                    <Box sx={{ mb: 2 }}>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="showBanner"
+                                    checked={editOffer.showBanner}
+                                    onChange={handleCheckboxChange}
+                                />
+                            }
+                            label="Show Banner In Home"
+                        />
                     </Box>
 
                     <Avatar

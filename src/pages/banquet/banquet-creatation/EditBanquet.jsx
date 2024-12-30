@@ -406,6 +406,7 @@ import { showToast } from "../../../api/toast";
 import { PUBLIC_API_URI } from "../../../api/config";
 import ReactQuill from "react-quill";
 import { CurrencyRupee } from "@mui/icons-material";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 const daysOptions = [
     "Monday",
@@ -735,6 +736,7 @@ const EditBanquet = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            <Breadcrumb />
             <Typography variant="h4">Edit Banquet</Typography>
             <Paper sx={{ p: 3, mb: 3 }}>
                 {/* Form Fields */}
@@ -818,7 +820,7 @@ const EditBanquet = () => {
                             </FormControl>
                         </Box>
                         <Box sx={{ mb: 2 }}>
-                            <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Amenities</InputLabel>
+                            <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Tax Types</InputLabel>
                             <FormControl fullWidth>
                                 <div>
                                     {taxTypes.map((taxType) => (

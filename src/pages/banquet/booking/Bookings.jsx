@@ -143,6 +143,7 @@ import ConfirmationDialog from "../../../api/ConfirmationDialog";
 import Table from "../../../components/Table";
 import { deleteBanquetBooking, fetchAllBanquetBookingss } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
+import { formatDateTime } from "../../../api/config";
 
 // Utility function to format dates
 const formatDate = (dateString) => {
@@ -191,8 +192,8 @@ const Bookings = () => {
         { accessorKey: "paymentStatus", header: "Payment Status" },
         {
             accessorKey: "createdAt",
-            header: "Created At",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

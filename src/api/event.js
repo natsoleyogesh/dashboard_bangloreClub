@@ -23,12 +23,18 @@ export const fetchAllEvents = async () => {
 };
 
 // Function to fetch member details by ID
-export const fetchEventDetails = async (id) => {
+export const fetchEventDetails = async (id, operation = "") => {
     try {
         // Make the GET request to fetch member details
-        const response = await axiosInstance.get(`/event/get-event/${id}`);
-        // Return the member data from the response
+        // const response = await axiosInstance.get(`/event/get-event/${id}`);
+        // // Return the member data from the response
+        // Construct the query string with the optional operation
+        const queryParams = operation ? `?operation=${operation}` : "";
+
+        // Make the GET request to fetch event details
+        const response = await axiosInstance.get(`/event/get-event/${id}${queryParams}`);
         return response;
+
     } catch (error) {
         console.error(`Error fetching member details for ID ${id}:`, error);
         throw error; // Rethrow the error for handling in the calling function

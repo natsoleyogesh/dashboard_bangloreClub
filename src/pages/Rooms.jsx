@@ -196,7 +196,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Table from "../components/Table";
 import { deleteRoom, fetchAllRooms } from "../api/room";
 import { fetchAllCategories } from "../api/category";
-import { PUBLIC_API_URI } from "../api/config";
+import { formatDateTime, PUBLIC_API_URI } from "../api/config";
 
 import { showToast } from "../api/toast";
 import ConfirmationDialog from "../api/ConfirmationDialog";
@@ -315,8 +315,8 @@ const Rooms = () => {
         },
         {
             accessorKey: "createdAt",
-            header: "Created At",
-            Cell: ({ cell }) => new Date(cell.getValue()).toLocaleDateString(),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

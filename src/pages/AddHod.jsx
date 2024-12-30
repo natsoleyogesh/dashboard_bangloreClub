@@ -481,7 +481,7 @@ const AddHod = () => {
 
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
-             <Breadcrumb />
+            <Breadcrumb />
             <Typography variant="h5" sx={{ mb: "20px", textAlign: "center", fontWeight: 600 }}>
                 Add New HOD
             </Typography>

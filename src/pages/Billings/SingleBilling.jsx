@@ -8,6 +8,7 @@ import {
 import { useParams } from "react-router-dom";
 import { fetchBillingDetails } from "../../api/billing";
 import { showToast } from "../../api/toast";
+import Breadcrumb from "../../components/common/Breadcrumb";
 
 const SingleBilling = () => {
     const { id } = useParams();
@@ -32,6 +33,8 @@ const SingleBilling = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+             <Breadcrumb
+              />
             <Typography variant="h4" sx={{ mb: 2 }}>
                 Billing Details
             </Typography>

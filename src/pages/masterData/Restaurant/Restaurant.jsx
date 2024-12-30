@@ -6,6 +6,7 @@ import Table from "../../../components/Table";
 import ConfirmationDialog from "../../../api/ConfirmationDialog";
 import { deleteRestaurant, fetchAllRestaurants } from "../../../api/masterData/restaurant";
 import { showToast } from "../../../api/toast";
+import { formatDateTime } from "../../../api/config";
 
 const Restaurants = () => {
     const [restaurants, setRestaurants] = useState([]);
@@ -24,8 +25,8 @@ const Restaurants = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

@@ -217,6 +217,7 @@ import { deleteBanquet, fetchAllBanquets } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
 import Table from "../../../components/Table";
 import ConfirmationDialog from "../../../api/ConfirmationDialog";
+import { formatDateTime } from "../../../api/config";
 
 const Banquets = () => {
     const [banquets, setBanquets] = useState([]);
@@ -306,13 +307,13 @@ const Banquets = () => {
         },
         {
             accessorKey: "createdAt",
-            header: "Created At",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
         {
             accessorKey: "updatedAt",
-            header: "Updated At",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Updated Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

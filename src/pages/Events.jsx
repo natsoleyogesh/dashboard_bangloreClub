@@ -4,7 +4,7 @@ import { FiPlus } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "../components/Table";
 import { deleteEvent, fetchAllEvents } from "../api/event";
-import { PUBLIC_API_URI } from "../api/config";
+import { formatDateTime, PUBLIC_API_URI } from "../api/config";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 import { showToast } from "../api/toast";
 
@@ -53,8 +53,13 @@ const Events = () => {
             header: "Event Name",
         },
         {
-            accessorKey: "eventDate",
-            header: "Event Date",
+            accessorKey: "eventStartDate",
+            header: "Event Start Date",
+            Cell: ({ cell }) => formatDate(cell.getValue()),
+        },
+        {
+            accessorKey: "eventEndDate",
+            header: "Event End Date",
             Cell: ({ cell }) => formatDate(cell.getValue()),
         },
         {
@@ -88,6 +93,11 @@ const Events = () => {
                     style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                 />
             ),
+        },
+        {
+            accessorKey: "createdAt",
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
 
 

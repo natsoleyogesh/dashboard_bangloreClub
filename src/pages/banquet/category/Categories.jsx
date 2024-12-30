@@ -9,6 +9,7 @@ import {
 import { showToast } from "../../../api/toast";
 import Table from "../../../components/Table";
 import ConfirmationDialog from "../../../api/ConfirmationDialog";
+import { formatDateTime } from "../../../api/config";
 
 const Categories = () => {
     const navigate = useNavigate();
@@ -92,13 +93,13 @@ const Categories = () => {
 
         {
             accessorKey: "createdAt",
-            header: "Created At",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
         {
             accessorKey: "updatedAt",
-            header: "Updated At",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Updated Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

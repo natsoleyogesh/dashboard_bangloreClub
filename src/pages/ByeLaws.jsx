@@ -7,6 +7,7 @@ import ConfirmationDialog from "../api/ConfirmationDialog"; // Adjust import pat
 // import { showToast } from "../utils/toast"; // Adjust import path as necessary
 import { fetchAllRuleByeLaws, deleteRuleByeLaw } from "../api/ruleByelaws";
 import { showToast } from "../api/toast";
+import { formatDateTime } from "../api/config";
 
 const ByeLaws = () => {
     const [byeLaws, setByeLaws] = useState([]);
@@ -38,8 +39,8 @@ const ByeLaws = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

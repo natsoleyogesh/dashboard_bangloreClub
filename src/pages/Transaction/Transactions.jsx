@@ -140,6 +140,7 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { fetchAllMembers } from "../../api/member";
 import { useParams } from "react-router-dom";
+import { formatDateTime } from "../../api/config";
 
 const Transactions = () => {
     const { id } = useParams();
@@ -196,13 +197,18 @@ const Transactions = () => {
         },
         {
             accessorKey: "paymentDate",
-            header: "Payment Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Payment Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
         {
             accessorKey: "paymentAmount",
             header: "Payment Amount",
             Cell: ({ cell }) => `₹${cell.getValue()}`, // Format as currency
+        },
+        {
+            accessorKey: "createdAt",
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

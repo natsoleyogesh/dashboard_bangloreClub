@@ -57,7 +57,8 @@ const AddOffer = () => {
         status: "Active",
         termsAndConditions: "",
         showExclusive: false,
-        discountOffer: false
+        discountOffer: false,
+        showBanner: false
     });
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -242,6 +243,8 @@ const AddOffer = () => {
                         InputLabelProps={{ shrink: true }}
                         error={!!errors.startDate}
                         helperText={errors.startDate}
+                        inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+
                     />
                 </Box>
 
@@ -257,6 +260,8 @@ const AddOffer = () => {
                         InputLabelProps={{ shrink: true }}
                         error={!!errors.endDate}
                         helperText={errors.endDate}
+                        inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+
                     />
                 </Box>
 
@@ -435,6 +440,19 @@ const AddOffer = () => {
                             />
                         }
                         label="Discount Offer"
+                    />
+                </Box>
+
+                <Box sx={{ mb: 2 }}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                name="showBanner"
+                                checked={offerData.showBanner}
+                                onChange={handleCheckboxChange}
+                            />
+                        }
+                        label="Show Banner In Home"
                     />
                 </Box>
 

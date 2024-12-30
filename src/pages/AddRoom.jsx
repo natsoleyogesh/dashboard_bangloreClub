@@ -68,8 +68,8 @@ const AddRoom = () => {
         roomDetails: [{ roomNumber: '', status: "Available" }],
         totalAvailableRoom: 1,
         taxTypes: [],
-        checkInTime: '',
-        checkOutTime: '',
+        checkInTime: '12:00',
+        checkOutTime: '11:00',
         maxAllowedPerRoom: '',
         cancellationPolicy: { before7Days: '', between7To2Days: '', between48To24Hours: '', lessThan24Hours: '' },
         breakfastIncluded: false,
@@ -733,7 +733,7 @@ const AddRoom = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Min Price</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Min Price  (Displayed in App Only)</InputLabel>
                     <TextField
                         placeholder="Enter minimum price"
                         fullWidth
@@ -749,7 +749,7 @@ const AddRoom = () => {
                     />
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Max Price</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Max Price  (Displayed in App Only)</InputLabel>
                     <TextField
                         placeholder="Enter maximum price"
                         fullWidth
@@ -765,7 +765,7 @@ const AddRoom = () => {
                     />
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Size</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Size (sq. feet)</InputLabel>
                     <TextField
                         placeholder="Enter room size"
                         fullWidth
@@ -989,13 +989,14 @@ const AddRoom = () => {
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Special Day Tarrif Details</InputLabel>
                     {roomData.specialDayTariff.map((tariff, index) => (
-                        <Box key={index} sx={{ display: "flex", gap: 2, margin: "5px" }}>
+                        <Box key={index} sx={{ display: "block", gap: 2, margin: "5px" }}>
                             <TextField
                                 fullWidth
                                 name={`specialDayTariff[${index}][special_day_name]`}
                                 label="Special Day Name"
                                 value={tariff.special_day_name}
                                 onChange={handleChange}
+                                style={{ margin: "5px" }}
                             />
                             <TextField
                                 fullWidth
@@ -1007,6 +1008,8 @@ const AddRoom = () => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
+                                inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+                                style={{ margin: "5px" }}
                             />
                             <TextField
                                 fullWidth
@@ -1018,14 +1021,17 @@ const AddRoom = () => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
+                                inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+                                style={{ margin: "5px" }}
                             />
                             <TextField
                                 fullWidth
                                 name={`specialDayTariff[${index}][extraCharge]`}
-                                label="Extra Charge"
+                                label="Extra Charge In %"
                                 type="number"
                                 value={tariff.extraCharge}
                                 onChange={handleChange}
+                                style={{ margin: "5px" }}
                             />
 
                             {/* Remove Button */}

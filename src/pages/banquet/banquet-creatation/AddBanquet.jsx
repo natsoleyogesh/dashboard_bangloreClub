@@ -18,7 +18,7 @@ import ReactQuill from "react-quill";
 import { useNavigate } from "react-router-dom";
 import { addBanquet, fetchActiveAllBanquetCategories } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
-import { CurrencyRupee } from "@mui/icons-material";
+import { AccessTime, AccessTimeFilled, CurrencyRupee } from "@mui/icons-material";
 import { fetchAllActiveTaxTypes } from "../../../api/masterData/taxType";
 import { fetchAllActiveAmenities } from "../../../api/masterData/amenities";
 import { FiTrash, FiPlus } from "react-icons/fi";
@@ -45,11 +45,11 @@ const AddBanquet = () => {
     const [banquetData, setBanquetData] = useState({
         banquetName: "",
         description: "",
-        checkInTime: "12:00 PM",
-        checkOutTime: "01:00 PM",
+        checkInTime: "12:00",  // 12:00 PM
+        checkOutTime: "11:00",  // 11:00 AM
         maxAllowedPerRoom: "",
         priceRange: { minPrice: "", maxPrice: "" },
-        pricingDetails: [{ days: [], timeSlots: [{ start: null, end: null }], price: "" }],
+        pricingDetails: [{ days: [], timeSlots: [{ start: "12:00", end: "11:00" }], price: "" }],
         amenities: [],
         taxTypes: [],
         breakfastIncluded: false,
@@ -642,13 +642,13 @@ const AddBanquet = () => {
 
                 {/* Description */}
                 <Box sx={{ mb: 3 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Description</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: 1 }}>Banquet Facilities Description</InputLabel>
                     <ReactQuill
                         value={banquetData.description}
                         onChange={(value) =>
                             setBanquetData((prev) => ({ ...prev, description: value }))
                         }
-                        placeholder="Describe the banquet"
+                        placeholder="Describe the banquet facilities"
                         style={{ height: "120px", borderRadius: "8px", marginBottom: "80px" }}
                     />
                 </Box>
@@ -684,7 +684,7 @@ const AddBanquet = () => {
                         error={!!errors.checkInTime}
                         helperText={errors.checkInTime}
                         InputProps={{
-                            startAdornment: <CurrencyRupee sx={{ color: "gray", mr: 1 }} />,
+                            startAdornment: <AccessTimeFilled sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>
@@ -701,14 +701,14 @@ const AddBanquet = () => {
                         error={!!errors.checkOutTime}
                         helperText={errors.checkOutTime}
                         InputProps={{
-                            startAdornment: <CurrencyRupee sx={{ color: "gray", mr: 1 }} />,
+                            startAdornment: <AccessTime sx={{ color: "gray", mr: 1 }} />,
                         }}
                     />
                 </Box>
 
                 {/* Price Range */}
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Min Price</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Min Price (App Display Only)</InputLabel>
                     <TextField
                         placeholder="Enter minimum price"
                         fullWidth
@@ -724,7 +724,7 @@ const AddBanquet = () => {
                     />
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Max Price</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Max Price (App Display Only)</InputLabel>
                     <TextField
                         placeholder="Enter maximum price"
                         fullWidth
@@ -741,7 +741,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Hall Size</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Hall Size(sq. feet)</InputLabel>
                     <TextField
                         placeholder="Enter hall size"
                         fullWidth
@@ -1077,6 +1077,8 @@ const AddBanquet = () => {
                                 }}
                                 error={!!errors[`startDate${index}`]}
                                 helperText={errors[`startDate${index}`]}
+                                inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+
                             />
                             <TextField
                                 fullWidth
@@ -1090,6 +1092,8 @@ const AddBanquet = () => {
                                 }}
                                 error={!!errors[`endDate${index}`]}
                                 helperText={errors[`endDate${index}`]}
+                                inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+
                             />
                             <TextField
                                 fullWidth

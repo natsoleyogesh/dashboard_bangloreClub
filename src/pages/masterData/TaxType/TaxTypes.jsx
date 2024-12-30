@@ -6,6 +6,7 @@ import Table from "../../../components/Table";
 import ConfirmationDialog from "../../../api/ConfirmationDialog";
 import { deleteTaxType, fetchAllTaxTypes } from "../../../api/masterData/taxType"; // Adjusted to use the correct API for tax types
 import { showToast } from "../../../api/toast";
+import { formatDateTime } from "../../../api/config";
 
 const TaxTypes = () => {
     const [taxTypes, setTaxTypes] = useState([]);
@@ -25,8 +26,8 @@ const TaxTypes = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

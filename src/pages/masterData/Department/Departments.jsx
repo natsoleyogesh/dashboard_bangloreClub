@@ -6,6 +6,7 @@ import Table from "../../../components/Table";
 import ConfirmationDialog from "../../../api/ConfirmationDialog";
 import { deleteDepartment, fetchAllDepartments } from "../../../api/masterData/department";
 import { showToast } from "../../../api/toast";
+import { formatDateTime } from "../../../api/config";
 
 const Departments = () => {
     const [departments, setDepartments] = useState([]);
@@ -24,8 +25,8 @@ const Departments = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

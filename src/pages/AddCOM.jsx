@@ -215,6 +215,8 @@ const AddCOM = () => {
                                 </InputAdornment>
                             ),
                         }}
+                        inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+
                     />
                 </Box>
 

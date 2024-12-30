@@ -10,6 +10,8 @@ import {
     TextField,
     Typography,
     MenuItem,
+    FormControlLabel,
+    Checkbox,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -88,6 +90,11 @@ const SingleNotice = () => {
         setSelectedFile(null);
     };
 
+    // Handle checkbox change
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setEditNotice((prev) => ({ ...prev, [name]: checked }));
+    };
     // Save changes to the notice
     const handleSaveChanges = async () => {
         try {
@@ -178,6 +185,9 @@ const SingleNotice = () => {
                             <strong>Expiration Date:</strong>{" "}
                             {notice.expiredDate ? formatDate(notice.expiredDate) : "N/A"}
                         </Typography>
+                        <Typography variant="body1" >
+                            <strong>Show Banner Home:</strong> {notice.showBanner === true ? "Yes" : "No"}
+                        </Typography>
                         <Typography variant="body1">
                             {notice.fileUrl && (
                                 <Button
@@ -249,6 +259,8 @@ const SingleNotice = () => {
                         }
                         onChange={handleInputChange}
                         InputLabelProps={{ shrink: true }}
+                        inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+
                     />
                     <TextField
                         label="Status"
@@ -262,6 +274,19 @@ const SingleNotice = () => {
                         <MenuItem value="Active">Active</MenuItem>
                         <MenuItem value="Inactive">Inactive</MenuItem>
                     </TextField>
+
+                    <Box sx={{ mb: 2 }}>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="showBanner"
+                                    checked={editNotice.showBanner}
+                                    onChange={handleCheckboxChange}
+                                />
+                            }
+                            label="Show Banner In Home"
+                        />
+                    </Box>
 
                     <Button variant="contained" component="label" fullWidth>
                         Upload New File (JPEG, PNG, WEBP, PDF)

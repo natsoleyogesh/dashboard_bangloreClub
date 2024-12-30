@@ -1,8 +1,8 @@
 import { format } from "date-fns";
 
 
-export const PUBLIC_API_URI = "http://localhost:3005/api"
-// export const PUBLIC_API_URI = "https://13.53.129.30/api"
+// export const PUBLIC_API_URI = "http://localhost:3005/api"
+export const PUBLIC_API_URI = "https://13.53.129.30/api"
 
 
 export const formatDate = (date) => {
@@ -21,4 +21,10 @@ export const formatDateForInput = (date) => {
     } catch {
         return ""; // Return empty on invalid date
     }
+};
+
+export const formatDateTime = (dateString) => {
+    if (!dateString) return "N/A";
+    const options = { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" };
+    return new Date(dateString).toLocaleString(undefined, options);
 };

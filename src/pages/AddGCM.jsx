@@ -28,11 +28,7 @@ const subCategoryOptions = ["Go Green", "Rooms", "Catering", "Sports"]; // Sampl
 
 const AddGCM = () => {
     const [gcmData, setGcmData] = useState({
-        // title: "",
-        // name: "",
-        // memberId: "",
         designation: "",
-        // contactNumber: "",
         userId: '',
         status: "Active",
     });

@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Chip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Table from "../components/Table";
 import { customers, customersColumns } from "../data/customers";
-import { PUBLIC_API_URI } from "../api/config";
+import { formatDateTime, PUBLIC_API_URI } from "../api/config";
 import { Link, useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 import { showToast } from "../api/toast";
@@ -58,6 +58,11 @@ const MemberApplications = () => {
                     size="small"
                 />
             ),
+        },
+        {
+            accessorKey: "createdAt",
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
 
     ];

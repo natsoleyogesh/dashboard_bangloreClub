@@ -342,6 +342,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchBanquetDetails } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
 import { PUBLIC_API_URI } from "../../../api/config";
+import Breadcrumb from "../../../components/common/Breadcrumb";
 
 // Function to convert 24-hour time to 12-hour AM/PM format
 const formatTime = (time) => {
@@ -381,6 +382,7 @@ const SingleBanquet = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+             <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 3 }}>
                 Banquet Details
             </Typography>

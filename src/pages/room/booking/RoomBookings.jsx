@@ -173,6 +173,7 @@ import ConfirmationDialog from "../../../api/ConfirmationDialog";
 import Table from "../../../components/Table";
 import { showToast } from "../../../api/toast";
 import { deleteRoomBooking, fetchAllRoomBookingss } from "../../../api/room";
+import { formatDateTime } from "../../../api/config";
 
 // Utility function to format dates
 const formatDate = (dateString) => {
@@ -214,7 +215,11 @@ const RoomBookings = () => {
         // { accessorKey: "roomCategoryCounts.roomPrice", header: "Room Price" },
         // { accessorKey: "roomCategoryCounts.extraBedPrice", header: "Extra Bed Price" },
         // { accessorKey: "roomCategoryCounts.specialDayTariff", header: "Special Day Tariff" },
-        { accessorKey: "createdAt", header: "Created At", Cell: ({ cell }) => formatDate(cell.getValue()) },
+        {
+            accessorKey: "createdAt",
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
+        },
     ];
 
     // Fetch all bookings

@@ -7,6 +7,8 @@ import TopCountries from "../components/home/TopCountries";
 import TransactionCustomer from "../components/home/TransactionCustomer";
 import Table from "../components/Table";
 import { orders, ordersColumns } from "../data/orders";
+import Transactions from "./Transaction/Transactions";
+import AllRequests from "./Requests/AllRequests";
 
 const Dashboard = () => {
   const ComponentWrapper = styled(Box)({
@@ -26,7 +28,7 @@ const Dashboard = () => {
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={8}>
-            <BarChart />
+            {/* <BarChart /> */}
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <Paper
@@ -39,17 +41,18 @@ const Dashboard = () => {
                 height: "100%",
               }}
             >
-              <TopCountries />
+              {/* <TopCountries /> */}
             </Paper>
           </Grid>
         </Grid>
       </ComponentWrapper>
       <ComponentWrapper>
-        <TransactionCustomer />
+        {/* <TransactionCustomer /> */}
+        {/* <Transactions /> */}
       </ComponentWrapper>
 
       <ComponentWrapper>
-        <Typography variant="h5" sx={{ my: 3 }}>
+        {/* <Typography variant="h5" sx={{ my: 3 }}>
           Latest Orders
         </Typography>
         <Table
@@ -63,7 +66,8 @@ const Dashboard = () => {
           enableColumnFilters={false}
           enableEditing={false}
           enableColumnDragging={false}
-        />
+        /> */}
+        <AllRequests />
       </ComponentWrapper>
     </Box>
   );

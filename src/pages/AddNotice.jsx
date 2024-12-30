@@ -3,8 +3,10 @@ import styled from "@emotion/styled";
 import {
     Box,
     Button,
+    Checkbox,
     CircularProgress,
     FormControl,
+    FormControlLabel,
     InputAdornment,
     InputLabel,
     MenuItem,
@@ -45,6 +47,7 @@ const AddNotice = () => {
         description: "",
         expiredDate: "",
         status: "Active",
+        showBanner: false
     });
     const [uploadedFile, setUploadedFile] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -150,6 +153,11 @@ const AddNotice = () => {
         }
     };
 
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setNoticeData((prev) => ({ ...prev, [name]: checked }));
+    };
+
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
             <Breadcrumb />
@@ -229,6 +237,8 @@ const AddNotice = () => {
                                 </InputAdornment>
                             ),
                         }}
+                        inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+
                     />
                 </Box>
 
@@ -248,6 +258,19 @@ const AddNotice = () => {
                             ))}
                         </Select>
                     </FormControl>
+                </Box>
+
+                <Box sx={{ mb: 2 }}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                name="showBanner"
+                                checked={noticeData.showBanner}
+                                onChange={handleCheckboxChange}
+                            />
+                        }
+                        label="Show Banner In Home"
+                    />
                 </Box>
 
                 {/* Upload File */}

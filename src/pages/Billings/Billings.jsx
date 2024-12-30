@@ -19,6 +19,7 @@ import * as XLSX from "xlsx";
 import { fetchAllMembers } from "../../api/member"
 import { useParams } from "react-router-dom";
 import Breadcrumb from "../../components/common/Breadcrumb";
+import { formatDateTime } from "../../api/config";
 
 const Billings = () => {
 
@@ -49,13 +50,18 @@ const Billings = () => {
         { accessorKey: "paymentStatus", header: "Payment Status" },
         {
             accessorKey: "invoiceDate",
-            header: "Invoice Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Invoice Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
         {
             accessorKey: "totalAmount",
             header: "Total Amount",
             Cell: ({ cell }) => `₹${cell.getValue()}`, // Format as currency
+        },
+        {
+            accessorKey: "createdAt",
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 

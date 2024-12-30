@@ -5,7 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Table from "../components/Table";
 import { showToast } from "../api/toast";
 import { fetchAllRuleByeLaws, deleteRuleByeLaw } from "../api/ruleByelaws";
-import ConfirmationDialog from "../api/ConfirmationDialog";; // Adjust import path as necessary
+import ConfirmationDialog from "../api/ConfirmationDialog"; import { formatDateTime } from "../api/config";
+; // Adjust import path as necessary
 
 const Rules = () => {
     const navigate = useNavigate();
@@ -38,8 +39,8 @@ const Rules = () => {
         { accessorKey: "status", header: "Status" },
         {
             accessorKey: "createdAt",
-            header: "Created Date",
-            Cell: ({ cell }) => formatDate(cell.getValue()),
+            header: "Created Date & Time",
+            Cell: ({ cell }) => formatDateTime(cell.getValue()),
         },
     ];
 
