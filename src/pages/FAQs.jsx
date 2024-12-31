@@ -22,7 +22,52 @@ const FAQs = () => {
     // Table columns definition
     const columns = [
         { accessorKey: "question", header: "FAQ Question" },
-        { accessorKey: "answer", header: "FAQ Answer" },
+        {
+            accessorKey: "answer",
+            header: "FAQ Answer",
+            Cell: ({ row }) => {
+                const [showFull, setShowFull] = React.useState(false);
+
+                const toggleShowMore = () => setShowFull(!showFull);
+
+                const description = row.original.answer;
+
+                const truncatedDescription = description?.length > 50
+                    ? `${description.substring(0, 50)}...`
+                    : description;
+
+                return (
+                    <div>
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: showFull ? description : truncatedDescription,
+                            }}
+                            style={{
+                                maxHeight: showFull ? "none" : "100px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: showFull ? "normal" : "nowrap",
+                            }}
+                        />
+                        {description?.length > 50 && (
+                            <Button
+                                size="small"
+                                color="primary"
+                                onClick={toggleShowMore}
+                                sx={{
+                                    padding: "2px 4px",
+                                    marginTop: "4px",
+                                    fontSize: "12px",
+                                    textTransform: "none",
+                                }}
+                            >
+                                {showFull ? "Show Less" : "Show More"}
+                            </Button>
+                        )}
+                    </div>
+                );
+            },
+        },
         { accessorKey: "category", header: "FAQ Category" },
         { accessorKey: "status", header: "Status" },
         {

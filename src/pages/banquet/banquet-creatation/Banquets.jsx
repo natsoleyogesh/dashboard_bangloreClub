@@ -320,13 +320,18 @@ const Banquets = () => {
     /**
      * Fetches all banquets.
      */
+    const [loading, setLoading] = useState(null)
     const fetchBanquets = async () => {
+        setLoading(true)
         try {
             const response = await fetchAllBanquets();
             setBanquets(response?.data?.data || []);
+            setLoading(false)
         } catch (error) {
             console.error("Error fetching banquets:", error);
             showToast(error.message || "Failed to fetch banquets.", "error");
+            setLoading(false)
+
         }
     };
 
@@ -404,7 +409,8 @@ const Banquets = () => {
                 enableColumnDragging
                 showPreview
                 routeLink="banquet"
-                handleDelete={handleDeleteClick}
+                isLoading={loading}
+            // handleDelete={handleDeleteClick}
             />
 
             <ConfirmationDialog

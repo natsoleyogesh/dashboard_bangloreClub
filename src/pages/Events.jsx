@@ -85,14 +85,50 @@ const Events = () => {
         //     header: "Description",
         // },
         {
-            accessorKey: "aboutEvent", // normal accessorKey
+            accessorKey: "abountEvent",
             header: "Description",
-            Cell: ({ row }) => (
-                <div
-                    dangerouslySetInnerHTML={{ __html: row.original.aboutEvent }}
-                    style={{ maxHeight: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                />
-            ),
+            Cell: ({ row }) => {
+                const [showFull, setShowFull] = React.useState(false);
+
+                const toggleShowMore = () => setShowFull(!showFull);
+
+                const description = row.original.aboutEvent;
+
+                const truncatedDescription = description?.length > 50
+                    ? `${description.substring(0, 50)}...`
+                    : description;
+
+                return (
+                    <div>
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: showFull ? description : truncatedDescription,
+                            }}
+                            style={{
+                                maxHeight: showFull ? "none" : "100px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: showFull ? "normal" : "nowrap",
+                            }}
+                        />
+                        {description?.length > 50 && (
+                            <Button
+                                size="small"
+                                color="primary"
+                                onClick={toggleShowMore}
+                                sx={{
+                                    padding: "2px 4px",
+                                    marginTop: "4px",
+                                    fontSize: "12px",
+                                    textTransform: "none",
+                                }}
+                            >
+                                {showFull ? "Show Less" : "Show More"}
+                            </Button>
+                        )}
+                    </div>
+                );
+            },
         },
         {
             accessorKey: "createdAt",

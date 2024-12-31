@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import {
     Box,
@@ -26,6 +26,8 @@ import { addFoodAndBeverage } from "../api/foodAndBeverage";
 import { showToast } from "../api/toast";
 import ReactQuill from "react-quill";
 import Breadcrumb from "../components/common/Breadcrumb";
+import { fetchAllActiveDepartments } from "../api/masterData/department";
+import { fetchAllActiveRestaurants } from "../api/masterData/restaurant";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -76,6 +78,23 @@ const AddFoodAndBeverage = () => {
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
+
+    const [restaurants, setRestaurants] = useState([]);
+
+    const fetchRestaurants = async () => {
+        try {
+            const response = await fetchAllActiveRestaurants();
+            setRestaurants(response?.data?.activeRestaurants || []);
+        } catch (error) {
+            console.error("Error fetching banquets:", error);
+            showToast(error.message || "Failed to fetch banquets.", "error");
+        }
+    };
+
+    useEffect(() => {
+        fetchRestaurants();
+    }, []);
+
     // Handle input changes for main fields
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -88,15 +107,6 @@ const AddFoodAndBeverage = () => {
         updatedSubCategories[index][field] = value;
         setFormData((prev) => ({ ...prev, subCategories: updatedSubCategories }));
     };
-
-    // Handle timing updates for a subcategory
-    // const handleTimingChange = (index, timingIndex, field, value) => {
-    //     const updatedSubCategories = [...formData.subCategories];
-    //     const updatedTimings = [...updatedSubCategories[index].timings];
-    //     updatedTimings[timingIndex][field] = formatTo12Hour(value);
-    //     updatedSubCategories[index].timings = updatedTimings;
-    //     setFormData((prev) => ({ ...prev, subCategories: updatedSubCategories }));
-    // };
     // Handle timing updates for a subcategory
     const handleTimingChange = (index, timingIndex, field, value) => {
         const updatedSubCategories = [...formData.subCategories];
@@ -202,8 +212,8 @@ const AddFoodAndBeverage = () => {
         updatedSubCategories[index].timings.push({
             startDay: "",
             endDay: "",
-            startTime: "",
-            endTime: "",
+            startTime: "12:00",
+            endTime: "11:00",
         });
         setFormData((prev) => ({ ...prev, subCategories: updatedSubCategories }));
     };
@@ -250,6 +260,8 @@ const AddFoodAndBeverage = () => {
         data.append("location", formData.location);
         data.append("extansion_no", formData.extansion_no);
         data.append("status", formData.status);
+        data.append("timings", JSON.stringify(formData.timings));
+
 
         // Append banner image
         if (bannerImage) {
@@ -263,10 +275,10 @@ const AddFoodAndBeverage = () => {
         // Append subcategories
         formData.subCategories.forEach((subCategory, index) => {
             subCategory.images.forEach((image) => {
-                data.append(`subCategoryImages_${index}`, image);
+                data.append(`images_${index}`, image);
             });
             if (subCategory.menu) {
-                data.append(`menuFile_${index}`, subCategory.menu);
+                data.append(`menu_${index}`, subCategory.menu);
             }
         });
         data.append("subCategories", JSON.stringify(formData.subCategories));
@@ -331,30 +343,23 @@ const AddFoodAndBeverage = () => {
                 Add New Food & Beverage
             </Typography>
             <Paper elevation={3} sx={{ p: 4, borderRadius: "10px", maxWidth: "800px", margin: "0 auto" }}>
-                {/* Main Fields */}
-                <TextField
-                    label="Name"
-                    fullWidth
-                    margin="dense"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    error={Boolean(errors.name)}
-                    helperText={errors.name}
-                />
-
-
-
-                {/* <TextField
-                    label="Description"
-                    fullWidth
-                    margin="dense"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    error={Boolean(errors.description)}
-                    helperText={errors.description}
-                /> */}
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Restaurant Type</InputLabel>
+                    <FormControl fullWidth margin="dense" error={!!errors.name}>
+                        {/* <InputLabel>Room Type</InputLabel> */}
+                        <Select name="name" value={formData.name} onChange={handleInputChange}
+                        // startAdornment={<CategoryIcon sx={{ color: "gray", mr: 1 }} />}
+                        >
+                            <MenuItem value="" disabled>
+                                Please Choose Restaurant Category
+                            </MenuItem>
+                            {restaurants.map((type) => (
+                                <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
+                            ))}
+                        </Select>
+                        {/* {errors.banquetName && <Typography color="error">{errors.banquetName}</Typography>} */}
+                    </FormControl>
+                </Box>
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Description</InputLabel>
                     <ReactQuill
@@ -563,24 +568,23 @@ const AddFoodAndBeverage = () => {
                 {formData.subCategories.map((subCategory, index) => (
                     <Box key={index} sx={{ mt: 3, border: "1px solid #ccc", p: 2, borderRadius: "8px" }}>
                         <Typography variant="h6">Subcategory {index + 1}</Typography>
-                        <TextField
-                            label="Subcategory Name"
-                            fullWidth
-                            margin="dense"
-                            value={subCategory.name}
-                            onChange={(e) => handleSubCategoryChange(index, "name", e.target.value)}
-                            error={Boolean(errors[`subCategoryName_${index}`])}
-                            helperText={errors[`subCategoryName_${index}`]}
-                        />
-                        {/* <TextField
-                            label="Description"
-                            fullWidth
-                            margin="dense"
-                            value={subCategory.description}
-                            onChange={(e) => handleSubCategoryChange(index, "description", e.target.value)}
-                            error={Boolean(errors[`subCategoryDescription_${index}`])}
-                            helperText={errors[`subCategoryDescription_${index}`]}
-                        /> */}
+                        <Box sx={{ mb: 2 }}>
+                            <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Subcategory Name</InputLabel>
+                            <FormControl fullWidth margin="dense" error={Boolean(errors[`subCategoryName_${index}`])}>
+                                {/* <InputLabel>Room Type</InputLabel> */}
+                                <Select value={subCategory.name} onChange={(e) => handleSubCategoryChange(index, "name", e.target.value)}
+                                // startAdornment={<CategoryIcon sx={{ color: "gray", mr: 1 }} />}
+                                >
+                                    <MenuItem value="" disabled>
+                                        Please Choose Restaurant Category
+                                    </MenuItem>
+                                    {restaurants.map((type) => (
+                                        <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
+                                    ))}
+                                </Select>
+                                {/* {errors.banquetName && <Typography color="error">{errors.banquetName}</Typography>} */}
+                            </FormControl>
+                        </Box>
                         <Box sx={{ mb: 2 }}>
                             <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Description</InputLabel>
                             <ReactQuill

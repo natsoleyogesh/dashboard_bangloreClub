@@ -67,3 +67,15 @@ export const deleteRestaurant = async (restaurantId) => {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
     }
 };
+
+
+// Function to fetch all users
+export const fetchAllActiveRestaurants = async () => {
+    try {
+        const response = await axiosInstance.get("/active-restaurants");
+        return response; // Assuming the API returns user data in `response.data`
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+    }
+};

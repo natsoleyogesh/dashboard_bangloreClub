@@ -35,6 +35,19 @@ export const fetchRoomDetails = async (id) => {
     }
 };
 
+// Function to fetch member details by ID
+export const fetchEditRoomDetails = async (id) => {
+    try {
+        // Make the GET request to fetch member details
+        const response = await axiosInstance.get(`/edit-roomwithcategory/${id}`);
+        // Return the member data from the response
+        return response;
+    } catch (error) {
+        console.error(`Error fetching member details for ID ${id}:`, error);
+        throw error; // Rethrow the error for handling in the calling function
+    }
+};
+
 export const updateRoomDetails = async (roomId, roomData) => {
     try {
         const response = await axios.put(

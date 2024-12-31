@@ -775,7 +775,7 @@ const SingleRoom = () => {
                                 <Typography variant="h6">Special Day Tariffs:</Typography>
                                 {room.specialDayTariff.map((specialDay, index) => (
                                     <Typography key={index}>
-                                        {specialDay.special_day_name}: ₹{specialDay.extraCharge} extra
+                                        {specialDay.special_day_name}: {specialDay.extraCharge}% extra
                                         from {new Date(specialDay.startDate).toLocaleDateString()}
                                         to {new Date(specialDay.endDate).toLocaleDateString()}
                                     </Typography>

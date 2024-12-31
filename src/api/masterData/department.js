@@ -67,3 +67,15 @@ export const deleteDepartment = async (departmentId) => {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
     }
 };
+
+
+// Function to fetch all users
+export const fetchAllActiveDepartments = async () => {
+    try {
+        const response = await axiosInstance.get("/active-departments");
+        return response; // Assuming the API returns user data in `response.data`
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+    }
+};

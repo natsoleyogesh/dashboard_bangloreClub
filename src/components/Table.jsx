@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { Button, IconButton, Tooltip } from "@mui/material";
+import { Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import { FiEye, FiTrash } from "react-icons/fi";
 import { Box } from "@mui/system";
 import { Link } from "react-router-dom";
@@ -21,6 +21,7 @@ export const Table = ({
   showPreview,
   routeLink,
   handleDelete, // New prop for delete handler
+  isLoading
 }) => {
   console.log(fields, "fields")
   const columns = useMemo(() => fields, []);
@@ -52,10 +53,18 @@ export const Table = ({
       enablePagination={enablePagination}
       enableBottomToolbar={enableBottomToolBar}
       enableTopToolbar={enableTopToolBar}
+      state={{ isLoading }} // Pass the loading state here
+      // renderTopToolbarCustomActions={() =>
+      //   isLoading && (
+      //     <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+      //       <CircularProgress />
+      //     </Box>
+      //   )
+      // }
       renderRowActions={({ row }) => (
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 
-          {(routeLink) && (< Tooltip arrow placement="right" title="Delete">
+          {(routeLink && handleDelete) && (< Tooltip arrow placement="right" title="Delete">
             <IconButton color="error" onClick={() => handleDelete(row.original)}>
               <FiTrash />
             </IconButton>
