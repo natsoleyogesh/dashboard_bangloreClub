@@ -46,10 +46,10 @@ const AddBanquet = () => {
         banquetName: "",
         description: "",
         checkInTime: "12:00",  // 12:00 PM
-        checkOutTime: "11:00",  // 11:00 AM
+        checkOutTime: "23:00",  // 11:00 AM
         maxAllowedPerRoom: "",
         priceRange: { minPrice: "", maxPrice: "" },
-        pricingDetails: [{ days: [], timeSlots: [{ start: "12:00", end: "11:00" }], price: "" }],
+        pricingDetails: [{ days: [], timeSlots: [{ start: "12:00", end: "23:00" }], price: "" }],
         amenities: [],
         taxTypes: [],
         breakfastIncluded: false,
@@ -362,6 +362,8 @@ const AddBanquet = () => {
 
 
     const handleSubmit = async () => {
+        console.log(banquetData, "banq")
+
         if (!validateForm()) return; // Prevent submission if validation fails
 
         setLoading(true);
@@ -507,7 +509,7 @@ const AddBanquet = () => {
             ...prevData,
             pricingDetails: [
                 ...prevData.pricingDetails,
-                { days: [], timeSlots: [{ start: null, end: null }], price: "" },
+                { days: [], timeSlots: [{ start: "12:00", end: "23:00" }], price: "" },
             ],
         }));
     };
@@ -1138,7 +1140,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Images</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Images</InputLabel>
                     <UploadBox onClick={() => imageInput.current.click()} />
                     <input type="file" hidden ref={imageInput} multiple onChange={handleImageChange} />
 

@@ -339,7 +339,7 @@ import {
 } from "@mui/material";
 import { FiEdit } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchBanquetDetails } from "../../../api/banquet";
+import { fetchBanquetDetails, fetchEditBanquetDetails } from "../../../api/banquet";
 import { showToast } from "../../../api/toast";
 import { PUBLIC_API_URI } from "../../../api/config";
 import Breadcrumb from "../../../components/common/Breadcrumb";
@@ -356,6 +356,7 @@ const formatTime = (time) => {
 const SingleBanquet = () => {
     const { id } = useParams();
     const [banquet, setBanquet] = useState({});
+    const [editData, setEditdata] = useState({});
     const navigate = useNavigate();
 
     // Fetch banquet details by ID
@@ -371,6 +372,23 @@ const SingleBanquet = () => {
         }
     };
 
+    const getEditBanquetById = async (id) => {
+        if (!id) return; // Guard condition to prevent unnecessary calls
+        // setLoading(true);
+        try {
+            const response = await fetchEditBanquetDetails(id);
+            const banquet = response?.data?.data || {};
+
+            setEditdata(banquet)
+        } catch (error) {
+            console.error("Failed to fetch banquet details:", error);
+            showToast("Failed to fetch banquet details.", "error");
+        } finally {
+            // setLoading(false);
+        }
+    };
+
+
     useEffect(() => {
         getBanquetById(id);
     }, [id]);
@@ -382,7 +400,7 @@ const SingleBanquet = () => {
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
-             <Breadcrumb />
+            <Breadcrumb />
             <Typography variant="h4" sx={{ mb: 3 }}>
                 Banquet Details
             </Typography>

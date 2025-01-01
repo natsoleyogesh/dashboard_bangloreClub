@@ -378,6 +378,7 @@ import {
     Box,
     Button,
     Checkbox,
+    CircularProgress,
     FormControl,
     FormControlLabel,
     Grid,
@@ -421,7 +422,7 @@ const daysOptions = [
 const statusOptions = ["Active", "Inactive"];
 
 
-const EditBanquet = () => {
+const EditBanquet = ({ editdata }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const imageInput = useRef(null);
@@ -455,11 +456,23 @@ const EditBanquet = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
+    // const [loading, setLoading] = useState(false);
+
     useEffect(() => {
-        getBanquetById();
+        // getBanquetById();
         fetchTaxTypes();
         fetchAmenities();
     }, []);
+
+    useEffect(() => {
+        if (id) {
+            if (!loading) {
+                getBanquetById(id);
+            }
+        }
+    }, [id]);
+
+
 
     const fetchTaxTypes = async () => {
         try {
@@ -479,14 +492,44 @@ const EditBanquet = () => {
         }
     };
 
-    const getBanquetById = async () => {
+    // const getBanquetById = async () => {
+    //     try {
+    //         const response = await fetchEditBanquetDetails(id);
+    //         const banquet = response.data.data;
+    //         setBanquetData({
+    //             ...banquet,
+    //             priceRange: banquet.priceRange || { minPrice: "", maxPrice: "" },
+    //             pricingDetails: banquet.pricingDetails || [{ days: [], timeSlots: [{ start: "", end: "" }], price: "" }],
+    //             specialDayTariff: banquet.specialDayTariff || [{ special_day_name: "", startDate: "", endDate: "", extraCharge: "" }],
+    //             taxTypes: banquet.taxTypes || [],
+    //             amenities: banquet.amenities || [],
+    //             cancellationPolicy: banquet.cancellationPolicy || {
+    //                 before7Days: "",
+    //                 between7To2Days: "",
+    //                 between48To24Hours: "",
+    //                 lessThan24Hours: "",
+    //             },
+    //             features: banquet.features || { smokingAllowed: false, petFriendly: false, accessible: false },
+    //             pricingDetailDescription: banquet.pricingDetailDescription || ""
+    //         });
+    //         setImages(banquet.images || []);
+    //     } catch (error) {
+    //         showToast("Failed to fetch banquet details.", "error");
+    //     }
+    // };
+
+    const getBanquetById = async (id) => {
+        if (!id) return; // Guard condition to prevent unnecessary calls
+        setLoading(true);
         try {
             const response = await fetchEditBanquetDetails(id);
-            const banquet = response.data.data;
-            setBanquetData({
+            const banquet = response?.data?.data || {};
+            console.log(banquet, "dgdgdg")
+            setBanquetData((prevState) => ({
+                ...prevState,
                 ...banquet,
                 priceRange: banquet.priceRange || { minPrice: "", maxPrice: "" },
-                pricingDetails: banquet.pricingDetails || [{ days: [], timeSlots: [{ start: "", end: "" }], price: "" }],
+                pricingDetails: banquet.pricingDetails || [{ days: [], timeSlots: [{ start: "12:00", end: "23:00" }], price: "" }],
                 specialDayTariff: banquet.specialDayTariff || [{ special_day_name: "", startDate: "", endDate: "", extraCharge: "" }],
                 taxTypes: banquet.taxTypes || [],
                 amenities: banquet.amenities || [],
@@ -497,13 +540,20 @@ const EditBanquet = () => {
                     lessThan24Hours: "",
                 },
                 features: banquet.features || { smokingAllowed: false, petFriendly: false, accessible: false },
-                pricingDetailDescription: banquet.pricingDetailDescription || ""
-            });
+                pricingDetailDescription: banquet.pricingDetailDescription || "",
+            }));
+
             setImages(banquet.images || []);
+            setLoading(false);
         } catch (error) {
+            console.error("Failed to fetch banquet details:", error);
             showToast("Failed to fetch banquet details.", "error");
+        } finally {
+            setLoading(false);
         }
     };
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -734,8 +784,46 @@ const EditBanquet = () => {
         });
     };
 
+    if (loading) {
+        return (
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    zIndex: 1000,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        )
+    }
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>
+            {loading && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        zIndex: 1000,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <CircularProgress />
+                </Box>
+            )}
             <Breadcrumb />
             <Typography variant="h4">Edit Banquet</Typography>
             <Paper sx={{ p: 3, mb: 3 }}>
@@ -766,10 +854,10 @@ const EditBanquet = () => {
                             onChange={(value) => setBanquetData({ ...banquetData, description: value })}
                             style={{ height: "150px", marginBottom: "80px" }}
                         />
-                        <TextField label="Check-In Time" type="time" fullWidth margin="dense" name="checkInTime" value={banquetData.checkInTime} onChange={handleInputChange} />
-                        <TextField label="Check-Out Time" type="time" fullWidth margin="dense" name="checkOutTime" value={banquetData.checkOutTime} onChange={handleInputChange} />
-                        <TextField label="Max Allowed Per Room" fullWidth margin="dense" name="maxAllowedPerRoom" value={banquetData.maxAllowedPerRoom} onChange={handleInputChange} />
-                        <TextField label="Banquet Hall Size" fullWidth margin="dense" name="banquetHallSize" value={banquetData.banquetHallSize} onChange={handleInputChange} />
+                        <TextField label="Check-In Time" type="time" fullWidth margin="dense" name="checkInTime" value={banquetData.checkInTime || ""} onChange={handleInputChange} />
+                        <TextField label="Check-Out Time" type="time" fullWidth margin="dense" name="checkOutTime" value={banquetData.checkOutTime || ""} onChange={handleInputChange} />
+                        <TextField label="Max Allowed Per Room" fullWidth margin="dense" name="maxAllowedPerRoom" value={banquetData.maxAllowedPerRoom || ""} onChange={handleInputChange} />
+                        <TextField label="Banquet Hall Size" fullWidth margin="dense" name="banquetHallSize" value={banquetData.banquetHallSize || ""} onChange={handleInputChange} />
                         {/* Price Range */}
                         <Box sx={{ mb: 2 }}>
                             <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Min Price</InputLabel>
@@ -778,7 +866,7 @@ const EditBanquet = () => {
                                 fullWidth
                                 margin="dense"
                                 name="minPrice"
-                                value={banquetData.priceRange.minPrice}
+                                value={banquetData.priceRange.minPrice || ""}
                                 onChange={handlePriceInputChange}
 
                                 InputProps={{
@@ -793,7 +881,7 @@ const EditBanquet = () => {
                                 fullWidth
                                 margin="dense"
                                 name="maxPrice"
-                                value={banquetData.priceRange.maxPrice}
+                                value={banquetData.priceRange.maxPrice || ""}
                                 onChange={handlePriceInputChange}
 
                                 InputProps={{

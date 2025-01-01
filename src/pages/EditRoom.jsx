@@ -1,359 +1,3 @@
-// import {
-//     Avatar,
-//     Box,
-//     Button,
-//     Grid,
-//     IconButton,
-//     MenuItem,
-//     Paper,
-//     TextField,
-//     Typography,
-//     Checkbox,
-//     FormControlLabel,
-//     FormControl,
-//     InputLabel,
-//     Select,
-//     ListItemText,
-// } from "@mui/material";
-// import React, { useEffect, useState, useRef } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { deleteRoomImage, fetchRoomDetails, updateRoomDetails, uploadRoomImage } from "../api/room";
-// import { fetchAllCategories } from "../api/category";
-// import { showToast } from "../api/toast";
-// import { PUBLIC_API_URI } from "../api/config";
-// import { FiTrash } from "react-icons/fi";
-
-
-// const guestTypeOptions = [
-//     'Club Member',
-//     'Club Member (Self Stay)',
-//     'Corporate Member',
-//     'Guest of Member (Indian)',
-//     'Affiliated Club Member (Indian)',
-//     'Nominees of Corporate Member',
-//     'Affiliated Foreign Club',
-//     'Foreign Guest',
-// ];
-
-// const amenitiesOptions = [
-//     'WiFi',
-//     'AC',
-//     'Television',
-//     'Mini Bar',
-//     'Room Service',
-//     'Gym Access',
-//     'Swimming Pool',
-//     'Laundry Service',
-//     'Parking',
-//     'Breakfast Included',
-//     'Laundry'
-// ];
-
-// const bedTypeOptions = ['Single', 'Double', 'Queen', 'King', 'Twin', 'Sofa Bed'];
-// const statusOptions = ['Available', 'Booked', 'Under Maintenance'];
-
-// const EditRoom = () => {
-// const { id } = useParams();
-// const navigate = useNavigate();
-//     const [roomData, setRoomData] = useState({
-//         roomName: "",
-//         roomNumber: "",
-//         floorNumber: "",
-//         roomType: "",
-//         minPrice: "",
-//         maxPrice: "",
-//         pricingDetails: [],
-//         capacity: "",
-//         amenities: [],
-//         roomSize: "",
-//         bedType: "",
-//         smokingAllowed: false,
-//         petFriendly: false,
-//         accessible: false,
-//         status: "",
-//         description: "",
-//         images: [],
-//     });
-//     const [room, setRoom] = useState({})
-//     const [roomTypes, setRoomTypes] = useState([]);
-//     const [loading, setLoading] = useState(false);
-//     const imageInput = useRef(null);
-//     const [images, setImages] = useState([])
-
-//     // Fetch room details and categories
-// const getRoomById = async () => {
-//     try {
-//         const response = await fetchRoomDetails(id);
-//         const room = response.data.room;
-//         setRoomData({
-//             roomName: room.roomName || "",
-//             roomNumber: room.roomNumber || "",
-//             floorNumber: room.floorNumber || "",
-//             roomType: room.roomType?._id || "",
-//             minPrice: room.priceRange?.minPrice || "",
-//             maxPrice: room.priceRange?.maxPrice || "",
-//             pricingDetails: room.pricingDetails || [],
-//             capacity: room.capacity || "",
-//             amenities: room.amenities || [],
-//             roomSize: room.roomSize || "",
-//             bedType: room.bedType || "",
-//             smokingAllowed: room.features?.smokingAllowed || false,
-//             petFriendly: room.features?.petFriendly || false,
-//             accessible: room.features?.accessible || false,
-//             status: room.status || "",
-//             description: room.description || "",
-//             images: room.images || [],
-//         });
-//     } catch (error) {
-//         showToast("Failed to fetch room details.", "error");
-//     }
-// };
-
-//     const getCategories = async () => {
-//         try {
-//             const response = await fetchAllCategories();
-//             setRoomTypes(response.data.categories || []);
-//         } catch (error) {
-//             showToast("Failed to fetch categories.", "error");
-//         }
-//     };
-
-//     useEffect(() => {
-//         getRoomById();
-//         getCategories();
-//     }, [id]);
-
-//     // Handle input changes
-//     const handleInputChange = (e) => {
-//         const { name, value } = e.target;
-//         setRoomData({ ...roomData, [name]: value });
-//     };
-
-//     const handleCheckboxChange = (e) => {
-//         const { name, checked } = e.target;
-//         setRoomData({ ...roomData, [name]: checked });
-//     };
-
-//     // Handle JSON input changes
-//     const handleJsonInputChange = (e, field) => {
-//         try {
-//             const value = JSON.parse(e.target.value);
-//             setRoomData({ ...roomData, [field]: value });
-//         } catch (error) {
-//             showToast("Invalid JSON format.", "error");
-//         }
-//     };
-
-//     // Handle pricing details change
-//     const handlePricingDetailChange = (index, field, value) => {
-//         const updatedPricingDetails = [...roomData.pricingDetails];
-//         updatedPricingDetails[index] = {
-//             ...updatedPricingDetails[index],
-//             [field]: value,
-//         };
-//         setRoomData({ ...roomData, pricingDetails: updatedPricingDetails });
-//     };
-
-//     // Add a new pricing detail
-//     const handleAddPricingDetail = () => {
-//         setRoomData({
-//             ...roomData,
-//             pricingDetails: [
-//                 ...roomData.pricingDetails,
-//                 { guestType: "", price: "", description: "" },
-//             ],
-//         });
-//     };
-
-//     // Handle amenities change
-//     const handleAmenitiesChange = (event) => {
-//         const { value } = event.target;
-//         // Ensure the value is an array, not a string
-//         const amenitiesArray = Array.isArray(value) ? value : value.split(',').map((item) => item.trim());
-//         setRoomData({
-//             ...roomData,
-//             amenities: amenitiesArray,
-//         });
-//     };
-
-//     // Remove a pricing detail
-//     const handleRemovePricingDetail = (index) => {
-//         const updatedPricingDetails = roomData.pricingDetails.filter(
-//             (_, i) => i !== index
-//         );
-//         setRoomData({ ...roomData, pricingDetails: updatedPricingDetails });
-//     };
-
-//     // Handle image deletion by index
-//     const handleDeleteImage = async (index) => {
-//         try {
-//             const updatedImages = roomData.images.filter((_, i) => i !== index);
-//             const updatedData = { ...roomData, images: updatedImages };
-//             await deleteRoomImage(id, index);
-//             getRoomById()
-//             showToast("Image deleted successfully.", "success");
-//             navigate(`/rooms/${id}`);
-//             // setRoomData(updatedData);
-//         } catch (error) {
-//             showToast("Failed to delete image.", "error");
-//         }
-//     };
-
-//     // Save changes
-//     const handleSaveChanges = async () => {
-//         try {
-//             const updatedData = {
-//                 ...roomData,
-//                 priceRange: {
-//                     minPrice: roomData.minPrice,
-//                     maxPrice: roomData.maxPrice,
-//                 },
-//                 features: {
-//                     smokingAllowed: roomData.smokingAllowed,
-//                     petFriendly: roomData.petFriendly,
-//                     accessible: roomData.accessible,
-//                 },
-//             };
-//             console.log(updatedData, "updatedData")
-//             const response = await updateRoomDetails(id, updatedData);
-//             if (response.status === 200) {
-//                 showToast("Room updated successfully.", "success");
-//                 navigate(`/rooms/${id}`);
-//             }
-//         } catch (error) {
-//             showToast("Failed to update room details.", "error");
-//         }
-//     };
-
-//     // Handle image upload
-//     const handleUploadImage = async (event) => {
-//         const files = Array.from(event.target.files);
-
-//         // Check if files are selected
-//         if (!files || files.length === 0) {
-//             showToast("No files selected.", "error");
-//             return;
-//         }
-
-//         // Create FormData and append selected images
-//         const formData = new FormData();
-//         files.forEach((file) => formData.append("images", file));
-
-//         try {
-//             // Upload the images
-//             const response = await uploadRoomImage(id, formData);
-
-//             if (response.status === 200) {
-//                 // Fetch the latest room details after image upload
-//                 await getRoomById();
-//                 showToast("Images uploaded successfully.", "success");
-//             } else {
-//                 showToast(response.data.message || "Failed to upload images.", "error");
-//             }
-//         } catch (error) {
-//             console.error("Image upload error:", error);
-//             showToast(error.response?.data?.message || "Failed to upload images. Please try again.", "error");
-//         }
-//     };
-
-//     return (
-//         <Box sx={{ pt: "80px", pb: "20px" }}>
-//             <Typography variant="h4">Edit Room</Typography>
-//             <Paper sx={{ p: 3, mb: 3 }}>
-//                 <Grid container spacing={4}>
-//                     <Grid item xs={12} md={5}>
-//                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-//                             {roomData.images?.map((image, index) => (
-//                                 <Box key={index} sx={{ position: "relative" }}>
-//                                     <img
-//                                         src={`${PUBLIC_API_URI}${image}`}
-//                                         // sx={{ width: 20, height: 20 }}
-//                                         height={120}
-//                                         width={120}
-//                                     />
-//                                     <IconButton onClick={() => handleDeleteImage(index)}>
-//                                         <FiTrash />
-//                                     </IconButton>
-//                                 </Box>
-//                             ))}
-//                         </Box>
-//                         <input type="file" hidden ref={imageInput} multiple onChange={handleUploadImage} />
-//                         <Button variant="outlined" component="label" onClick={() => imageInput.current.click()}>
-//                             Upload Image
-
-//                         </Button>
-//                     </Grid>
-//                     <Grid item xs={12} md={7}>
-//                         <TextField label="Room Name" fullWidth margin="dense" name="roomName" value={roomData.roomName} onChange={handleInputChange} />
-//                         <TextField label="Room Number" fullWidth margin="dense" name="roomNumber" value={roomData.roomNumber} onChange={handleInputChange} />
-//                         <TextField label="Floor Number" fullWidth margin="dense" name="floorNumber" value={roomData.floorNumber} onChange={handleInputChange} />
-//                         <TextField label="Room Type" select fullWidth margin="dense" name="roomType" value={roomData.roomType} onChange={handleInputChange}>
-//                             {roomTypes.map((type) => (
-//                                 <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
-//                             ))}
-//                         </TextField>
-//                         <TextField label="Min Price" fullWidth margin="dense" name="minPrice" value={roomData.minPrice} onChange={handleInputChange} />
-//                         <TextField label="Max Price" fullWidth margin="dense" name="maxPrice" value={roomData.maxPrice} onChange={handleInputChange} />
-//                         <TextField label="Capacity" fullWidth margin="dense" name="capacity" value={roomData.capacity} onChange={handleInputChange} />
-//                         {/* <TextField label="Amenities" fullWidth margin="dense" value={roomData.amenities.join(",")} onChange={handleAmenitiesChange} /> */}
-//                         <FormControl fullWidth margin="dense">
-//                             <InputLabel>Amenities</InputLabel>
-//                             <Select
-//                                 multiple
-//                                 value={roomData.amenities}
-//                                 onChange={handleAmenitiesChange}
-//                                 renderValue={(selected) => selected.join(', ')}
-//                             >
-//                                 {amenitiesOptions.map((option) => (
-//                                     <MenuItem key={option} value={option}>
-//                                         <Checkbox checked={roomData.amenities.includes(option)} />
-//                                         <ListItemText primary={option} />
-//                                     </MenuItem>
-//                                 ))}
-//                             </Select>
-//                         </FormControl>
-//                         <TextField label="Room Size" fullWidth margin="dense" name="roomSize" value={roomData.roomSize} onChange={handleInputChange} />
-//                         <TextField label="Bed Type" select fullWidth margin="dense" name="bedType" value={roomData.bedType} onChange={handleInputChange}>
-//                             {bedTypeOptions.map((option) => (
-//                                 <MenuItem key={option} value={option}>{option}</MenuItem>
-//                             ))}
-//                         </TextField>
-//                         <TextField label="Status" select fullWidth margin="dense" name="status" value={roomData.status} onChange={handleInputChange}>
-//                             {statusOptions.map((option) => (
-//                                 <MenuItem key={option} value={option}>{option}</MenuItem>
-//                             ))}
-//                         </TextField>
-//                         <FormControlLabel control={<Checkbox checked={roomData.smokingAllowed} onChange={handleCheckboxChange} name="smokingAllowed" />} label="Smoking Allowed" />
-//                         <FormControlLabel control={<Checkbox checked={roomData.petFriendly} onChange={handleCheckboxChange} name="petFriendly" />} label="Pet Friendly" />
-//                         <FormControlLabel control={<Checkbox checked={roomData.accessible} onChange={handleCheckboxChange} name="accessible" />} label="Accessible" />
-//                         <Typography variant="h6">Pricing Details</Typography>
-//                         {roomData.pricingDetails.map((detail, index) => (
-//                             <Box key={index} sx={{ mb: 2 }}>
-//                                 <TextField label="Guest Type" select fullWidth margin="dense" value={detail.guestType} onChange={(e) => handlePricingDetailChange(index, "guestType", e.target.value)}>
-//                                     {guestTypeOptions.map((option) => (
-//                                         <MenuItem key={option} value={option}>{option}</MenuItem>
-//                                     ))}
-//                                 </TextField>
-//                                 <TextField label="Price" fullWidth margin="dense" value={detail.price} onChange={(e) => handlePricingDetailChange(index, "price", e.target.value)} />
-//                                 <Button variant="outlined" color="error" onClick={() => handleRemovePricingDetail(index)}>Remove</Button>
-//                             </Box>
-//                         ))}
-//                         <Button variant="outlined" onClick={handleAddPricingDetail}>Add Pricing Detail</Button>
-//                         <TextField label="Description" fullWidth margin="dense" multiline rows={3} name="description" value={roomData.description} onChange={handleInputChange} />
-
-
-//                         <Button variant="contained" onClick={handleSaveChanges}>Save Changes</Button>
-//                     </Grid>
-//                 </Grid>
-//             </Paper>
-//         </Box>
-//     );
-// };
-
-// export default EditRoom;
-
-
-
 import React, { useEffect, useState, useRef } from "react";
 import {
     Box,
@@ -375,7 +19,7 @@ import { BiImageAdd } from "react-icons/bi";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { showToast } from "../api/toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { addRoom, deleteRoomImage, fetchEditRoomDetails, fetchRoomDetails, uploadRoomImage } from "../api/room";
+import { addRoom, deleteRoomImage, fetchEditRoomDetails, fetchRoomDetails, updateRoomDetails, uploadRoomImage } from "../api/room";
 import { fetchAllCategories } from "../api/category";
 
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
@@ -425,11 +69,11 @@ const EditRoom = () => {
         bedType: '',
         features: { smokingAllowed: false, petFriendly: false, accessible: false },
         status: 'Active',
-        roomDetails: [{ roomNumber: '', status: "Available" }],
+        roomDetails: [],
         totalAvailableRoom: 1,
         taxTypes: [],
         checkInTime: '12:00',
-        checkOutTime: '11:00',
+        checkOutTime: '23:00',
         maxAllowedPerRoom: '',
         cancellationPolicy: { before7Days: '', between7To2Days: '', between48To24Hours: '', lessThan24Hours: '' },
         breakfastIncluded: false,
@@ -571,137 +215,236 @@ const EditRoom = () => {
         const { name, checked } = e.target;
         setRoomData({ ...roomData, [name]: checked });
     };
+    // const validateForm = () => {
+    //     const errors = [];
+
+    //     // Validate categoryName
+    //     if (!roomData.categoryName.trim()) {
+    //         errors.push("Room category is required.");
+    //     }
+
+    //     // Validate description
+    //     if (!roomData.description.trim()) {
+    //         errors.push("Room description is required.");
+    //     }
+
+    //     // Validate priceRange
+    //     const { minPrice, maxPrice } = roomData.priceRange;
+    //     if (!minPrice) {
+    //         errors.push("Min Price is required.");
+    //     } else if (isNaN(minPrice) || Number(minPrice) < 0) {
+    //         errors.push("Min Price must be a valid positive number.");
+    //     }
+
+    //     if (!maxPrice) {
+    //         errors.push("Max Price is required.");
+    //     } else if (isNaN(maxPrice) || Number(maxPrice) < 0) {
+    //         errors.push("Max Price must be a valid positive number.");
+    //     }
+
+    //     if (minPrice && maxPrice && Number(minPrice) > Number(maxPrice)) {
+    //         errors.push("Max Price must be greater than Min Price.");
+    //     }
+
+    //     // Validate pricingDetails
+    //     if (roomData.pricingDetails.length === 0) {
+    //         errors.push("At least one pricing detail is required.");
+    //     } else {
+    //         const requiredGuestTypes = ['Member', 'Member Spouse & Children', 'Guest of Member'];
+    //         const addedGuestTypes = new Set();
+
+    //         roomData.pricingDetails.forEach((detail) => {
+    //             if (!detail.guestType.trim()) {
+    //                 errors.push("Guest Type is required.");
+    //             } else {
+    //                 addedGuestTypes.add(detail.guestType);
+    //             }
+
+    //             if (!detail.price) {
+    //                 errors.push("Price is required for all guest types.");
+    //             } else if (isNaN(detail.price) || Number(detail.price) < 0) {
+    //                 errors.push("Price must be a valid positive number.");
+    //             }
+    //         });
+
+    //         // Check if all required guest types are included
+    //         requiredGuestTypes.forEach((requiredType) => {
+    //             if (!addedGuestTypes.has(requiredType)) {
+    //                 errors.push(`Missing required guest type: ${requiredType}.`);
+    //             }
+    //         });
+    //     }
+
+    //     // Validate amenities
+    //     if (roomData.amenities.length === 0) {
+    //         errors.push("At least one amenity is required.");
+    //     }
+
+    //     // Validate roomSize
+    //     if (!roomData.roomSize) {
+    //         errors.push("Room size is required.");
+    //     } else if (isNaN(roomData.roomSize) || Number(roomData.roomSize) <= 0) {
+    //         errors.push("Room size must be a valid positive number.");
+    //     }
+
+    //     // Validate bedType
+    //     if (!roomData.bedType) {
+    //         errors.push("Bed type is required.");
+    //     }
+
+    //     // Validate roomDetails
+    //     if (roomData.roomDetails.length === 0) {
+    //         errors.push("At least one room detail is required.");
+    //     } else {
+    //         roomData.roomDetails.forEach((detail, index) => {
+    //             if (!detail.roomNumber.trim()) {
+    //                 errors.push(`Room number is required for Room ${index + 1}.`);
+    //             }
+    //             if (!detail.status) {
+    //                 errors.push(`Room status is required for Room ${index + 1}.`);
+    //             }
+    //         });
+    //     }
+
+    //     // Validate taxTypes
+    //     if (roomData.taxTypes.length === 0) {
+    //         errors.push("At least one tax type is required.");
+    //     }
+
+    //     // Validate cancellationPolicy
+    //     const { before7Days, between7To2Days, between48To24Hours, lessThan24Hours } = roomData.cancellationPolicy;
+    //     if (!before7Days.trim()) {
+    //         errors.push("Cancellation policy for 'Before 7 Days' is required.");
+    //     }
+    //     if (!between7To2Days.trim()) {
+    //         errors.push("Cancellation policy for 'Between 7 to 2 Days' is required.");
+    //     }
+    //     if (!between48To24Hours.trim()) {
+    //         errors.push("Cancellation policy for 'Between 48 to 24 Hours' is required.");
+    //     }
+    //     if (!lessThan24Hours.trim()) {
+    //         errors.push("Cancellation policy for 'Less Than 24 Hours' is required.");
+    //     }
+
+    //     // Validate check-in and check-out times
+    //     if (!roomData.checkInTime.trim()) {
+    //         errors.push("Check-in time is required.");
+    //     }
+    //     if (!roomData.checkOutTime.trim()) {
+    //         errors.push("Check-out time is required.");
+    //     }
+
+    //     // Validate maxAllowedPerRoom
+    //     if (!roomData.maxAllowedPerRoom) {
+    //         errors.push("Maximum occupancy per room is required.");
+    //     } else if (isNaN(roomData.maxAllowedPerRoom) || Number(roomData.maxAllowedPerRoom) <= 0) {
+    //         errors.push("Maximum occupancy must be a valid positive number.");
+    //     }
+
+    //     // Validate breakfastIncluded
+    //     if (roomData.breakfastIncluded === undefined) {
+    //         errors.push("Breakfast included field is required.");
+    //     }
+
+    //     // Validate specialDayTariff
+    //     if (roomData.specialDayTariff.length > 0) {
+    //         roomData.specialDayTariff.forEach((tariff, index) => {
+    //             if (!tariff.special_day_name.trim()) {
+    //                 errors.push(`Special day name is required for Special Day ${index + 1}.`);
+    //             }
+    //             if (!tariff.startDate.trim()) {
+    //                 errors.push(`Start date is required for Special Day ${index + 1}.`);
+    //             }
+    //             if (!tariff.endDate.trim()) {
+    //                 errors.push(`End date is required for Special Day ${index + 1}.`);
+    //             }
+    //             if (!tariff.extraCharge) {
+    //                 errors.push(`Extra charge is required for Special Day ${index + 1}.`);
+    //             } else if (isNaN(tariff.extraCharge) || Number(tariff.extraCharge) <= 0 || Number(tariff.extraCharge) > 100) {
+    //                 errors.push(`Extra charge must be a valid number between 0 and 100 for Special Day ${index + 1}.`);
+    //             }
+    //         });
+    //     }
+
+    //     // Validate extraBedPrice
+    //     if (!roomData.extraBedPrice) {
+    //         errors.push("Extra bed price is required.");
+    //     } else if (isNaN(roomData.extraBedPrice) || Number(roomData.extraBedPrice) < 0) {
+    //         errors.push("Extra bed price must be a valid positive number.");
+    //     }
+
+    //     // Show all errors as toast messages
+    //     if (errors.length > 0) {
+    //         errors.forEach((error) => showToast(error, "error"));
+    //         return false;
+    //     }
+
+    //     return true;
+    // };
+
+
+    // const handleSubmit = async () => {
+    //     console.log(roomData, "rrrrrrrrrrrrr")
+    //     if (!validateForm()) return; // Prevent submission if validation fails
+
+    //     setLoading(true);
+
+    //     try {
+    //         const formData = new FormData();
+
+    //         // Add basic room data to formData
+    //         addBasicRoomDataToFormData(formData);
+
+    //         // Add pricing details to formData
+    //         addPricingDetailsToFormData(formData);
+
+    //         // Add amenities to formData
+    //         addAmenitiesToFormData(formData);
+
+    //         // Add features (JSON) to formData
+    //         addFeaturesToFormData(formData);
+
+    //         // Add features (JSON) to formData
+    //         addPriceRangeToFormData(formData);
+
+    //         // Add images to formData
+    //         addImagesToFormData(formData);
+
+    //         // Add special day tariff if any
+    //         addSpecialDayTariffToFormData(formData);
+
+    //         // Add cancellation policy to formData
+    //         addCancellationPolicyToFormData(formData);
+
+    //         // Add room details if any
+    //         addRoomDetailsToFormData(formData);
+
+    //         // Add tax types to formData
+    //         addTaxTypesToFormData(formData);
+    //         // Add images to formData
+    //         // images.forEach((image) => formData.append("images", image));
+    //         // Call the addRoom API with formData
+    //         const response = await addRoom(formData);
+
+    //         if (response.status === 201) {
+    //             showToast("Room added successfully!", "success");
+    //             navigate("/roomwith-categories");
+    //         } else {
+    //             console.log(response, "error400")
+
+    //             showToast(response.message || "Failed to add room.", "error");
+    //         }
+    //     } catch (error) {
+    //         console.log(error, "error500")
+    //         showToast(error.message || "An error occurred while adding the room.", "error");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
     const validateForm = () => {
         const errors = [];
-
-        // Validate categoryName
-        if (!roomData.categoryName.trim()) {
-            errors.push("Room category is required.");
-        }
-
-        // Validate description
-        if (!roomData.description.trim()) {
-            errors.push("Room description is required.");
-        }
-
-        // Validate priceRange
-        const { minPrice, maxPrice } = roomData.priceRange;
-        if (!minPrice) {
-            errors.push("Min Price is required.");
-        } else if (isNaN(minPrice) || Number(minPrice) < 0) {
-            errors.push("Min Price must be a valid positive number.");
-        }
-
-        if (!maxPrice) {
-            errors.push("Max Price is required.");
-        } else if (isNaN(maxPrice) || Number(maxPrice) < 0) {
-            errors.push("Max Price must be a valid positive number.");
-        }
-
-        if (minPrice && maxPrice && Number(minPrice) > Number(maxPrice)) {
-            errors.push("Max Price must be greater than Min Price.");
-        }
-
-        // Validate pricingDetails
-        if (roomData.pricingDetails.length === 0) {
-            errors.push("At least one pricing detail is required.");
-        } else {
-            const requiredGuestTypes = ['Member', 'Member Spouse & Children', 'Guest of Member'];
-            const addedGuestTypes = new Set();
-
-            roomData.pricingDetails.forEach((detail) => {
-                if (!detail.guestType.trim()) {
-                    errors.push("Guest Type is required.");
-                } else {
-                    addedGuestTypes.add(detail.guestType);
-                }
-
-                if (!detail.price) {
-                    errors.push("Price is required for all guest types.");
-                } else if (isNaN(detail.price) || Number(detail.price) < 0) {
-                    errors.push("Price must be a valid positive number.");
-                }
-            });
-
-            // Check if all required guest types are included
-            requiredGuestTypes.forEach((requiredType) => {
-                if (!addedGuestTypes.has(requiredType)) {
-                    errors.push(`Missing required guest type: ${requiredType}.`);
-                }
-            });
-        }
-
-        // Validate amenities
-        if (roomData.amenities.length === 0) {
-            errors.push("At least one amenity is required.");
-        }
-
-        // Validate roomSize
-        if (!roomData.roomSize) {
-            errors.push("Room size is required.");
-        } else if (isNaN(roomData.roomSize) || Number(roomData.roomSize) <= 0) {
-            errors.push("Room size must be a valid positive number.");
-        }
-
-        // Validate bedType
-        if (!roomData.bedType) {
-            errors.push("Bed type is required.");
-        }
-
-        // Validate roomDetails
-        if (roomData.roomDetails.length === 0) {
-            errors.push("At least one room detail is required.");
-        } else {
-            roomData.roomDetails.forEach((detail, index) => {
-                if (!detail.roomNumber.trim()) {
-                    errors.push(`Room number is required for Room ${index + 1}.`);
-                }
-                if (!detail.status) {
-                    errors.push(`Room status is required for Room ${index + 1}.`);
-                }
-            });
-        }
-
-        // Validate taxTypes
-        if (roomData.taxTypes.length === 0) {
-            errors.push("At least one tax type is required.");
-        }
-
-        // Validate cancellationPolicy
-        const { before7Days, between7To2Days, between48To24Hours, lessThan24Hours } = roomData.cancellationPolicy;
-        if (!before7Days.trim()) {
-            errors.push("Cancellation policy for 'Before 7 Days' is required.");
-        }
-        if (!between7To2Days.trim()) {
-            errors.push("Cancellation policy for 'Between 7 to 2 Days' is required.");
-        }
-        if (!between48To24Hours.trim()) {
-            errors.push("Cancellation policy for 'Between 48 to 24 Hours' is required.");
-        }
-        if (!lessThan24Hours.trim()) {
-            errors.push("Cancellation policy for 'Less Than 24 Hours' is required.");
-        }
-
-        // Validate check-in and check-out times
-        if (!roomData.checkInTime.trim()) {
-            errors.push("Check-in time is required.");
-        }
-        if (!roomData.checkOutTime.trim()) {
-            errors.push("Check-out time is required.");
-        }
-
-        // Validate maxAllowedPerRoom
-        if (!roomData.maxAllowedPerRoom) {
-            errors.push("Maximum occupancy per room is required.");
-        } else if (isNaN(roomData.maxAllowedPerRoom) || Number(roomData.maxAllowedPerRoom) <= 0) {
-            errors.push("Maximum occupancy must be a valid positive number.");
-        }
-
-        // Validate breakfastIncluded
-        if (roomData.breakfastIncluded === undefined) {
-            errors.push("Breakfast included field is required.");
-        }
-
         // Validate specialDayTariff
         if (roomData.specialDayTariff.length > 0) {
             roomData.specialDayTariff.forEach((tariff, index) => {
@@ -716,19 +459,11 @@ const EditRoom = () => {
                 }
                 if (!tariff.extraCharge) {
                     errors.push(`Extra charge is required for Special Day ${index + 1}.`);
-                } else if (isNaN(tariff.extraCharge) || Number(tariff.extraCharge) < 0) {
-                    errors.push(`Extra charge must be a valid positive number for Special Day ${index + 1}.`);
+                } else if (isNaN(tariff.extraCharge) || Number(tariff.extraCharge) <= 0 || Number(tariff.extraCharge) > 100) {
+                    errors.push(`Extra charge must be a valid number between 0 and 100 for Special Day ${index + 1}.`);
                 }
             });
         }
-
-        // Validate extraBedPrice
-        if (!roomData.extraBedPrice) {
-            errors.push("Extra bed price is required.");
-        } else if (isNaN(roomData.extraBedPrice) || Number(roomData.extraBedPrice) < 0) {
-            errors.push("Extra bed price must be a valid positive number.");
-        }
-
         // Show all errors as toast messages
         if (errors.length > 0) {
             errors.forEach((error) => showToast(error, "error"));
@@ -740,59 +475,19 @@ const EditRoom = () => {
 
 
     const handleSubmit = async () => {
-        console.log(roomData, "rrrrrrrrrrrrr")
+        console.log(roomData, "roomData")
         if (!validateForm()) return; // Prevent submission if validation fails
-
         setLoading(true);
-
         try {
-            const formData = new FormData();
-
-            // Add basic room data to formData
-            addBasicRoomDataToFormData(formData);
-
-            // Add pricing details to formData
-            addPricingDetailsToFormData(formData);
-
-            // Add amenities to formData
-            addAmenitiesToFormData(formData);
-
-            // Add features (JSON) to formData
-            addFeaturesToFormData(formData);
-
-            // Add features (JSON) to formData
-            addPriceRangeToFormData(formData);
-
-            // Add images to formData
-            addImagesToFormData(formData);
-
-            // Add special day tariff if any
-            addSpecialDayTariffToFormData(formData);
-
-            // Add cancellation policy to formData
-            addCancellationPolicyToFormData(formData);
-
-            // Add room details if any
-            addRoomDetailsToFormData(formData);
-
-            // Add tax types to formData
-            addTaxTypesToFormData(formData);
-            // Add images to formData
-            // images.forEach((image) => formData.append("images", image));
-            // Call the addRoom API with formData
-            const response = await addRoom(formData);
-
-            if (response.status === 201) {
-                showToast("Room added successfully!", "success");
-                navigate("/roomwith-categories");
-            } else {
-                console.log(response, "error400")
-
-                showToast(response.message || "Failed to add room.", "error");
+            const response = await updateRoomDetails(id, roomData);
+            if (response.status === 200) {
+                getRoomById()
+                showToast("Room updated successfully.", "success");
+                // navigate("/rooms");
+                navigate(`/roomwith-category/${id}`);
             }
         } catch (error) {
-            console.log(error, "error500")
-            showToast(error.message || "An error occurred while adding the room.", "error");
+            showToast("Failed to update room.", "error");
         } finally {
             setLoading(false);
         }
@@ -924,25 +619,54 @@ const EditRoom = () => {
     };
 
 
-    // Handle change for inputs
-    const handleRoomInputChange = (e) => {
-        const { name, value } = e.target;
-        const [field, index, prop] = name.split('.');
+    // // Handle change for inputs
+    // const handleRoomInputChange = (e) => {
+    //     const { name, value } = e.target;
+    //     const [field, index, prop] = name.split('.');
 
-        if (field === 'roomDetails' && index !== undefined && prop !== undefined) {
-            const updatedRoomDetails = [...roomData.roomDetails];
-            updatedRoomDetails[parseInt(index)][prop] = value; // Update specific room detail
-            setRoomData({ ...roomData, roomDetails: updatedRoomDetails });
+    //     if (field === 'roomDetails' && index !== undefined && prop !== undefined) {
+    //         const updatedRoomDetails = [...roomData.roomDetails];
+    //         updatedRoomDetails[parseInt(index)][prop] = value; // Update specific room detail
+    //         setRoomData({ ...roomData, roomDetails: updatedRoomDetails });
+    //     }
+    // };
+
+    // // Handle change in the totalAvailableRoom
+    // const handleTotalRoomChange = (e) => {
+    //     const totalRooms = parseInt(e.target.value, 10);
+    //     const updatedRoomDetails = Array.from({ length: totalRooms }, () => ({
+    //         roomNumber: '',
+    //         status: ''
+    //     }));
+
+    //     setRoomData({
+    //         ...roomData,
+    //         totalAvailableRoom: totalRooms,
+    //         roomDetails: updatedRoomDetails,
+    //     });
+    // };
+
+    const handleRoomDetailsChange = (index, field, value) => {
+        const updatedRoomDetails = [...roomData.roomDetails];
+        if (!updatedRoomDetails[index]) {
+            updatedRoomDetails[index] = { roomNumber: "", status: "Available" };
         }
+        updatedRoomDetails[index][field] = value;
+        setRoomData({ ...roomData, roomDetails: updatedRoomDetails });
     };
 
-    // Handle change in the totalAvailableRoom
     const handleTotalRoomChange = (e) => {
         const totalRooms = parseInt(e.target.value, 10);
-        const updatedRoomDetails = Array.from({ length: totalRooms }, () => ({
-            roomNumber: '',
-            status: ''
-        }));
+        const updatedRoomDetails = [...roomData.roomDetails];
+
+        if (totalRooms > updatedRoomDetails.length) {
+            const newRooms = Array.from({
+                length: totalRooms - updatedRoomDetails.length,
+            }).map(() => ({ roomNumber: "", status: "Available" }));
+            updatedRoomDetails.push(...newRooms);
+        } else {
+            updatedRoomDetails.splice(totalRooms);
+        }
 
         setRoomData({
             ...roomData,
@@ -950,6 +674,7 @@ const EditRoom = () => {
             roomDetails: updatedRoomDetails,
         });
     };
+
 
 
     // Handle change for form inputs
@@ -1083,6 +808,7 @@ const EditRoom = () => {
             if (response.status === 200) {
                 // Fetch the latest room details after image upload
                 await getRoomById();
+                navigate(`/roomwith-category/${id}`);
                 showToast("Images uploaded successfully.", "success");
             } else {
                 showToast(response.data.message || "Failed to upload images.", "error");
@@ -1097,14 +823,15 @@ const EditRoom = () => {
     // Handle image deletion by index
     const handleDeleteImage = async (index) => {
         try {
-            const updatedImages = roomData.images.filter((_, i) => i !== index);
+            const updatedImages = images.filter((_, i) => i !== index);
             const updatedData = { ...roomData, images: updatedImages };
             await deleteRoomImage(id, index);
             getRoomById()
             showToast("Image deleted successfully.", "success");
-            navigate(`/rooms/${id}`);
+            navigate(`/roomwith-category/${id}`);
             // setRoomData(updatedData);
         } catch (error) {
+            console.log(error)
             showToast("Failed to delete image.", "error");
         }
     };
@@ -1128,7 +855,7 @@ const EditRoom = () => {
             >
                 <Grid item xs={12} md={5}>
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                        {roomData.images?.map((image, index) => (
+                        {images?.map((image, index) => (
                             <Box key={index} sx={{ position: "relative" }}>
                                 <img
                                     src={`${PUBLIC_API_URI}${image}`}
@@ -1144,7 +871,7 @@ const EditRoom = () => {
                     </Box>
                     <input type="file" hidden ref={imageInput} multiple onChange={handleUploadImage} />
                     <Button variant="outlined" component="label" onClick={() => imageInput.current.click()}>
-                        Upload Image
+                        Upload New Images
 
                     </Button>
                 </Grid>
@@ -1520,12 +1247,12 @@ const EditRoom = () => {
                                 name={`specialDayTariff[${index}][startDate]`}
                                 label="Start Date"
                                 type="date"
-                                value={tariff.startDate}
+                                value={tariff.startDate ? new Date(tariff.startDate).toISOString().split("T")[0] : ""}
                                 onChange={handleChange}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+                                inputProps={{ min: new Date(tariff.startDate).toISOString().split("T")[0] }} // Allow only today and future dates
                                 style={{ margin: "5px" }}
                             />
                             <TextField
@@ -1533,12 +1260,13 @@ const EditRoom = () => {
                                 name={`specialDayTariff[${index}][endDate]`}
                                 label="End Date"
                                 type="date"
-                                value={tariff.endDate}
+                                // value={tariff.endDate}
+                                value={tariff.endDate ? new Date(tariff.endDate).toISOString().split("T")[0] : ""}
                                 onChange={handleChange}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
+                                inputProps={{ min: new Date(tariff.endDate).toISOString().split("T")[0] }} // Allow only today and future dates
                                 style={{ margin: "5px" }}
                             />
                             <TextField
@@ -1585,25 +1313,8 @@ const EditRoom = () => {
                     />
                 </Box>
 
-                {/* <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Images</InputLabel>
-                    <UploadBox onClick={() => imageInput.current.click()} />
-                    <input type="file" hidden ref={imageInput} multiple onChange={handleImageChange} />
-
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 2 }}>
-                        {images.map((image, index) => (
-                            <Box key={index} sx={{ position: "relative" }}>
-                                <img src={URL.createObjectURL(image)} alt="Room" style={{ width: 100, height: 100, borderRadius: 8 }} />
-                                <IconButton onClick={() => handleRemoveImage(index)} sx={{ position: "absolute", top: 0, right: 0 }}>
-                                    <FiTrash color="red" />
-                                </IconButton>
-                            </Box>
-                        ))}
-                    </Box>
-                </Box> */}
-
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Total Available Rooms</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Total Available Rooms</InputLabel>
                     <TextField
                         type="number"
                         fullWidth
@@ -1615,21 +1326,25 @@ const EditRoom = () => {
 
                     {roomData.roomDetails.map((room, index) => (
                         <Box key={index} sx={{ mb: 2 }}>
-                            <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Room {index + 1} - Room Number</InputLabel>
+                            <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room {index + 1} - Room Number</InputLabel>
                             <TextField
                                 fullWidth
                                 margin="dense"
                                 name={`roomDetails.${index}.roomNumber`}
                                 value={room.roomNumber}
-                                onChange={handleRoomInputChange}
+                                onChange={(e) =>
+                                    handleRoomDetailsChange(index, "roomNumber", e.target.value)
+                                }
                             />
 
-                            <InputLabel sx={{ fontWeight: 'bold', mb: '4px' }}>Room {index + 1} - Status</InputLabel>
+                            <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room {index + 1} - Status</InputLabel>
                             <FormControl fullWidth margin="dense">
                                 <Select
                                     name={`roomDetails.${index}.status`}
                                     value={room.status}
-                                    onChange={handleRoomInputChange}
+                                    onChange={(e) =>
+                                        handleRoomDetailsChange(index, "status", e.target.value)
+                                    }
                                     displayEmpty
                                 >
                                     <MenuItem value="" disabled>
@@ -1670,333 +1385,3 @@ const EditRoom = () => {
 };
 
 export default EditRoom;
-
-
-
-
-// import React, { useEffect, useState, useRef } from "react";
-// import {
-//   Box,
-//   Button,
-//   CircularProgress,
-//   FormControl,
-//   InputLabel,
-//   MenuItem,
-//   Paper,
-//   Select,
-//   TextField,
-//   Typography,
-//   Checkbox,
-//   FormControlLabel,
-//   IconButton,
-//   Grid,
-// } from "@mui/material";
-// import { FiTrash } from "react-icons/fi";
-// import { showToast } from "../api/toast";
-// import { useNavigate, useParams } from "react-router-dom";
-// import {
-//   fetchEditRoomDetails,
-//   updateRoom,
-//   uploadRoomImage,
-//   deleteRoomImage,
-// } from "../api/room";
-// import { fetchAllCategories } from "../api/category";
-// import { fetchAllActiveTaxTypes } from "../api/masterData/taxType";
-// import { fetchAllActiveAmenities } from "../api/masterData/amenities";
-// import Breadcrumb from "../components/common/Breadcrumb";
-// import { PUBLIC_API_URI } from "../api/config";
-
-// const guestTypeOptions = [
-//   "Member",
-//   "Member Spouse & Children",
-//   "Corporate Member",
-//   "Guest of Member",
-//   "Affiliated Club Member",
-//   "Nominee of Corporate Member",
-//   "Affiliated Foreign Club Member",
-//   "Foreign Guest",
-// ];
-
-// const bedTypeOptions = ["Single", "Double", "Queen", "King", "Twin", "Sofa Bed"];
-// const roomStatusOptions = ["Available", "Booked", "Under Maintenance"];
-
-// const EditRoom = () => {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-//   const imageInput = useRef(null);
-
-//   const [roomData, setRoomData] = useState({
-//     categoryName: "",
-//     description: "",
-//     priceRange: { minPrice: "", maxPrice: "" },
-//     pricingDetails: [],
-//     amenities: [],
-//     roomSize: "",
-//     bedType: "",
-//     features: { smokingAllowed: false, petFriendly: false, accessible: false },
-//     status: "Active",
-//     roomDetails: [],
-//     totalAvailableRoom: 1,
-//     taxTypes: [],
-//     checkInTime: "12:00",
-//     checkOutTime: "11:00",
-//     maxAllowedPerRoom: "",
-//     cancellationPolicy: {
-//       before7Days: "",
-//       between7To2Days: "",
-//       between48To24Hours: "",
-//       lessThan24Hours: "",
-//     },
-//     breakfastIncluded: false,
-//     specialDayTariff: [],
-//     extraBedPrice: "",
-//   });
-
-//   const [roomTypes, setRoomTypes] = useState([]);
-//   const [amenitiesOptions, setAmenitiesOptions] = useState([]);
-//   const [taxTypes, setTaxTypes] = useState([]);
-//   const [images, setImages] = useState([]);
-//   const [loading, setLoading] = useState(false);
-
-//   useEffect(() => {
-//     fetchInitialData();
-//   }, [id]);
-
-//   const fetchInitialData = async () => {
-//     try {
-//       const [categories, amenities, taxData, roomDetails] = await Promise.all([
-//         fetchAllCategories(),
-//         fetchAllActiveAmenities(),
-//         fetchAllActiveTaxTypes(),
-//         fetchEditRoomDetails(id),
-//       ]);
-
-//       setRoomTypes(categories.data.categories);
-//       setAmenitiesOptions(amenities.data.data);
-//       setTaxTypes(taxData.data.data);
-
-//       const room = roomDetails.data.data;
-//       setRoomData({
-//         ...room,
-//         priceRange: room.priceRange || { minPrice: "", maxPrice: "" },
-//         cancellationPolicy: room.cancellationPolicy || {
-//           before7Days: "",
-//           between7To2Days: "",
-//           between48To24Hours: "",
-//           lessThan24Hours: "",
-//         },
-//         pricingDetails: room.pricingDetails || [],
-//         specialDayTariff: room.specialDayTariff || [],
-//       });
-//       setImages(room.images || []);
-//     } catch (error) {
-//       showToast("Failed to fetch initial data.", "error");
-//     }
-//   };
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setRoomData({ ...roomData, [name]: value });
-//   };
-
-//   const handleCheckboxChange = (e) => {
-//     const { name, checked } = e.target;
-//     setRoomData({ ...roomData, [name]: checked });
-//   };
-
-//   const handlePriceInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setRoomData((prevData) => ({
-//       ...prevData,
-//       priceRange: { ...prevData.priceRange, [name]: value },
-//     }));
-//   };
-
-//   const handleAddSpecialDayTariff = () => {
-//     setRoomData((prevData) => ({
-//       ...prevData,
-//       specialDayTariff: [
-//         ...prevData.specialDayTariff,
-//         { special_day_name: "", startDate: "", endDate: "", extraCharge: "" },
-//       ],
-//     }));
-//   };
-
-//   const handleRemoveSpecialDayTariff = (index) => {
-//     setRoomData((prevData) => ({
-//       ...prevData,
-//       specialDayTariff: prevData.specialDayTariff.filter((_, i) => i !== index),
-//     }));
-//   };
-
-//   const handleSpecialDayTariffChange = (index, field, value) => {
-//     const updatedSpecialDayTariff = [...roomData.specialDayTariff];
-//     updatedSpecialDayTariff[index][field] = value;
-//     setRoomData({ ...roomData, specialDayTariff: updatedSpecialDayTariff });
-//   };
-
-//   const handleGuestCheckboxChange = (guestType, isChecked) => {
-//     if (isChecked) {
-//       setRoomData((prevData) => ({
-//         ...prevData,
-//         pricingDetails: [
-//           ...prevData.pricingDetails,
-//           { guestType, price: "", description: "" },
-//         ],
-//       }));
-//     } else {
-//       setRoomData((prevData) => ({
-//         ...prevData,
-//         pricingDetails: prevData.pricingDetails.filter(
-//           (detail) => detail.guestType !== guestType
-//         ),
-//       }));
-//     }
-//   };
-
-//   const handlePriceChange = (guestType, price) => {
-//     setRoomData((prevData) => ({
-//       ...prevData,
-//       pricingDetails: prevData.pricingDetails.map((detail) =>
-//         detail.guestType === guestType ? { ...detail, price } : detail
-//       ),
-//     }));
-//   };
-
-//   const handleDescriptionChange = (guestType, description) => {
-//     setRoomData((prevData) => ({
-//       ...prevData,
-//       pricingDetails: prevData.pricingDetails.map((detail) =>
-//         detail.guestType === guestType ? { ...detail, description } : detail
-//       ),
-//     }));
-//   };
-
-//   const handleUploadImage = async (e) => {
-//     const files = Array.from(e.target.files);
-//     const formData = new FormData();
-//     files.forEach((file) => formData.append("images", file));
-
-//     try {
-//       const response = await uploadRoomImage(id, formData);
-//       if (response.status === 200) {
-//         showToast("Images uploaded successfully.", "success");
-//         fetchInitialData();
-//       }
-//     } catch (error) {
-//       showToast("Failed to upload images.", "error");
-//     }
-//   };
-
-//   const handleDeleteImage = async (index) => {
-//     try {
-//       await deleteRoomImage(id, index);
-//       showToast("Image deleted successfully.", "success");
-//       fetchInitialData();
-//     } catch (error) {
-//       showToast("Failed to delete image.", "error");
-//     }
-//   };
-
-//   const handleSubmit = async () => {
-//     setLoading(true);
-//     try {
-//       await updateRoom(id, roomData);
-//       showToast("Room updated successfully.", "success");
-//       navigate("/rooms");
-//     } catch (error) {
-//       showToast("Failed to update room.", "error");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <Box sx={{ padding: 3 }}>
-//       <Breadcrumb />
-//       <Typography variant="h5" sx={{ marginBottom: 3 }}>
-//         Edit Room
-//       </Typography>
-//       <Paper sx={{ padding: 3 }}>
-//         <Grid container spacing={3}>
-//           <Grid item xs={12}>
-//             <InputLabel>Room Type</InputLabel>
-//             <FormControl fullWidth>
-//               <Select
-//                 name="categoryName"
-//                 value={roomData.categoryName}
-//                 onChange={handleInputChange}
-//               >
-//                 {roomTypes.map((type) => (
-//                   <MenuItem key={type._id} value={type._id}>
-//                     {type.name}
-//                   </MenuItem>
-//                 ))}
-//               </Select>
-//             </FormControl>
-//           </Grid>
-//           <Grid item xs={12}>
-//             <InputLabel>Guest Type Pricing</InputLabel>
-//             {guestTypeOptions.map((guestType) => (
-//               <Box key={guestType}>
-//                 <FormControlLabel
-//                   control={
-//                     <Checkbox
-//                       checked={roomData.pricingDetails.some(
-//                         (detail) => detail.guestType === guestType
-//                       )}
-//                       onChange={(e) =>
-//                         handleGuestCheckboxChange(guestType, e.target.checked)
-//                       }
-//                     />
-//                   }
-//                   label={guestType}
-//                 />
-//                 {roomData.pricingDetails.some(
-//                   (detail) => detail.guestType === guestType
-//                 ) && (
-//                   <Box sx={{ marginLeft: 3 }}>
-//                     <TextField
-//                       label="Price"
-//                       value={
-//                         roomData.pricingDetails.find(
-//                           (detail) => detail.guestType === guestType
-//                         )?.price || ""
-//                       }
-//                       onChange={(e) =>
-//                         handlePriceChange(guestType, e.target.value)
-//                       }
-//                       sx={{ marginRight: 2 }}
-//                     />
-//                     <TextField
-//                       label="Description"
-//                       value={
-//                         roomData.pricingDetails.find(
-//                           (detail) => detail.guestType === guestType
-//                         )?.description || ""
-//                       }
-//                       onChange={(e) =>
-//                         handleDescriptionChange(guestType, e.target.value)
-//                       }
-//                     />
-//                   </Box>
-//                 )}
-//               </Box>
-//             ))}
-//           </Grid>
-//           <Grid item xs={12}>
-//             <Button
-//               variant="contained"
-//               onClick={handleSubmit}
-//               disabled={loading}
-//             >
-//               {loading ? <CircularProgress size={20} /> : "Update Room"}
-//             </Button>
-//           </Grid>
-//         </Grid>
-//       </Paper>
-//     </Box>
-//   );
-// };
-
-// export default EditRoom;

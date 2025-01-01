@@ -65,7 +65,7 @@ const AddFoodAndBeverage = () => {
         name: "",
         description: "",
         status: "Active",
-        timings: [{ startDay: "", endDay: "", startTime: "12:00", endTime: "11:00" }],
+        timings: [{ startDay: "", endDay: "", startTime: "12:00", endTime: "23:00" }],
         extansion_no: "",
         location: "",
         subCategories: [
