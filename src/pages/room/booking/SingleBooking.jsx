@@ -1,5 +1,6 @@
 
 
+
 // import React, { useEffect, useState } from "react";
 // import {
 //     Box,
@@ -26,6 +27,7 @@
 // import { fetchBanquetBookingDetails, updateBanquetBooking } from "../../../api/banquet";
 // import { showToast } from "../../../api/toast";
 // import { fetchRoomBookingDetails } from "../../../api/room";
+// import Breadcrumb from "../../../components/common/Breadcrumb";
 
 // // Format Time in AM/PM
 // const formatTimeInIST = (timeStr) => {
@@ -57,8 +59,8 @@
 //     const getBookingById = async (bookingId) => {
 //         try {
 //             const response = await fetchRoomBookingDetails(bookingId);
-//             setBooking(response.data.booking);
-//             setEditBooking({ bookingStatus: response?.data?.booking?.bookingStatus });
+//             setBooking(response.data.response);
+//             setEditBooking({ bookingStatus: response?.data?.response?.bookingStatus });
 //         } catch (error) {
 //             console.error("Failed to fetch booking details:", error);
 //             showToast("Failed to fetch booking details. Please try again.", "error");
@@ -94,6 +96,7 @@
 
 //     return (
 //         <Box sx={{ pt: "80px", pb: "20px" }}>
+//             <Breadcrumb />
 //             <Typography variant="h4" sx={{ mb: 2, color: "primary.main", fontWeight: "bold" }}>
 //                 Booking Details
 //             </Typography>
@@ -202,30 +205,11 @@
 //                             Member Details
 //                         </Typography>
 //                         <Divider sx={{ mb: 2 }} />
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Primary Member:</strong> {booking.primaryMemberId?.name || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Guest Of:</strong> {booking.invitationOfmember || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Guests:</strong> {booking.attendingGuests || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Mobile:</strong> {booking.mobileNumber || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Office Phone Number:</strong> {booking.officePhoneNumber || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Residence Phone Number:</strong> {booking.residencePhoneNo || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Address:</strong> {booking.address || "N/A"}
-//                         </Typography>
-//                         <Typography variant="body1" sx={{ mb: 1 }}>
-//                             <strong>Occasion:</strong> {booking.occasion || "N/A"}
-//                         </Typography>
+//                         {booking.memberDetails?.map((member, index) => (
+//                             <Typography key={index} variant="body1" sx={{ mb: 1 }}>
+//                                 <strong>{member.memberType}:</strong> {member.memberName || "N/A"}
+//                             </Typography>
+//                         ))}
 //                     </Grid>
 //                 </Grid>
 
@@ -275,6 +259,7 @@
 // export default SingleRoomBooking;
 
 
+
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -298,10 +283,10 @@ import {
 } from "@mui/material";
 import { FiEdit } from "react-icons/fi";
 import { useParams } from "react-router-dom";
-import { fetchBanquetBookingDetails, updateBanquetBooking } from "../../../api/banquet";
+
 import { showToast } from "../../../api/toast";
-import { fetchRoomBookingDetails } from "../../../api/room";
 import Breadcrumb from "../../../components/common/Breadcrumb";
+import { fetchRoomBookingDetails } from "../../../api/room";
 
 // Format Time in AM/PM
 const formatTimeInIST = (timeStr) => {
@@ -350,22 +335,22 @@ const SingleRoomBooking = () => {
     const handleDialogClose = () => setEditDialogOpen(false);
 
     const handleSaveChanges = async () => {
-        try {
-            const response = await updateBanquetBooking({
-                bookingId: id,
-                bookingStatus: editBooking.bookingStatus,
-            });
-            if (response.status === 200) {
-                getBookingById(id);
-                setEditDialogOpen(false);
-                showToast("Booking details updated successfully!", "success");
-            } else {
-                showToast("Failed to update booking details. Please try again.", "error");
-            }
-        } catch (error) {
-            console.error("Failed to update booking details:", error);
-            showToast("Failed to update booking details. Please try again.", "error");
-        }
+        // try {
+        //     const response = await updateBanquetBooking({
+        //         bookingId: id,
+        //         bookingStatus: editBooking.bookingStatus,
+        //     });
+        //     if (response.status === 200) {
+        //         getBookingById(id);
+        //         setEditDialogOpen(false);
+        //         showToast("Booking details updated successfully!", "success");
+        //     } else {
+        //         showToast("Failed to update booking details. Please try again.", "error");
+        //     }
+        // } catch (error) {
+        //     console.error("Failed to update booking details:", error);
+        //     showToast("Failed to update booking details. Please try again.", "error");
+        // }
     };
 
     return (
@@ -385,27 +370,22 @@ const SingleRoomBooking = () => {
                 }}
             >
                 <Grid container spacing={3}>
-                    {/* Booking Details */}
-                    <Grid item xs={12} md={6}>
+                    {/* General Information */}
+                    <Grid item xs={12} md={12} sx={{ mb: 4 }}>
                         <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
                             General Information
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         <Typography variant="body1" sx={{ mb: 1 }}>
-                            <strong>Banquet:</strong> {booking?.banquetType?.banquetName?.name || "N/A"}
+                            <strong>Booking ID:</strong> {booking?._id || "N/A"}
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 1 }}>
-                            <strong>Booking Dates:</strong>{" "}
-                            {new Date(booking.bookingDates?.checkIn).toLocaleDateString() || "N/A"} -{" "}
+                            <strong>Check-In:</strong>{" "}
+                            {new Date(booking.bookingDates?.checkIn).toLocaleDateString() || "N/A"}
+                        </Typography>
+                        <Typography variant="body1" sx={{ mb: 1 }}>
+                            <strong>Check-Out:</strong>{" "}
                             {new Date(booking.bookingDates?.checkOut).toLocaleDateString() || "N/A"}
-                        </Typography>
-                        <Typography variant="body1" sx={{ mb: 1 }}>
-                            <strong>Booking Time:</strong>{" "}
-                            {booking.bookingTime
-                                ? `${formatTimeInIST(booking.bookingTime.from)} - ${formatTimeInIST(
-                                    booking.bookingTime.to
-                                )}`
-                                : "N/A"}
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 1 }}>
                             <strong>Status:</strong>{" "}
@@ -435,7 +415,7 @@ const SingleRoomBooking = () => {
                     </Grid>
 
                     {/* Pricing Details */}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={12} sx={{ mb: 4 }}>
                         <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
                             Pricing Details
                         </Typography>
@@ -445,36 +425,67 @@ const SingleRoomBooking = () => {
                             {booking.pricingDetails?.specialDayExtraCharge || 0}
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 1 }}>
-                            <strong>Total Amount:</strong> ₹{booking.pricingDetails?.totalAmount || "N/A"}
+                            <strong>Sub Total Amount:</strong> ₹{(booking.pricingDetails?.final_totalAmount - booking.pricingDetails?.final_totalTaxAmount) || "N/A"}
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 1 }}>
-                            <strong>Tax Amount:</strong> ₹{booking.pricingDetails?.totalTaxAmount || "N/A"}
+                            <strong>Total Tax Amount:</strong> ₹{booking.pricingDetails?.final_totalTaxAmount || "N/A"}
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 1 }}>
-                            <strong>Final Total:</strong> ₹{booking.pricingDetails?.final_totalAmount || "N/A"}
+                            <strong>Total Biiled Amount:</strong> ₹{booking.pricingDetails?.final_totalAmount || "N/A"}
                         </Typography>
-                        <Box sx={{ mb: 2 }}>
-                            <Typography variant="body1" sx={{ mb: 1 }}>
-                                <strong>Tax Breakdown:</strong>
+
+                        {/* Room Category Details */}
+                        <Box sx={{ mb: 4, mt: 4 }}>
+                            <Divider sx={{ mb: 2 }} />
+                            <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
+                                <strong>Room Categories</strong>
                             </Typography>
-                            {booking.pricingDetails?.taxTypes?.length > 0 ? (
-                                <List dense>
-                                    {booking.pricingDetails.taxTypes.map((tax, index) => (
-                                        <ListItem key={index}>
-                                            <ListItemText
-                                                primary={`${tax.taxType}: ₹${tax.taxAmount} (${tax.taxRate}%)`}
-                                            />
-                                        </ListItem>
-                                    ))}
-                                </List>
+                            {booking.roomCategoryCounts?.length > 0 ? (
+                                booking.roomCategoryCounts.map((category, index) => (
+                                    <Box key={index} sx={{ mb: 2 }}>
+                                        <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
+                                            <strong>Room Type:</strong>   {category.roomType?.categoryName?.name || `Room Category ${index + 1}`}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ mb: 1 }}>
+                                            <strong>Room Count:</strong> {category.roomCount || "N/A"}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ mb: 1 }}>
+                                            <strong>Sub Total Amount:</strong> ₹{category.totalAmount || 0}
+                                        </Typography>
+
+
+                                        {/* Tax Breakdown for Each Category */}
+                                        <Typography variant="body2" sx={{ mt: 1, fontWeight: "bold" }}>
+                                            Tax Breakdown:
+                                        </Typography>
+                                        {category.taxTypes?.length > 0 ? (
+                                            <List dense>
+                                                {category.taxTypes.map((tax, taxIndex) => (
+                                                    <ListItem key={taxIndex}>
+                                                        <ListItemText
+                                                            primary={`${tax.taxType}: ₹${tax.taxAmount} (${tax.taxRate}%)`}
+                                                        />
+                                                    </ListItem>
+                                                ))}
+                                            </List>
+                                        ) : (
+                                            <Typography variant="body2">No tax details available for this category.</Typography>
+                                        )}
+                                        <Typography variant="body2" sx={{ mb: 1 }}>
+                                            <strong>Final Amount:</strong> ₹{category.final_amount || 0}
+                                        </Typography>
+                                        <Divider sx={{ mb: 2 }} />
+                                    </Box>
+                                ))
                             ) : (
-                                <Typography variant="body2">No tax details available.</Typography>
+                                <Typography variant="body2">No room category details available.</Typography>
                             )}
                         </Box>
                     </Grid>
 
+
                     {/* Member Details */}
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
                             Member Details
                         </Typography>
@@ -484,10 +495,10 @@ const SingleRoomBooking = () => {
                                 <strong>{member.memberType}:</strong> {member.memberName || "N/A"}
                             </Typography>
                         ))}
-                    </Grid>
+                    </Grid> */}
                 </Grid>
 
-                <Button
+                {/* <Button
                     variant="contained"
                     color="primary"
                     startIcon={<FiEdit />}
@@ -495,7 +506,7 @@ const SingleRoomBooking = () => {
                     sx={{ mt: 3 }}
                 >
                     Edit Booking
-                </Button>
+                </Button> */}
             </Paper>
 
             {/* Edit Dialog */}

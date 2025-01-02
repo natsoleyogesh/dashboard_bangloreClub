@@ -19,12 +19,13 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchOfferDetails, updateEventDetails, updateOfferDetails } from "../api/offer";
+import { fetchEditOfferDetails, fetchOfferDetails, updateEventDetails, updateOfferDetails } from "../api/offer";
 import { formatDate, PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import { FiEdit } from "react-icons/fi";
 import ReactQuill from "react-quill";
 import Breadcrumb from "../components/common/Breadcrumb";
+import { fetchAllActiveDepartments } from "../api/masterData/department";
 
 
 const departmentOptions = ["Recharge", "Purchase", "Subscription", "Entertainment", "Other"];
@@ -35,23 +36,50 @@ const SingleOffer = () => {
     const [isEditDialogOpen, setEditDialogOpen] = useState(false);
     const [editOffer, setEditOffer] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
+    const [activeDepartments, setActiveDepartments] = useState([]);
 
     // Fetch offer details by ID
     useEffect(() => {
-        const getOfferById = async (offerId) => {
-            try {
-                const response = await fetchOfferDetails(offerId);
-                setOffer(response.data.offer);
-                setEditOffer(response.data.offer);
-            } catch (error) {
-                console.error("Failed to fetch offer details:", error);
-                showToast("Failed to fetch offer details. Please try again.", "error");
-            }
-        };
-
+        getEditOfferById(id);
         getOfferById(id);
     }, [id]);
 
+    const getOfferById = async (offerId) => {
+        try {
+            const response = await fetchOfferDetails(offerId);
+            setOffer(response.data.offer);
+        } catch (error) {
+            console.error("Failed to fetch offer details:", error);
+            showToast("Failed to fetch offer details. Please try again.", "error");
+        }
+    };
+
+    const getEditOfferById = async (offerId) => {
+        try {
+            const response = await fetchEditOfferDetails(offerId);
+            setEditOffer(response.data.offer);
+        } catch (error) {
+            console.error("Failed to fetch offer details:", error);
+            showToast("Failed to fetch offer details. Please try again.", "error");
+        }
+    };
+
+
+    useEffect(() => {
+        getActiveDepartments()
+    }, [id])
+
+    const getActiveDepartments = async () => {
+        try {
+            const department = await fetchAllActiveDepartments();
+            console.log(department, "hh")
+            setActiveDepartments(department.data.activeDepartments);
+
+        } catch (error) {
+            console.error("Failed to fetch members :", error);
+            showToast("Failed to fetch Members. Please try again.", "error");
+        }
+    };
     // Format time (e.g., "01:25 PM")
     const formatTime = (timeString) => {
         if (!timeString) return "N/A";
@@ -120,8 +148,9 @@ const SingleOffer = () => {
 
             const response = await updateOfferDetails(id, formData);
             if (response.status === 200 && response.data.offer) {
-                setOffer(response.data.offer);
-                setEditOffer(response.data.offer);
+                getOfferById(id)
+                // setOffer(response.data.offer);
+                // setEditOffer(response.data.offer);
                 setEditDialogOpen(false);
                 showToast("Offer details updated successfully!", "success");
             }
@@ -329,6 +358,7 @@ const SingleOffer = () => {
                     {/* Department */}
                     <Box sx={{ mb: 2 }}>
                         {/* <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Department</InputLabel> */}
+
                         <FormControl fullWidth >
                             <Select
                                 name="department"
@@ -337,19 +367,15 @@ const SingleOffer = () => {
                                 displayEmpty
                             >
                                 <MenuItem value="" disabled>
-                                    Please choose the department
+                                    Select department
                                 </MenuItem>
-                                {departmentOptions.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
+                                {activeDepartments.map((option) => (
+                                    <MenuItem key={option._id} value={option._id}>
+                                        {option.departmentName}
                                     </MenuItem>
                                 ))}
                             </Select>
-                            {/* {errors.department && (
-                                <Typography color="error" variant="body2">
-                                    {errors.department}
-                                </Typography>
-                            )} */}
+
                         </FormControl>
                     </Box>
 
@@ -386,7 +412,7 @@ const SingleOffer = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </Box >
     );
 };
 

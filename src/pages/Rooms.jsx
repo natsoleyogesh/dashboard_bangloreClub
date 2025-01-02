@@ -374,7 +374,7 @@ const Rooms = () => {
                 enableColumnDragging={true}
                 showPreview={true}
                 routeLink="roomwith-category"
-                handleDelete={handleDeleteClick}
+                // handleDelete={handleDeleteClick}
             />
             <ConfirmationDialog
                 open={openDialog}

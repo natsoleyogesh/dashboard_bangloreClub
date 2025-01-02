@@ -28,6 +28,7 @@ import ReactQuill from "react-quill";
 import Breadcrumb from "../components/common/Breadcrumb";
 import { fetchAllActiveDepartments } from "../api/masterData/department";
 import { fetchAllActiveRestaurants } from "../api/masterData/restaurant";
+import { FiTrash } from "react-icons/fi";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -72,7 +73,7 @@ const AddFoodAndBeverage = () => {
             { name: "", description: "", timings: [], images: [], menu: null },
         ],
     });
-    const [bannerImage, setBannerImage] = useState(null);
+    const [bannerImage, setBannerImage] = useState([]);
     const [mainmenu, setMainmenu] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -336,6 +337,12 @@ const AddFoodAndBeverage = () => {
     };
 
 
+    const handleRemoveImage = (index) => {
+        const updatedImages = bannerImage.filter((_, i) => i !== index);
+        setBannerImage(updatedImages);
+    };
+
+
     return (
         <Box sx={{ pt: "70px", pb: "20px", px: "10px" }}>
             <Breadcrumb />
@@ -546,11 +553,22 @@ const AddFoodAndBeverage = () => {
                         accept="image/*"
                         style={{ display: "none" }}
                         onChange={handleBannerImageChange}
+                        multiple
                     />
                     <BiImageAdd size={30} />
                     <Typography variant="body2">Click to upload banner image</Typography>
                     {errors.bannerImage && <FormHelperText error>{errors.bannerImage}</FormHelperText>}
                 </UploadBox>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 2 }}>
+                    {bannerImage.map((image, index) => (
+                        <Box key={index} sx={{ position: "relative" }}>
+                            <img src={URL.createObjectURL(image)} alt="Room" style={{ width: 100, height: 100, borderRadius: 8 }} />
+                            <IconButton onClick={() => handleRemoveImage(index)} sx={{ position: "absolute", top: 0, right: 0 }}>
+                                <FiTrash color="red" />
+                            </IconButton>
+                        </Box>
+                    ))}
+                </Box>
                 <UploadBox onClick={() => document.getElementById("mainmenuInput").click()}>
                     <input
                         type="file"

@@ -35,6 +35,20 @@ export const fetchOfferDetails = async (id) => {
     }
 };
 
+
+// Function to fetch member details by ID
+export const fetchEditOfferDetails = async (id) => {
+    try {
+        // Make the GET request to fetch member details
+        const response = await axiosInstance.get(`/offer/edit-details/${id}`);
+        // Return the member data from the response
+        return response;
+    } catch (error) {
+        console.error(`Error fetching member details for ID ${id}:`, error);
+        throw error; // Rethrow the error for handling in the calling function
+    }
+};
+
 export const updateOfferDetails = async (offerId, formData) => {
     try {
         const response = await axios.put(

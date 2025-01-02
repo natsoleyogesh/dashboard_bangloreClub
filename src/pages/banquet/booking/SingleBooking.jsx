@@ -110,7 +110,7 @@ const SingleBooking = () => {
             >
                 <Grid container spacing={3}>
                     {/* Booking Details */}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={12} sx={{ mb: 4 }}>
                         <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
                             General Information
                         </Typography>
@@ -159,7 +159,7 @@ const SingleBooking = () => {
                     </Grid>
 
                     {/* Pricing Details */}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={12}>
                         <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
                             Pricing Details
                         </Typography>

@@ -91,7 +91,7 @@ const AddTaxType = () => {
             const response = await addTaxType(taxTypeData); // API call for tax type creation
             if (response.status === 201) {
                 showToast("Tax type added successfully!", "success");
-                navigate("/tax-types"); // Redirect after successful creation
+                navigate("/taxTypes"); // Redirect after successful creation
             } else {
                 showToast(response.message || "Failed to add tax type. Please try again.", "error");
             }

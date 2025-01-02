@@ -653,8 +653,8 @@ const AddEvent = () => {
         eventSubtitle: "",
         eventStartDate: "",
         eventEndDate: "",
-        startTime: "00:00", // Default: 12:00 AM
-        endTime: "23:00", // Default: 11:00 PM
+        startTime: "09:00", // Default: 12:00 AM
+        endTime: "21:00", // Default: 11:00 PM
         ticketPrice: "",
         availableTickets: "",
         location: "",

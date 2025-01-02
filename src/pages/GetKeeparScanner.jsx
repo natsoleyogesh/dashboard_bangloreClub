@@ -661,8 +661,9 @@ const GetKeeparScanner = () => {
                     throw new Error("User is not authenticated. Token is missing.");
                 }
 
-                const { _id } = JSON.parse(data); // Parse the scanned QR code data
-                const qrdata = { memberId: _id };
+                const { primaryMemberId } = JSON.parse(data); // Parse the scanned QR code data
+                console.log(JSON.parse(data), "data")
+                const qrdata = { memberId: primaryMemberId };
                 const response = await fetchMemberDetails(token, qrdata);
 
                 if (response.status === 200 && response.data.member) {

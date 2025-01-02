@@ -234,6 +234,9 @@ const SingleEvent = () => {
                             <strong>Time:</strong> {formatTime(event.startTime)} - {formatTime(event.endTime)}
                         </Typography>
                         <Typography variant="body1">
+                            <strong>Total Ticket:</strong> ₹ {event.availableTickets}
+                        </Typography>
+                        <Typography variant="body1">
                             <strong>Ticket Price:</strong> ₹ {event.ticketPrice}
                         </Typography>
                         <Typography variant="body1">
@@ -285,6 +288,7 @@ const SingleEvent = () => {
                         onChange={handleInputChange} />
                     <TextField label="Start Time" type="time" fullWidth margin="dense" name="startTime" value={editEvent.startTime || ""} onChange={handleInputChange} />
                     <TextField label="End Time" type="time" fullWidth margin="dense" name="endTime" value={editEvent.endTime || ""} onChange={handleInputChange} />
+                    <TextField label="Acailable Ticket" fullWidth margin="dense" name="availableTickets" value={editEvent.availableTickets || ""} onChange={handleInputChange} />
                     <TextField label="Ticket Price" fullWidth margin="dense" name="ticketPrice" value={editEvent.ticketPrice || ""} onChange={handleInputChange} />
                     <TextField label="Primary Member Ticket Price" fullWidth margin="dense" name="primaryMemberPrice" value={editEvent.primaryMemberPrice || ""} onChange={handleInputChange} />
                     <TextField label="Dependent Member Ticket Price" fullWidth margin="dense" name="dependentMemberPrice" value={editEvent.dependentMemberPrice || ""} onChange={handleInputChange} />

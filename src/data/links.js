@@ -120,7 +120,7 @@ export const links = [
     ],
   },
   {
-    name: "Room Categories",
+    name: "Room",
     icon: <MdCategory />,
     subLinks: [
       {
@@ -185,10 +185,10 @@ export const links = [
         name: "All Offers",
         url: "/offers",
       },
-      {
-        name: "Add Offer",
-        url: "/offer/add",
-      },
+      // {
+      //   name: "Add Offer",
+      //   url: "/offer/add",
+      // },
     ],
   },
   {
@@ -199,10 +199,10 @@ export const links = [
         name: "All Food & Beverages",
         url: "/foodAndBeverages",
       },
-      {
-        name: "Add Food & Beverages",
-        url: "/foodAndBeverage/add",
-      },
+      // {
+      //   name: "Add Food & Beverages",
+      //   url: "/foodAndBeverage/add",
+      // },
     ],
   },
   {
@@ -213,10 +213,10 @@ export const links = [
         name: "All Club Notice",
         url: "/notices",
       },
-      {
-        name: "Add Club Notice",
-        url: "/notice/add",
-      },
+      // {
+      //   name: "Add Club Notice",
+      //   url: "/notice/add",
+      // },
     ],
   },
   // {
@@ -241,10 +241,10 @@ export const links = [
         name: "All COM's",
         url: "/coms",
       },
-      {
-        name: "Add COM",
-        url: "/com/add",
-      },
+      // {
+      //   name: "Add COM",
+      //   url: "/com/add",
+      // },
     ],
   },
 
@@ -256,10 +256,10 @@ export const links = [
         name: "All Application List",
         url: "/applications",
       },
-      {
-        name: "Add Member Application",
-        url: "/application/add",
-      },
+      // {
+      //   name: "Add Member Application",
+      //   url: "/application/add",
+      // },
     ],
   },
 
@@ -293,10 +293,10 @@ export const links = [
         name: "All General Committee Member",
         url: "/gcms",
       },
-      {
-        name: "Add Committee Member",
-        url: "/gcm/add",
-      },
+      // {
+      //   name: "Add Committee Member",
+      //   url: "/gcm/add",
+      // },
     ],
   },
 
@@ -308,10 +308,10 @@ export const links = [
         name: "All HOD's",
         url: "/hods",
       },
-      {
-        name: "Add HOD",
-        url: "/hod/add",
-      },
+      // {
+      //   name: "Add HOD",
+      //   url: "/hod/add",
+      // },
     ],
   },
   {
@@ -322,10 +322,10 @@ export const links = [
         name: "All Downloads",
         url: "/downloads",
       },
-      {
-        name: "Add Download",
-        url: "/download/add",
-      },
+      // {
+      //   name: "Add Download",
+      //   url: "/download/add",
+      // },
     ],
   },
 

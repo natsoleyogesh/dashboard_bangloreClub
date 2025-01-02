@@ -24,12 +24,119 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteMember, fetchMemberDetails, updateMemberDetails, updateProfilePicture } from "../api/member";
 import Table from "../components/Table";
 import { invoiceDataColumns } from "../data/invoiceList";
-import { formatDate, formatDateForInput, PUBLIC_API_URI } from "../api/config";
+import { formatDate, formatDateForInput, formatDateTime, PUBLIC_API_URI } from "../api/config";
 import { showToast } from "../api/toast";
 import ConfirmationDialog from "../api/ConfirmationDialog";
 import { FiPlus } from "react-icons/fi";
 import LocationSelector from "../components/common/LocationSelector";
 import Breadcrumb from "../components/common/Breadcrumb";
+
+const memberDataColumns = [
+  {
+    accessorKey: "profilePicture",
+    header: "Profile Picture",
+    Cell: ({ cell }) => (
+      cell.getValue() ? (
+        <img
+          src={`${PUBLIC_API_URI}${cell.getValue()}`}
+          alt="Profile"
+          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+        />
+      ) : (
+        "N/A"
+      )
+    ),
+  },
+  {
+    accessorKey: "memberId",
+    header: "Member Id",
+  },
+  {
+    accessorKey: "name", //access nested data with dot notation
+    header: "Member Name",
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "mobileNumber",
+    header: "Phone Number",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "address", //normal accessorKey
+    header: "Address",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "city",
+    header: "City",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "state",
+    header: "State",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "country",
+    header: "Country",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "pin",
+    header: "Pin Code",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "dateOfBirth",
+    header: "Date of Birth",
+    Cell: ({ cell }) => {
+      const value = cell.getValue();
+      return value ? formatDateTime(cell.getValue()) : "N/A";
+    },
+  },
+  {
+    accessorKey: "maritalStatus",
+    header: "Marital Status",
+    Cell: ({ cell }) => cell.getValue() || "N/A",
+  },
+  {
+    accessorKey: "marriageDate",
+    header: "Marriage Date",
+    Cell: ({ cell }) => {
+      const value = cell.getValue();
+      return value ? formatDateTime(cell.getValue()) : "N/A";
+    },
+  },
+  {
+    accessorKey: "activatedDate",
+    header: "Activated Date",
+    Cell: ({ cell }) => {
+      const value = cell.getValue();
+      return value ? formatDateTime(cell.getValue()) : "N/A";
+    },
+  },
+  {
+    accessorKey: "lastLogin",
+    header: "Last Login",
+    Cell: ({ cell }) => {
+      const value = cell.getValue();
+      return value ? formatDateTime(cell.getValue()) : "N/A";
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Create Date",
+    Cell: ({ cell }) => {
+      const value = cell.getValue();
+      return value ? formatDateTime(cell.getValue()) : "N/A";
+    },
+  },
+];
+
 
 
 const SingleProduct = () => {
@@ -333,7 +440,7 @@ const SingleProduct = () => {
           <Typography variant="h6">Member List</Typography>
           <Table
             data={memberList}
-            fields={invoiceDataColumns}
+            fields={memberDataColumns}
             numberOfRows={memberList?.length || 0}
             enableTopToolBar={false}
             enableBottomToolBar={false}

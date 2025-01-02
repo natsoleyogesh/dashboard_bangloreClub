@@ -13,7 +13,7 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BiImageAdd } from "react-icons/bi";
 import { showToast } from "../api/toast";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,7 @@ import { addOffer } from "../api/offer";
 import { CalendarToday, Description, Category, Code, CurrencyRupee, Event, Info, Percent } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import Breadcrumb from "../components/common/Breadcrumb";
+import { fetchAllActiveDepartments } from "../api/masterData/department";
 
 const UploadBox = styled(Box)(({ theme }) => ({
     marginTop: 20,
@@ -65,6 +66,24 @@ const AddOffer = () => {
     const [errors, setErrors] = useState({});
     const imageInput = useRef(null);
     const navigate = useNavigate();
+
+    const [activeDepartments, setActiveDepartments] = useState([]);
+
+    useEffect(() => {
+        getActiveDepartments()
+    }, [])
+
+    const getActiveDepartments = async () => {
+        try {
+            const department = await fetchAllActiveDepartments();
+            console.log(department, "hh")
+            setActiveDepartments(department.data.activeDepartments);
+
+        } catch (error) {
+            console.error("Failed to fetch members :", error);
+            showToast("Failed to fetch Members. Please try again.", "error");
+        }
+    };
 
     // Handle input changes
     const handleInputChange = (e) => {
@@ -336,7 +355,7 @@ const AddOffer = () => {
                 </Box>
 
                 {/* Department */}
-                <Box sx={{ mb: 2 }}>
+                {/* <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Department</InputLabel>
                     <FormControl fullWidth error={!!errors.department}>
                         <Select
@@ -351,6 +370,31 @@ const AddOffer = () => {
                             {departmentOptions.map((option) => (
                                 <MenuItem key={option} value={option}>
                                     {option}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        {errors.department && (
+                            <Typography color="error" variant="body2">
+                                {errors.department}
+                            </Typography>
+                        )}
+                    </FormControl>
+                </Box> */}
+                <Box sx={{ mb: 2 }}>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Department</InputLabel>
+                    <FormControl fullWidth error={!!errors.department}>
+                        <Select
+                            name="department"
+                            value={offerData.department || ""}
+                            onChange={handleInputChange}
+                            displayEmpty
+                        >
+                            <MenuItem value="" disabled>
+                                Select department
+                            </MenuItem>
+                            {activeDepartments.map((option) => (
+                                <MenuItem key={option._id} value={option._id}>
+                                    {option.departmentName}
                                 </MenuItem>
                             ))}
                         </Select>

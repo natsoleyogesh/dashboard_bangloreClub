@@ -78,7 +78,7 @@ const AllRequests = () => {
                 }}
             >
                 <Typography variant="h6">All Bookings Requests</Typography>
-                <Link to="/booking/add" style={{ textDecoration: "none" }}>
+                {/* <Link to="/booking/add" style={{ textDecoration: "none" }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -87,7 +87,7 @@ const AllRequests = () => {
                     >
                         Create Booking
                     </Button>
-                </Link>
+                </Link> */}
             </Box>
 
             {/* Requests Table */}

@@ -159,7 +159,8 @@ export const addBanquet = async (formData) => {
         return response; // Assuming the created banquet data is in response.data
     } catch (error) {
         console.log("Error adding banquet:", error);
-        throw new Error(error);
+        // throw new Error(error);
+        return error;
     }
 };
 

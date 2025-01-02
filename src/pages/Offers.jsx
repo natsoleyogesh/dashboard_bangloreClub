@@ -46,12 +46,6 @@ const Offers = () => {
             Cell: ({ cell }) => (
                 <div>
                     <Avatar src={`${PUBLIC_API_URI}${cell.getValue()}`} alt={"Offer Image"} variant="rounded" sx={{ width: 100, height: 100, objectFit: "cover" }} />
-                    {/* <img
-                        src={`${PUBLIC_API_URI}${cell.getValue()}}`}
-                        // sx={{ width: 120, height: 120 }}
-                        height={120}
-                        width={120}
-                    /> */}
                 </div>
             ),
         },
@@ -59,10 +53,6 @@ const Offers = () => {
             accessorKey: "title", //access nested data with dot notation
             header: "Offer Title",
         },
-        // {
-        //     accessorKey: "description", //access nested data with dot notation
-        //     header: "Offer Description",
-        // },
         {
             accessorKey: "description",
             header: "Offer Description",
@@ -119,16 +109,6 @@ const Offers = () => {
             header: "End Date",
             Cell: ({ cell }) => formatDate(cell.getValue()),
         },
-        // {
-        //     accessorKey: "startTime",
-        //     header: "Start Time",
-        //     Cell: ({ cell }) => formatTime(cell.getValue()),
-        // },
-        // {
-        //     accessorKey: "endTime",
-        //     header: "End Time",
-        //     Cell: ({ cell }) => formatTime(cell.getValue()),
-        // },
         {
             accessorKey: "couponCode", //normal accessorKey
             header: "Offer Coupon Code",
@@ -144,6 +124,24 @@ const Offers = () => {
         {
             accessorKey: "department", //normal accessorKey
             header: "Offer Department",
+        },
+        {
+            accessorKey: "showExclusive", // Exclusive Offer Column
+            header: "Exclusive Offer",
+            Cell: ({ cell }) => {
+                const value = cell.getValue();
+                return (
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: value ? "green" : "inherit",
+                            fontWeight: value ? "bold" : "normal",
+                        }}
+                    >
+                        {value ? "YES" : "NO"}
+                    </Typography>
+                );
+            },
         },
         {
             accessorKey: "status", //normal accessorKey
@@ -212,7 +210,7 @@ const Offers = () => {
                     marginBottom: "16px",
                 }}
             >
-                <Typography variant="h6">Events</Typography>
+                <Typography variant="h6">Offers</Typography>
                 <Link to="/offer/add" style={{ textDecoration: "none" }}>
                     <Button
                         variant="contained"

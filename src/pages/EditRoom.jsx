@@ -104,8 +104,20 @@ const EditRoom = () => {
         fetchCategories();
         fetchTaxTypes();
         fetchAmenioties();
-        getRoomById(id);
+        // getRoomById(id);
     }, [id]);
+
+    useEffect(() => {
+        if (id) {
+            if (!loading) {
+                getRoomById(id);
+            }
+        }
+    }, [id]);
+
+
+
+
 
     const fetchTaxTypes = async () => {
         try {
@@ -126,6 +138,8 @@ const EditRoom = () => {
     };
 
     const getRoomById = async () => {
+        if (!id) return; // Guard condition to prevent unnecessary calls
+        setLoading(true);
         try {
             const response = await fetchEditRoomDetails(id);
             const room = response?.data?.data;
@@ -152,8 +166,10 @@ const EditRoom = () => {
                 extraBedPrice: room.extraBedPrice,
             });
             setImages(room.images)
+            setLoading(false);
         } catch (error) {
             showToast("Failed to fetch room details.", "error");
+            setLoading(false);
         }
     };
 
@@ -835,6 +851,27 @@ const EditRoom = () => {
             showToast("Failed to delete image.", "error");
         }
     };
+
+    if (loading) {
+        return (
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    zIndex: 1000,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        )
+    }
 
 
     return (

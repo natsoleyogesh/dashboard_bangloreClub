@@ -45,11 +45,11 @@ const AddBanquet = () => {
     const [banquetData, setBanquetData] = useState({
         banquetName: "",
         description: "",
-        checkInTime: "12:00",  // 12:00 PM
-        checkOutTime: "23:00",  // 11:00 AM
+        checkInTime: "09:00",  // 12:00 PM
+        checkOutTime: "21:00",  // 11:00 AM
         maxAllowedPerRoom: "",
         priceRange: { minPrice: "", maxPrice: "" },
-        pricingDetails: [{ days: [], timeSlots: [{ start: "12:00", end: "23:00" }], price: "" }],
+        pricingDetails: [{ days: [], timeSlots: [{ start: "09:00", end: "21:00" }], price: "" }],
         amenities: [],
         taxTypes: [],
         breakfastIncluded: false,
@@ -401,15 +401,16 @@ const AddBanquet = () => {
             // formData.append("images", images);
 
             const response = await addBanquet(formData);
+            console.log(response, "ggg")
 
             if (response.status === 201) {
                 showToast("Banquet added successfully!", "success");
                 navigate("/banquets");
-            } else {
-                showToast(response.message || "Failed to add banquet. Please try again.", "error");
+            } else if(response.status === 400) {
+                showToast(response.response.data.message || "Failed to add banquet. Please try again.", "error");
             }
         } catch (error) {
-            console.log("Error adding banquet:", error);
+            console.log("Error adding banquet:", error.response?.data?.message);
             showToast(error.response?.data?.message || "An error occurred. Please try again.", "error");
         } finally {
             setLoading(false);
@@ -895,7 +896,7 @@ const AddBanquet = () => {
                                             </Button>
                                         )}
 
-                                        {slotIndex === detail.timeSlots.length - 1 && (
+                                        {/* {slotIndex === detail.timeSlots.length - 1 && (
                                             <Button
                                                 variant="outlined"
                                                 color="primary"
@@ -907,14 +908,14 @@ const AddBanquet = () => {
                                             >
                                                 <FiPlus />
                                             </Button>
-                                        )}
+                                        )} */}
                                     </Box>
                                 ))}
-                                {errors[`timeSlots_${index}`] && (
+                                {/* {errors[`timeSlots_${index}`] && (
                                     <Typography color="error">
                                         {errors[`timeSlots_${index}`]}
                                     </Typography>
-                                )}
+                                )} */}
                             </Box>
 
                             {/* Price */}
@@ -1057,7 +1058,7 @@ const AddBanquet = () => {
                 <Box sx={{ mb: 2 }}>
                     <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Special Day Tarrif Details</InputLabel>
                     {banquetData.specialDayTariff.map((tariff, index) => (
-                        <Box key={index} sx={{ display: "flex", gap: 2, margin: "5px" }}>
+                        <Box key={index} sx={{ display: "block", gap: 2, margin: "5px" }}>
                             <TextField
                                 fullWidth
                                 name={`specialDayTariff[${index}][special_day_name]`}
@@ -1066,6 +1067,7 @@ const AddBanquet = () => {
                                 onChange={handleChange}
                                 error={!!errors[`special_day_name${index}`]}
                                 helperText={errors[`special_day_name${index}`]}
+                                sx={{ mb: 2 }}
                             />
                             <TextField
                                 fullWidth
@@ -1080,7 +1082,7 @@ const AddBanquet = () => {
                                 error={!!errors[`startDate${index}`]}
                                 helperText={errors[`startDate${index}`]}
                                 inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
-
+                                sx={{ mb: 2 }}
                             />
                             <TextField
                                 fullWidth
@@ -1095,7 +1097,7 @@ const AddBanquet = () => {
                                 error={!!errors[`endDate${index}`]}
                                 helperText={errors[`endDate${index}`]}
                                 inputProps={{ min: new Date().toISOString().split("T")[0] }} // Allow only today and future dates
-
+                                sx={{ mb: 2 }}
                             />
                             <TextField
                                 fullWidth
@@ -1106,6 +1108,7 @@ const AddBanquet = () => {
                                 onChange={handleChange}
                                 error={!!errors[`extraCharge${index}`]}
                                 helperText={errors[`extraCharge${index}`]}
+                                sx={{ mb: 2 }}
                             />
 
                             {/* Remove Button */}
@@ -1140,7 +1143,7 @@ const AddBanquet = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Images</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Banquet Images(upload max. 5 images & less than 100kb)</InputLabel>
                     <UploadBox onClick={() => imageInput.current.click()} />
                     <input type="file" hidden ref={imageInput} multiple onChange={handleImageChange} />
 

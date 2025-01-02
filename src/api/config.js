@@ -23,8 +23,24 @@ export const formatDateForInput = (date) => {
     }
 };
 
+// export const formatDateTime = (dateString) => {
+//     if (!dateString) return "N/A";
+//     const options = { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" };
+//     return new Date(dateString).toLocaleString(undefined, options);
+// };
+
 export const formatDateTime = (dateString) => {
     if (!dateString) return "N/A";
-    const options = { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" };
-    return new Date(dateString).toLocaleString(undefined, options);
+
+    const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true, // Set to false for 24-hour format
+        timeZone: "Asia/Kolkata", // Change based on your preferred time zone
+    };
+
+    return new Date(dateString).toLocaleString("en-IN", options);
 };
