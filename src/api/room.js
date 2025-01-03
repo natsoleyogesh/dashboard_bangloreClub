@@ -1,13 +1,31 @@
+// // src/api/users.js
+
+// import axios from "axios";
+// import { PUBLIC_API_URI } from "./config";
+
+// // Axios instance (Optional, for setting base URL and headers)
+// const axiosInstance = axios.create({
+//     baseURL: PUBLIC_API_URI, // Change this to your base URL
+//     headers: {
+//         "Content-Type": "application/json",
+//     },
+// });
+
 // src/api/users.js
 
 import axios from "axios";
 import { PUBLIC_API_URI } from "./config";
 
-// Axios instance (Optional, for setting base URL and headers)
+// Get token from localStorage or sessionStorage
+const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+
+// Axios instance
 const axiosInstance = axios.create({
-    baseURL: PUBLIC_API_URI, // Change this to your base URL
+    baseURL: PUBLIC_API_URI, // Set your base URL
     headers: {
         "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }), // Add token if it exists
     },
 });
 
@@ -153,7 +171,23 @@ export const deleteRoomBooking = async (bookingId) => {
 // Update banquet details
 export const updateRoomBooking = async (bookingId, banquetData) => {
     try {
-        const response = await axiosInstance.post(`/room-booking/allocate-room/${bookingId}`, banquetData, {
+        const response = await axiosInstance.put(`/room-booking/allocate-room/${bookingId}`, banquetData, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response; // Assuming the updated banquet data is in response.data
+    } catch (error) {
+        console.error("Error updating banquet details:", error);
+        throw new Error(error);
+    }
+};
+
+
+// Update banquet details
+export const fetchAvailableRooms = async (bookingId) => {
+    try {
+        const response = await axiosInstance.post(`/room-booking/findAvailableRooms/${bookingId}`, {}, {
             headers: {
                 "Content-Type": "application/json",
             },

@@ -89,3 +89,30 @@ export const deleteFoodAndBeverage = async (foodAndBeverageId) => {
         throw new Error(error.response?.data?.message || 'Failed to delete member.');
     }
 };
+
+
+// Delete a banquet image
+export const deleteFoodAndbeverageImage = async (banquetId, index) => {
+    try {
+        const response = await axiosInstance.delete(`/foodAndBeverage/deleteimage/${banquetId}/${index}`);
+        return response; // Assuming the response confirms successful deletion
+    } catch (error) {
+        console.error("Error deleting banquet image:", error);
+        throw new Error(error);
+    }
+};
+
+// Upload an image for a banquet
+export const uploadFoodAndbeveragesImage = async (banquetId, formData) => {
+    try {
+        const response = await axiosInstance.put(`/foodAndBeverage/upload-images/${banquetId}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response; // Assuming the response contains the updated banquet data
+    } catch (error) {
+        console.error("Error uploading banquet image:", error);
+        throw new Error(error);
+    }
+};

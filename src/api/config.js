@@ -44,3 +44,13 @@ export const formatDateTime = (dateString) => {
 
     return new Date(dateString).toLocaleString("en-IN", options);
 };
+
+
+export const formatTo12Hour = (time) => {
+    if (!time) return ""; // Return empty if no time is selected
+
+    const [hours, minutes] = time.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+    return `${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
+};
