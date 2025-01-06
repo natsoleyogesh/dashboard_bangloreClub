@@ -577,26 +577,81 @@ const EditBanquet = ({ editdata }) => {
         }
     };
 
+    // const handleUploadImage = async (event) => {
+    //     const files = Array.from(event.target.files);
+    //     if (!files || files.length === 0) {
+    //         showToast("No files selected.", "error");
+    //         return;
+    //     }
+
+    //     const formData = new FormData();
+    //     files.forEach((file) => formData.append("images", file));
+
+    //     try {
+    //         const response = await uploadBanquetImage(id, formData);
+    //         if (response.status === 200) {
+    //             getBanquetById();
+    //             showToast("Images uploaded successfully.", "success");
+    //         }
+    //     } catch (error) {
+    //         showToast("Failed to upload images.", "error");
+    //     }
+    // };
+
     const handleUploadImage = async (event) => {
-        const files = Array.from(event.target.files);
+        const files = Array.from(event.target.files); // Convert FileList to an array
+        const maxSize = 100 * 1024; // 100KB in bytes
+
         if (!files || files.length === 0) {
             showToast("No files selected.", "error");
             return;
         }
 
+        const validFiles = [];
+        const invalidFiles = [];
+
+        // Validate file sizes
+        files.forEach((file) => {
+            if (file.size <= maxSize) {
+                validFiles.push(file); // Add valid files to the array
+            } else {
+                invalidFiles.push(file.name); // Collect names of invalid files
+            }
+        });
+
+        // Show a toast for invalid files, if any
+        if (invalidFiles.length > 0) {
+            showToast(
+                `The following files exceed 100KB and were not added: ${invalidFiles.join(", ")}`,
+                "error"
+            );
+        }
+
+        // If no valid files, stop the upload process
+        if (validFiles.length === 0) {
+            showToast("No valid files to upload.", "error");
+            return;
+        }
+
+        // Create FormData and append valid files
         const formData = new FormData();
-        files.forEach((file) => formData.append("images", file));
+        validFiles.forEach((file) => formData.append("images", file));
 
         try {
             const response = await uploadBanquetImage(id, formData);
             if (response.status === 200) {
+                // Refresh data and show success message
                 getBanquetById();
                 showToast("Images uploaded successfully.", "success");
+            } else {
+                showToast("Failed to upload images.", "error");
             }
         } catch (error) {
-            showToast("Failed to upload images.", "error");
+            console.error("Error uploading images:", error);
+            showToast("Failed to upload images. Please try again.", "error");
         }
     };
+
 
     const handleDeleteImage = async (index) => {
         try {

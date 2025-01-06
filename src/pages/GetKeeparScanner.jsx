@@ -873,3 +873,230 @@ const GetKeeparScanner = () => {
 export default GetKeeparScanner;
 
 
+// import React, { useState } from "react";
+// import { QrReader } from "react-qr-reader";
+// import jsQR from "jsqr";
+// import { markAttendance } from "../api/getKeeper"; // API to mark attendance
+// import { PUBLIC_API_URI } from "../api/config";
+
+// const GetKeeperScanner = () => {
+//     const [scannedData, setScannedData] = useState("");
+//     const [attendeeDetails, setAttendeeDetails] = useState(null);
+//     const [error, setError] = useState(""); // Error state
+//     const [status, setStatus] = useState(""); // Status for attendance
+//     const [loading, setLoading] = useState(false); // Loading indicator
+
+//     const handleScan = async (data) => {
+//         if (data) {
+//             setScannedData(data);
+//             setLoading(true);
+//             setError(""); // Clear any previous error
+//             setStatus(""); // Reset status
+
+//             try {
+//                 const token = localStorage.getItem("token"); // Retrieve token
+//                 if (!token) {
+//                     throw new Error("User is not authenticated. Token is missing.");
+//                 }
+
+//                 const { eventId, uniqueQRCodeId } = JSON.parse(data); // Parse scanned QR data
+//                 if (!eventId || !uniqueQRCodeId) {
+//                     throw new Error("Invalid QR code data. Event ID or QR Code ID is missing.");
+//                 }
+
+//                 // Mark attendance via API
+//                 const response = await markAttendance(token, { eventId, uniqueQRCodeId });
+
+//                 if (response.status === 200 && response.data.attendee) {
+//                     const attendee = response.data.attendee;
+//                     setAttendeeDetails(attendee);
+
+//                     if (attendee.attendanceStatus === "Present") {
+//                         setStatus("Already Present"); // Marked as present earlier
+//                     } else {
+//                         setStatus("success"); // Successfully marked as present now
+//                     }
+//                 } else {
+//                     setStatus("error");
+//                     setError("Failed to mark attendance. Please try again.");
+//                 }
+//             } catch (err) {
+//                 setStatus("error");
+//                 setError(
+//                     err.response?.data?.message || "Failed to process QR code. Please try again."
+//                 );
+//                 console.error(err);
+//             } finally {
+//                 setLoading(false);
+//             }
+//         }
+//     };
+
+//     const handleError = (err) => {
+//         console.error("Error scanning QR code:", err);
+//         if (err?.name === "NotAllowedError") {
+//             setError("Camera access was denied. Please allow camera permissions.");
+//         } else if (err?.name === "NotFoundError") {
+//             setError("No camera was found on the device.");
+//         } else {
+//             setError("Failed to scan QR code. Please try again.");
+//         }
+//         setStatus("error");
+//     };
+
+//     const handleBackToScanner = () => {
+//         // Reset the state for a fresh scan
+//         setScannedData("");
+//         setAttendeeDetails(null);
+//         setError("");
+//         setStatus("");
+//     };
+
+//     const styles = {
+//         container: {
+//             textAlign: "center",
+//             marginTop: "80px",
+//         },
+//         scannerBox: {
+//             width: "300px",
+//             margin: "0 auto",
+//         },
+//         successUi: {
+//             marginTop: "20px",
+//             padding: "20px",
+//             border: "2px solid #4CAF50",
+//             borderRadius: "10px",
+//             backgroundColor: "#f9fff9",
+//             textAlign: "center",
+//         },
+//         errorUi: {
+//             marginTop: "20px",
+//             padding: "20px",
+//             border: "2px solid #F44336",
+//             borderRadius: "10px",
+//             backgroundColor: "#fff9f9",
+//             textAlign: "center",
+//         },
+//         successText: {
+//             color: "#4CAF50",
+//         },
+//         errorText: {
+//             color: "#F44336",
+//         },
+//         profilePicture: {
+//             width: "100px",
+//             height: "100px",
+//             borderRadius: "50%",
+//             marginBottom: "10px",
+//             border: "2px solid #4CAF50",
+//         },
+//         errorMessage: {
+//             color: "red",
+//             marginTop: "10px",
+//             fontWeight: "bold",
+//         },
+//         fileInput: {
+//             marginTop: "20px",
+//         },
+//         backButton: {
+//             marginTop: "20px",
+//             padding: "10px 20px",
+//             backgroundColor: "#1976D2",
+//             color: "#fff",
+//             border: "none",
+//             borderRadius: "5px",
+//             cursor: "pointer",
+//         },
+//     };
+
+//     return (
+//         <div style={styles.container}>
+//             <h2>QR Code Scanner</h2>
+
+//             {/* Display errors if any */}
+//             {error && <p style={styles.errorMessage}>{error}</p>}
+
+//             {/* QR Scanner and File Upload */}
+//             {(status === "" || status === "error") && (
+//                 <>
+//                     <div style={styles.scannerBox}>
+//                         <QrReader
+//                             onResult={(result, error) => {
+//                                 if (result) handleScan(result?.text);
+//                                 if (error) handleError(error);
+//                             }}
+//                             constraints={{ facingMode: "environment" }}
+//                             style={{ width: "100%" }}
+//                         />
+//                     </div>
+//                     <input
+//                         type="file"
+//                         accept="image/*"
+//                         onChange={(e) => {
+//                             const file = e.target.files[0];
+//                             if (file) {
+//                                 const reader = new FileReader();
+//                                 reader.onload = () => {
+//                                     const imageData = reader.result;
+//                                     const canvas = document.createElement("canvas");
+//                                     const context = canvas.getContext("2d");
+//                                     const img = new Image();
+//                                     img.onload = () => {
+//                                         canvas.width = img.width;
+//                                         canvas.height = img.height;
+//                                         context.drawImage(img, 0, 0, img.width, img.height);
+//                                         const imageData = context.getImageData(0, 0, img.width, img.height);
+//                                         const qrCode = jsQR(imageData.data, img.width, img.height);
+//                                         if (qrCode) {
+//                                             handleScan(qrCode.data);
+//                                         } else {
+//                                             setError("No QR code detected in the uploaded image.");
+//                                         }
+//                                     };
+//                                     img.src = imageData;
+//                                 };
+//                                 reader.readAsDataURL(file);
+//                             }
+//                         }}
+//                         style={styles.fileInput}
+//                     />
+//                 </>
+//             )}
+
+//             {/* Success UI */}
+//             {status === "success" && attendeeDetails && (
+//                 <div style={styles.successUi}>
+//                     <h3 style={styles.successText}>✔ Attendance Marked Successfully</h3>
+//                     <img
+//                         src={`${PUBLIC_API_URI}${attendeeDetails.profilePicture}` || "/placeholder-profile.png"}
+//                         alt="Profile"
+//                         style={styles.profilePicture}
+//                     />
+//                     <h4>{attendeeDetails.name}</h4>
+//                     <p><strong>Email:</strong> {attendeeDetails.email}</p>
+//                     <p><strong>Mobile:</strong> {attendeeDetails.mobileNumber}</p>
+//                     <p><strong>Member ID:</strong> {attendeeDetails.memberId}</p>
+//                     <button style={styles.backButton} onClick={handleBackToScanner}>
+//                         Scan Again
+//                     </button>
+//                 </div>
+//             )}
+
+//             {/* Already Present UI */}
+//             {status === "Already Present" && attendeeDetails && (
+//                 <div style={styles.successUi}>
+//                     <h3 style={styles.successText}>✔ Already Marked as Present</h3>
+//                     <h4>{attendeeDetails.name}</h4>
+//                     <p><strong>Email:</strong> {attendeeDetails.email}</p>
+//                     <p><strong>Mobile:</strong> {attendeeDetails.mobileNumber}</p>
+//                     <p><strong>Member ID:</strong> {attendeeDetails.memberId}</p>
+//                     <button style={styles.backButton} onClick={handleBackToScanner}>
+//                         Scan Again
+//                     </button>
+//                 </div>
+//             )}
+//         </div>
+//     );
+// };
+
+// export default GetKeeperScanner;

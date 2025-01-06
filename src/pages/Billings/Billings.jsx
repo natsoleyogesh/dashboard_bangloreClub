@@ -26,6 +26,7 @@ const Billings = () => {
     const { id } = useParams();
 
     const [billings, setBillings] = useState([]);
+    const [totals, setTotals] = useState({});
     const [filterType, setFilterType] = useState("all");
     const [paymentStatus, setPaymentStatus] = useState("all");
     const [customStartDate, setCustomStartDate] = useState("");
@@ -36,9 +37,17 @@ const Billings = () => {
 
 
 
-    // Utility function to format dates
+    // Utility function to format dates and times
     const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "long", day: "numeric" };
+        const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true // Use 12-hour format
+        };
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
@@ -82,6 +91,7 @@ const Billings = () => {
 
             const response = await fetchAllBillings(queryParams);
             setBillings(response?.data?.billings || []); // Set billings to the fetched data
+            setTotals(response?.data?.totals)
         } catch (error) {
             console.error("Error fetching billings:", error);
             // showToast("Failed to fetch billings. Please try again.", "error");
@@ -107,10 +117,36 @@ const Billings = () => {
     }, [filterType, paymentStatus, customStartDate, customEndDate, userId]);
 
     // Export to PDF
+    // const exportToPDF = () => {
+    //     const doc = new jsPDF();
+    //     doc.text("Billing Records", 10, 10);
+    //     autoTable(doc, {
+    //         head: [columns.map((col) => col.header)],
+    //         body: billings.map((row) => [
+    //             row.invoiceNumber,
+    //             row.memberId?.name || "N/A",
+    //             row.serviceType,
+    //             row.paymentStatus,
+    //             formatDate(row.invoiceDate),
+    //             `₹${row.totalAmount}`,
+    //         ]),
+    //     });
+    //     doc.save("billings.pdf");
+    // };
     const exportToPDF = () => {
         const doc = new jsPDF();
+        console.log(totals.totalOutstanding, "billings.totals.totalOutstanding")
+        // Add Title
         doc.text("Billing Records", 10, 10);
+
+        // Add Totals
+        doc.text(`Total Outstanding: ${totals.totalOutstanding}`, 10, 20);
+        doc.text(`Total Paid: ${totals.totalPaid}`, 10, 30);
+        doc.text(`Total Due: ${totals.totalDue}`, 10, 40);
+
+        // Add Table
         autoTable(doc, {
+            startY: 50, // Start after the totals
             head: [columns.map((col) => col.header)],
             body: billings.map((row) => [
                 row.invoiceNumber,
@@ -118,43 +154,103 @@ const Billings = () => {
                 row.serviceType,
                 row.paymentStatus,
                 formatDate(row.invoiceDate),
-                `₹${row.totalAmount}`,
+                `${row.totalAmount}`,
             ]),
         });
+
+        // Save PDF
         doc.save("billings.pdf");
     };
 
-    // Export to CSV
+
+    // // Export to CSV
+    // const exportToCSV = () => {
+    //     const csvData = billings.map((row) => ({
+    //         InvoiceNumber: row.invoiceNumber,
+    //         MemberName: row.memberId?.name || "N/A",
+    //         ServiceType: row.serviceType,
+    //         PaymentStatus: row.paymentStatus,
+    //         InvoiceDate: formatDate(row.invoiceDate),
+    //         TotalAmount: `₹${row.totalAmount}`,
+    //     }));
+    //     const worksheet = XLSX.utils.json_to_sheet(csvData);
+    //     const workbook = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(workbook, worksheet, "Billings");
+    //     XLSX.writeFile(workbook, "billings.csv");
+    // };
+
     const exportToCSV = () => {
-        const csvData = billings.map((row) => ({
-            InvoiceNumber: row.invoiceNumber,
-            MemberName: row.memberId?.name || "N/A",
-            ServiceType: row.serviceType,
-            PaymentStatus: row.paymentStatus,
-            InvoiceDate: formatDate(row.invoiceDate),
-            TotalAmount: `₹${row.totalAmount}`,
-        }));
+        // Add totals to the top of the CSV
+        const totalsRow = [
+            { InvoiceNumber: "Total Outstanding", MemberName: `${totals.totalOutstanding}` },
+            { InvoiceNumber: "Total Paid", MemberName: `${totals.totalPaid}` },
+            { InvoiceNumber: "Total Due", MemberName: `${totals.totalDue}` },
+        ];
+
+        // Prepare the billing data
+        const csvData = [
+            ...totalsRow,
+            ...billings.map((row) => ({
+                InvoiceNumber: row.invoiceNumber,
+                MemberName: row.memberId?.name || "N/A",
+                ServiceType: row.serviceType,
+                PaymentStatus: row.paymentStatus,
+                InvoiceDate: formatDate(row.invoiceDate),
+                TotalAmount: `${row.totalAmount}`,
+            })),
+        ];
+
+        // Generate and save CSV
         const worksheet = XLSX.utils.json_to_sheet(csvData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Billings");
         XLSX.writeFile(workbook, "billings.csv");
     };
 
-    // Export to XLS
+
+    // // Export to XLS
+    // const exportToXLS = () => {
+    //     const xlsData = billings.map((row) => ({
+    //         InvoiceNumber: row.invoiceNumber,
+    //         MemberName: row.memberId?.name || "N/A",
+    //         ServiceType: row.serviceType,
+    //         PaymentStatus: row.paymentStatus,
+    //         InvoiceDate: formatDate(row.invoiceDate),
+    //         TotalAmount: `₹${row.totalAmount}`,
+    //     }));
+    //     const worksheet = XLSX.utils.json_to_sheet(xlsData);
+    //     const workbook = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(workbook, worksheet, "Billings");
+    //     XLSX.writeFile(workbook, "billings.xlsx");
+    // };
     const exportToXLS = () => {
-        const xlsData = billings.map((row) => ({
-            InvoiceNumber: row.invoiceNumber,
-            MemberName: row.memberId?.name || "N/A",
-            ServiceType: row.serviceType,
-            PaymentStatus: row.paymentStatus,
-            InvoiceDate: formatDate(row.invoiceDate),
-            TotalAmount: `₹${row.totalAmount}`,
-        }));
+        // Add totals to the top of the XLS
+        const totalsRow = [
+            { InvoiceNumber: "Total Outstanding", MemberName: `${totals.totalOutstanding}` },
+            { InvoiceNumber: "Total Paid", MemberName: `${totals.totalPaid}` },
+            { InvoiceNumber: "Total Due", MemberName: `${totals.totalDue}` },
+        ];
+
+        // Prepare the billing data
+        const xlsData = [
+            ...totalsRow,
+            ...billings.map((row) => ({
+                InvoiceNumber: row.invoiceNumber,
+                MemberName: row.memberId?.name || "N/A",
+                ServiceType: row.serviceType,
+                PaymentStatus: row.paymentStatus,
+                InvoiceDate: formatDate(row.invoiceDate),
+                TotalAmount: `${row.totalAmount}`,
+            })),
+        ];
+
+        // Generate and save XLS
         const worksheet = XLSX.utils.json_to_sheet(xlsData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Billings");
         XLSX.writeFile(workbook, "billings.xlsx");
     };
+
 
     return (
         <Box sx={{ pt: "80px", pb: "20px" }}>

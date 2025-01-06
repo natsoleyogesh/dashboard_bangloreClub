@@ -1284,11 +1284,37 @@ const AddRoom = () => {
     };
     // Handle input changes for both check-in and check-out times
 
+    // const handleImageChange = (e) => {
+    //     const files = Array.from(e.target.files);
+    //     console.log(files)
+    //     setImages((prevImages) => [...prevImages, ...files]);
+    // };
     const handleImageChange = (e) => {
-        const files = Array.from(e.target.files);
-        console.log(files)
-        setImages((prevImages) => [...prevImages, ...files]);
+        const files = Array.from(e.target.files); // Convert FileList to an array
+        const maxSize = 100 * 1024; // 100KB in bytes
+
+        const validFiles = [];
+        const invalidFiles = [];
+
+        files.forEach((file) => {
+            if (file.size <= maxSize) {
+                validFiles.push(file); // Add valid files to the array
+            } else {
+                invalidFiles.push(file.name); // Collect names of invalid files
+            }
+        });
+
+        if (invalidFiles.length > 0) {
+            showToast(
+                `The following files exceed 100KB and were not added:\n${invalidFiles.join(", ")}`,
+                "error" // Assuming "error" is the type of toast for errors
+            );
+        }
+
+        // Add valid files to the images state
+        setImages((prevImages) => [...prevImages, ...validFiles]);
     };
+
 
     const handleRemoveImage = (index) => {
         const updatedImages = images.filter((_, i) => i !== index);
@@ -2266,7 +2292,7 @@ const AddRoom = () => {
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
-                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Images</InputLabel>
+                    <InputLabel sx={{ fontWeight: "bold", mb: "4px" }}>Room Images (less than 100kb)</InputLabel>
                     <UploadBox onClick={() => imageInput.current.click()} />
                     <input type="file" hidden ref={imageInput} multiple onChange={handleImageChange} />
 

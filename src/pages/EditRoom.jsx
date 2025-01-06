@@ -803,9 +803,63 @@ const EditRoom = () => {
     );
 
 
+    // // Handle image upload
+    // const handleUploadImage = async (event) => {
+    //     const files = Array.from(event.target.files);
+
+    //     // Check if files are selected
+    //     if (!files || files.length === 0) {
+    //         showToast("No files selected.", "error");
+    //         return;
+    //     }
+
+    //     //   const files = Array.from(e.target.files); // Convert FileList to an array
+    //     const maxSize = 100 * 1024; // 100KB in bytes
+
+    //     const validFiles = [];
+    //     const invalidFiles = [];
+
+    //     files.forEach((file) => {
+    //         if (file.size <= maxSize) {
+    //             validFiles.push(file); // Add valid files to the array
+    //         } else {
+    //             invalidFiles.push(file.name); // Collect names of invalid files
+    //         }
+    //     });
+
+    //     if (invalidFiles.length > 0) {
+    //         showToast(
+    //             `The following files exceed 100KB and were not added:\n${invalidFiles.join(", ")}`,
+    //             "error" // Assuming "error" is the type of toast for errors
+    //         );
+    //     }
+
+
+    //     // Create FormData and append selected images
+    //     const formData = new FormData();
+    //     files.forEach((file) => formData.append("images", file));
+
+    //     try {
+    //         // Upload the images
+    //         const response = await uploadRoomImage(id, formData);
+
+    //         if (response.status === 200) {
+    //             // Fetch the latest room details after image upload
+    //             await getRoomById();
+    //             navigate(`/roomwith-category/${id}`);
+    //             showToast("Images uploaded successfully.", "success");
+    //         } else {
+    //             showToast(response.data.message || "Failed to upload images.", "error");
+    //         }
+    //     } catch (error) {
+    //         console.error("Image upload error:", error);
+    //         showToast(error.response?.data?.message || "Failed to upload images. Please try again.", "error");
+    //     }
+    // };
     // Handle image upload
     const handleUploadImage = async (event) => {
-        const files = Array.from(event.target.files);
+        const files = Array.from(event.target.files); // Convert FileList to an array
+        const maxSize = 100 * 1024; // 100KB in bytes
 
         // Check if files are selected
         if (!files || files.length === 0) {
@@ -813,27 +867,60 @@ const EditRoom = () => {
             return;
         }
 
-        // Create FormData and append selected images
+        // Separate valid and invalid files based on size
+        const validFiles = [];
+        const invalidFiles = [];
+
+        files.forEach((file) => {
+            if (file.size <= maxSize) {
+                validFiles.push(file);
+            } else {
+                invalidFiles.push(file.name);
+            }
+        });
+
+        // Show a toast if there are invalid files
+        if (invalidFiles.length > 0) {
+            showToast(
+                `The following files exceed 100KB and were not added:\n${invalidFiles.join(", ")}`,
+                "error"
+            );
+            return;
+        }
+
+        // // If no valid files exist, exit the function
+        // if (validFiles.length === 0) {
+        //     showToast("No valid files to upload.", "error");
+        //     return;
+        // }
+
+        // Create FormData and append valid files
         const formData = new FormData();
-        files.forEach((file) => formData.append("images", file));
+        validFiles.forEach((file) => formData.append("images", file));
 
         try {
             // Upload the images
             const response = await uploadRoomImage(id, formData);
 
+            // Handle response
             if (response.status === 200) {
-                // Fetch the latest room details after image upload
-                await getRoomById();
+                // Fetch the latest room details and navigate
+                await getRoomById(); // Assuming this updates the room details
                 navigate(`/roomwith-category/${id}`);
                 showToast("Images uploaded successfully.", "success");
             } else {
                 showToast(response.data.message || "Failed to upload images.", "error");
             }
         } catch (error) {
+            // Handle errors
             console.error("Image upload error:", error);
-            showToast(error.response?.data?.message || "Failed to upload images. Please try again.", "error");
+            showToast(
+                error.response?.data?.message || "Failed to upload images. Please try again.",
+                "error"
+            );
         }
     };
+
 
 
     // Handle image deletion by index
@@ -909,7 +996,6 @@ const EditRoom = () => {
                     <input type="file" hidden ref={imageInput} multiple onChange={handleUploadImage} />
                     <Button variant="outlined" component="label" onClick={() => imageInput.current.click()}>
                         Upload New Images
-
                     </Button>
                 </Grid>
                 <Box sx={{ mb: 2 }}>
@@ -1279,7 +1365,7 @@ const EditRoom = () => {
                                 onChange={handleChange}
                                 style={{ margin: "5px" }}
                             />
-                            <TextField
+                            {/* <TextField
                                 fullWidth
                                 name={`specialDayTariff[${index}][startDate]`}
                                 label="Start Date"
@@ -1305,7 +1391,46 @@ const EditRoom = () => {
                                 }}
                                 inputProps={{ min: new Date(tariff.endDate).toISOString().split("T")[0] }} // Allow only today and future dates
                                 style={{ margin: "5px" }}
+                            /> */}
+                            <TextField
+                                fullWidth
+                                name={`specialDayTariff[${index}][startDate]`}
+                                label="Start Date"
+                                type="date"
+                                value={tariff.startDate && !isNaN(new Date(tariff.startDate).getTime())
+                                    ? new Date(tariff.startDate).toISOString().split("T")[0]
+                                    : ""}
+                                onChange={handleChange}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                inputProps={{
+                                    min: tariff.startDate && !isNaN(new Date(tariff.startDate).getTime())
+                                        ? new Date(tariff.startDate).toISOString().split("T")[0]
+                                        : new Date().toISOString().split("T")[0]
+                                }}
+                                style={{ margin: "5px" }}
                             />
+                            <TextField
+                                fullWidth
+                                name={`specialDayTariff[${index}][endDate]`}
+                                label="End Date"
+                                type="date"
+                                value={tariff.endDate && !isNaN(new Date(tariff.endDate).getTime())
+                                    ? new Date(tariff.endDate).toISOString().split("T")[0]
+                                    : ""}
+                                onChange={handleChange}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                inputProps={{
+                                    min: tariff.endDate && !isNaN(new Date(tariff.endDate).getTime())
+                                        ? new Date(tariff.endDate).toISOString().split("T")[0]
+                                        : new Date().toISOString().split("T")[0]
+                                }}
+                                style={{ margin: "5px" }}
+                            />
+
                             <TextField
                                 fullWidth
                                 name={`specialDayTariff[${index}][extraCharge]`}
@@ -1413,7 +1538,7 @@ const EditRoom = () => {
                         disabled={loading}
                         onClick={handleSubmit}
                     >
-                        {loading ? <CircularProgress size={20} color="inherit" /> : "Add Room"}
+                        {loading ? <CircularProgress size={20} color="inherit" /> : "Update Room"}
                     </Button>
                 </Box>
             </Paper >

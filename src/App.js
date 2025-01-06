@@ -96,6 +96,8 @@ import Transactions from "./pages/Transaction/Transactions";
 import NotificationPopup from "./components/NotificationPopup";
 import AllRequests from "./pages/Requests/AllRequests";
 import SingleRequest from "./pages/Requests/SingleRequest";
+import Notifications from "./pages/notification/Notifications";
+import SendNotification from "./pages/notification/SendNotification";
 
 const sideBarWidth = 250;
 
@@ -882,6 +884,24 @@ function App() {
             }
           />
 
+          {/* All Notifications */}
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/notification/send"
+            element={
+              <ProtectedRoute>
+                <SendNotification />
+              </ProtectedRoute>
+            }
+          />
 
 
 
